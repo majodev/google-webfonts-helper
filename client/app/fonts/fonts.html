@@ -1,0 +1,13 @@
+<div class="container-fluid">
+  <h1 class="page-header">Google Webfonts</h1>
+  <div class="row">
+    <div class="col-sm-6 scroller">
+      <ul class="nav nav-tabs nav-stacked" ng-repeat="font in fonts">
+        <li><a href="/fonts/{{font.id}}" tooltip="{{font.id}}">{{font.family}} <code>{{font.variants}}</code></a></li>
+      </ul>
+    </div>
+    <div class="col-sm-6 scroller">
+      <div ui-view></div>
+    </div>
+  </div>
+</div>

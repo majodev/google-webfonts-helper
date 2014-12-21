@@ -1,0 +1,16 @@
+<h3>{{fontItem.family}}</h3>
+
+<pre ng-repeat="variant in fontItem.variants">
+@font-face {
+  font-family: '{{fontItem.family}}';
+  font-style: normal;
+  font-weight: {{variant.id}};
+  src:
+    local('{{fontItem.family}}'),
+    local('PTSerif-Regular'),
+    url('<a href="{{variant.eot}}">{{variant.eot}}</a>') format('embedded-opentype'),
+    url('<a href="{{variant.woff}}">{{variant.woff}}</a>') format('woff'),
+    url('<a href="{{variant.ttf}}">{{variant.ttf}}</a>') format('truetype'),
+    url('<a href="{{variant.svg}}">{{variant.svg}}</a>') format('svg');
+}
+</pre>
