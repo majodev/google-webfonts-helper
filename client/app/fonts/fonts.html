@@ -1,12 +1,12 @@
 <div class="container-fluid">
-  <h1 class="page-header">Google Webfonts</h1>
+  <h1 class="page-header">Google Webfonts Helper <small>CSS snippets for {{fonts.length}} fonts</small></h1>
   <div class="row">
-    <div class="col-sm-6 scroller">
+    <div class="col-sm-4 col-xs-6 scroller">
       <ul class="nav nav-tabs nav-stacked" ng-repeat="font in fonts">
-        <li><a href="/fonts/{{font.id}}" tooltip="{{font.id}}">{{font.family}} <code>{{font.variants}}</code></a></li>
+        <li><a href="/fonts/{{font.id}}" tooltip="{{font.id}}">{{font.family}} <small>{{font.variants.length}} variant(s)</small></a></li>
       </ul>
     </div>
-    <div class="col-sm-6 scroller">
+    <div class="col-sm-8 col-xs-6 scroller">
       <div ui-view></div>
     </div>
   </div>

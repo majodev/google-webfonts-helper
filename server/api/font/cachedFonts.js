@@ -70,7 +70,7 @@ var USER_AGENTS = {
   });
 
   req.on('error', function(e) {
-    console.log('problem with request: ' + e.message);
+    console.error('problem with request: ' + e.message);
     throw (e);
   });
 
@@ -140,7 +140,7 @@ function requestRemoteCSS(family, type, userAgent, callback) {
   });
 
   req.on('error', function(e) {
-    console.log('problem with request: ' + e.message);
+    console.error('problem with request: ' + e.message);
 
     callback('problem with request: ' + e.message);
   });
@@ -197,7 +197,7 @@ function getDownloadPaths(font, callback) {
     if (err) {
       console.log(err);
     } else {
-      console.log("All variants processed.");
+      // console.log("All variants processed.");
       callback(_.merge(_.cloneDeep(font), urlStore[font.family]));
     }
   });
@@ -217,9 +217,9 @@ module.exports.getAll = function getAll(callback) {
       if (cachedFonts.length > 0) {
         callback(cachedFonts);
         clearInterval(timer);
-        console.log("POPULATED!");
+        // console.log("POPULATED!");
       } else {
-        console.log("waiting for populate....")
+        // console.log("waiting for populate....")
       }
     }, 500)
   }
@@ -237,7 +237,7 @@ module.exports.get = function get(id, callback) {
     });
   } else {
     // font not found!
-    console.log("font not found!");
+    // console.error("font not found!");
     callback(null);
   }
 

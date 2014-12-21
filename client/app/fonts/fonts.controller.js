@@ -4,7 +4,7 @@ angular.module('googleWebfontsHelperApp')
   .controller('FontsCtrl', function($scope, $http) {
     // $scope.message = 'Hello';
 
-    console.log('request all fonts!');
+    // console.log('request all fonts!');
 
     $scope.fonts = [];
 
@@ -15,7 +15,7 @@ angular.module('googleWebfontsHelperApp')
   })
 
   .controller('FontsItemCtrl', function($scope, $stateParams, $http) {
-    console.log('fonts item ctrl!');
+    // console.log('fonts item ctrl!');
 
     // console.log($scope);
     // console.log($stateParams);

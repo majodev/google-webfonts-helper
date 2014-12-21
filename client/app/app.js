@@ -9,7 +9,7 @@ angular.module('googleWebfontsHelperApp', [
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
     $urlRouterProvider
-      .otherwise('/');
+      .otherwise('/fonts');
 
     $locationProvider.html5Mode(true);
   });

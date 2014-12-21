@@ -1,6 +1,8 @@
 <h3>{{fontItem.family}}</h3>
 
-<pre ng-repeat="variant in fontItem.variants">
+<div class="fontVariant" ng-repeat="variant in fontItem.variants">
+<h4>{{variant.id}}</h4>
+<pre>
 @font-face {
   font-family: '{{fontItem.family}}';
   font-style: normal;
@@ -14,3 +16,4 @@
     url('<a href="{{variant.svg}}">{{variant.svg}}</a>') format('svg');
 }
 </pre>
+</div>
