@@ -1,11 +1,11 @@
 <div class="container-fluid">
-  <h1 class="page-header">Google webfonts Helper <small>Easy CSS snippets for {{fonts.length}} fonts</small></h1>
+  <h1 class="page-header"><a href="http://ranf.tl" target="_blank">MAJODEV</a>'s google webfonts helper <small>Easy CSS snippets for {{fonts.length}} fonts</small></h1>
   <div class="row">
     <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 scroller">
       <ul class="list-group" >
         <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts">
           <h5 class="list-group-item-heading">{{font.family}}</h5>
-          <p class="list-group-item-text small">{{font.category}} - {{font.variants.length}} variants</p>
+          <p class="list-group-item-text small">{{font.category}} · {{font.variants.length}} variants</p>
         </a>
       </ul>
     </div>

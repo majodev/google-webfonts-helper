@@ -50,7 +50,9 @@ var USER_AGENTS = {
           id: getSlug(item.family),
           family: item.family,
           variants: item.variants,
-          category: item.category
+          category: item.category,
+          version: item.version,
+          lastModified: item.lastModified
         });
 
       });

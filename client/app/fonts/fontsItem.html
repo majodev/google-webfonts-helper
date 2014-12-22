@@ -1,5 +1,5 @@
-<h3>{{fontItem.family}}</h3>
-
+<h3>{{fontItem.family}} <small>{{fontItem.category}}</small></h3>
+<h5>last modified on {{fontItem.lastModified}} ({{fontItem.version}}).</h5>
 <div class="fontVariant" ng-repeat="variant in fontItem.variants">
 <h4>{{variant.id}}</h4>
 <pre>
