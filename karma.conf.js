@@ -21,6 +21,7 @@ module.exports = function(config) {
       'client/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'client/bower_components/lodash/dist/lodash.compat.js',
       'client/bower_components/angular-ui-router/release/angular-ui-router.js',
+      'client/bower_components/angular-busy/dist/angular-busy.js',
       'client/app/app.js',
       'client/app/app.coffee',
       'client/app/**/*.js',

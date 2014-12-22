@@ -16,25 +16,21 @@ var cachedFonts = require('./cachedFonts');
 exports.index = function(req, res) {
 
   cachedFonts.getAll(function(items) {
-    res.json(items);
+    // setTimeout(function() {
+      res.json(items);
+    // }, 3000);
   })
 
-  // res.json(cachedFonts.getAll());
 };
 
+// Get specific fonts including links
 exports.show = function(req, res) {
 
-  cachedFonts.get(req.params.id, function (item) {
-    res.json(item);
+  cachedFonts.get(req.params.id, function(item) {
+    // setTimeout(function() {
+      res.json(item);
+    // }, 3000);
+
   });
 
-  // cachedFonts.getAll(function(items) {
-  //   res.json(_.find(items, {
-  //     id: req.params.id
-  //   }));
-  // })
-
-  // res.json(_.find(cachedFonts.get(), {
-  //   id: req.params.id
-  // }));
 };
