@@ -176,7 +176,15 @@ function getDownloadPaths(font, callback) {
         }
 
         // save the type (woff, eot, svg, ttf, usw...)
-        variantItem[typeAgentPair[0]] = resources[0]._extracted.url;
+        // rewrite url to use https instead on http!
+
+        var type = typeAgentPair[0];
+        var url = resources[0]._extracted.url;
+
+        url = url.replace(/^http:\/\//i, 'https://');
+
+        variantItem[type] = url;
+        
 
         // if not defined, also save procedded font-family, fontstyle, font-weight, unicode-range
         if (_.isUndefined(variantItem.fontFamily) && _.isUndefined(resources[0]["font-family"]) === false) {
