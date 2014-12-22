@@ -16,6 +16,57 @@
     padding: 0.2em 0;
 }
 
+@anchorAnimation-color: #f00;
+
+/* Animations for :target headings (via http://cardinalcss.com) */ 
+@-webkit-keyframes anchorAnimation {
+    0%   { color: inherit; }
+    20%  { color: @anchorAnimation-color;     }
+    40%   { color: inherit; }
+    60%  { color: @anchorAnimation-color;     }
+    100% { color: inherit; }
+}
+
+@-moz-keyframes anchorAnimation {
+    0%   { color: inherit; }
+    20%  { color: @anchorAnimation-color;     }
+    40%   { color: inherit; }
+    60%  { color: @anchorAnimation-color;     }
+    100% { color: inherit; }
+}
+
+@-ms-keyframes anchorAnimation {
+    0%   { color: inherit; }
+    20%  { color: @anchorAnimation-color;     }
+    40%   { color: inherit; }
+    60%  { color: @anchorAnimation-color;     }
+    100% { color: inherit; }
+}
+
+@-o-keyframes anchorAnimation {
+    0%   { color: inherit; }
+    20%  { color: @anchorAnimation-color;     }
+    40%   { color: inherit; }
+    60%  { color: @anchorAnimation-color;     }
+    100% { color: inherit; }
+}
+
+@keyframes anchorAnimation {
+    0%   { color: inherit; }
+    20%  { color: @anchorAnimation-color;     }
+    40%   { color: inherit; }
+    60%  { color: @anchorAnimation-color;     }
+    100% { color: inherit; }
+}
+
+:target, .targetAnimation, :target a {
+  -webkit-animation: anchorAnimation 1s ease;
+  -moz-animation: anchorAnimation 1s ease;
+  -ms-animation: anchorAnimation 1s ease;
+  -o-animation: anchorAnimation 1s ease;
+  animation: anchorAnimation 1s ease;
+}
+
 // injector
 @import 'fonts/fonts.less';
 @import 'modal/modal.less';

@@ -18,9 +18,17 @@
 <div cg-busy="{promise: fontItemPromise, message: 'Fetching {{fontID}}...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
   <h3>{{fontItem.family}} <small>{{fontItem.category}}</small></h3>
   <h5>last modified on {{fontItem.lastModified}} ({{fontItem.version}}).</h5>
-  <div class="fontVariant row" ng-repeat="variant in fontItem.variants">
-    <pre class="col-xs-10">
-/* {{variant.id}} */
+  <div class="fontVariant">
+
+  <div class="row">
+    <div class="preview col-md-3 col-sm-4 col-xs-6" ng-repeat="variant in fontItem.variants" style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}};">
+      <a href="#{{variant.id}}"></a>
+      <h4 class="nonSelectable">{{variant.id}}</h4>
+      <p class="nonSelectable">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
+    </div>
+  </div>
+
+<pre><span id="{{variant.id}}" ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
 @font-face {
   font-family: {{variant.fontFamily}};
   font-style: {{variant.fontStyle}};
@@ -33,7 +41,8 @@
     url('<a href="{{variant.ttf}}">{{variant.ttf}}</a>') format('truetype'),
     url('<a href="{{variant.svg}}">{{variant.svg}}</a>') format('svg');
 }
-    </pre>
-    <p class="col-xs-2 nonSelectable" style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}};">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
+
+</span></pre>
+    
   </div>
 </div>

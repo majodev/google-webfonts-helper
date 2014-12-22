@@ -1,16 +1,18 @@
 <div class="container-fluid">
-  <h1 class="page-header"><a href="http://ranf.tl" target="_blank">majodev</a>'s google webfonts helper <small>Easy CSS snippets for {{fonts.length}} webfonts</small></h1>
-  <div class="row" cg-busy="{promise: fontsPromise, message: 'Loading fonts...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
-    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 scroller">
-      <ul class="list-group" >
-        <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts">
-          <h5 class="list-group-item-heading">{{font.family}}</h5>
-          <p class="list-group-item-text small">{{font.category}} · {{font.variants.length}} variants</p>
-        </a>
-      </ul>
-    </div>
-    <div class="col-lg-10 col-md-9 col-sm-8 col-xs-6 scroller">
-      <div ui-view></div>
+  <h1 class="page-header"><a href="http://ranf.tl" target="_blank">majodev</a>'s google webfonts helper<br/><small>Easy CSS snippets for {{fonts.length}} webfonts</small></h1>
+  <div class="fonts-view-wrapper">
+    <div class="row" cg-busy="{promise: fontsPromise, message: 'Loading fonts...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
+      <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 scroller">
+        <ul class="list-group" >
+          <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts">
+            <h5 class="list-group-item-heading">{{font.family}}</h5>
+            <p class="list-group-item-text small">{{font.category}} · {{font.variants.length}} variants</p>
+          </a>
+        </ul>
+      </div>
+      <div class="col-lg-10 col-md-9 col-sm-8 col-xs-6 scroller">
+        <div ui-view></div>
+      </div>
     </div>
   </div>
 </div>
