@@ -1,9 +1,25 @@
+<style type="text/css" ng-repeat="variant in fontItem.variants">
+
+@font-face {
+  font-family: {{variant.fontFamily}};
+  font-style: {{variant.fontStyle}};
+  font-weight: {{variant.fontWeight}};
+  src:
+    local('{{variant.local[0]}}'),
+    local('{{variant.local[1]}}'),
+    url('{{variant.eot}}') format('embedded-opentype'),
+    url('{{variant.woff}}') format('woff'),
+    url('{{variant.ttf}}') format('truetype'),
+    url('{{variant.svg}}') format('svg');
+}
+
+</style>
+
 <div cg-busy="{promise: fontItemPromise, message: 'Fetching {{fontID}}...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
   <h3>{{fontItem.family}} <small>{{fontItem.category}}</small></h3>
   <h5>last modified on {{fontItem.lastModified}} ({{fontItem.version}}).</h5>
-  <div class="fontVariant" ng-repeat="variant in fontItem.variants">
-    <!-- <h4></h4> -->
-    <pre>
+  <div class="fontVariant row" ng-repeat="variant in fontItem.variants">
+    <pre class="col-xs-10">
 /* {{variant.id}} */
 @font-face {
   font-family: {{variant.fontFamily}};
@@ -18,5 +34,6 @@
     url('<a href="{{variant.svg}}">{{variant.svg}}</a>') format('svg');
 }
     </pre>
+    <p class="col-xs-2 nonSelectable" style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}};">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
   </div>
 </div>
