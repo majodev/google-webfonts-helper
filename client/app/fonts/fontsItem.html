@@ -1,5 +1,5 @@
+<!-- Inject all styles to use them directly -->
 <style type="text/css" ng-repeat="variant in fontItem.variants">
-
 @font-face {
   font-family: {{variant.fontFamily}};
   font-style: {{variant.fontStyle}};
@@ -12,22 +12,26 @@
     url('{{variant.ttf}}') format('truetype'),
     url('{{variant.svg}}') format('svg');
 }
-
 </style>
 
+
 <div cg-busy="{promise: fontItemPromise, message: 'Fetching {{fontID}}...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
-  <h3>{{fontItem.family}} <small>{{fontItem.category}}</small></h3>
-  <h5>last modified on {{fontItem.lastModified}} ({{fontItem.version}}).</h5>
-  <div class="fontVariant">
+  <h3 ng-hide="busy">{{fontItem.family}} <small>{{fontItem.category}}</small></h3>
+  <h5 ng-hide="busy">last modified on {{fontItem.lastModified}} ({{fontItem.version}}).</h5>
+  
 
-  <div class="row">
-    <div class="preview col-md-3 col-sm-4 col-xs-6" ng-repeat="variant in fontItem.variants" style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}};">
-      <a href="#{{variant.id}}"></a>
-      <h4 class="nonSelectable">{{variant.id}}</h4>
-      <p class="nonSelectable">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
+  <div ng-hide="busy" class="fontVariant"> <!-- FONT VARIANT BEGINS -->
+
+  <!-- Show a preview of all fonts -->
+    <div class="row">
+      <div class="preview col-md-3 col-sm-4 col-xs-6" ng-repeat="variant in fontItem.variants" style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}};">
+        <a href="#{{variant.id}}"></a>
+        <h4 class="nonSelectable">{{variant.id}}</h4>
+        <p class="nonSelectable">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
+      </div>
     </div>
-  </div>
 
+    <!-- Show CSS to use these fonts -->
 <pre><span id="{{variant.id}}" ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
 @font-face {
   font-family: {{variant.fontFamily}};
@@ -44,5 +48,5 @@
 
 </span></pre>
     
-  </div>
+  </div> <!-- FONT VARIANT ENDS -->
 </div>

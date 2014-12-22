@@ -1,19 +1,25 @@
 <div class="container-fluid">
-  <h1 class="page-header"><a href="http://ranf.tl" target="_blank">majodev</a>'s google webfonts helper<br/><small>Easy CSS snippets for {{fonts.length}} webfonts</small></h1>
-  <div class="fonts-view-wrapper">
+  <h4 class="page-header"><a href="https://github.com/majodev/google-webfonts-helper" target="_blank">majodev</a>'s google webfonts helper<br/><small>Easy CSS snippets for {{fonts.length}} webfonts</small></h4>
+  <!-- <div class="fonts-view-wrapper"> -->
     <div class="row" cg-busy="{promise: fontsPromise, message: 'Loading fonts...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
-      <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 scroller">
-        <ul class="list-group" >
-          <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts">
-            <h5 class="list-group-item-heading">{{font.family}}</h5>
-            <p class="list-group-item-text small">{{font.category}} · {{font.variants.length}} variants</p>
-          </a>
-        </ul>
+      <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scroller" ng-hide="busy">
+        <div class="scroller-wrapper">
+          <ul class="list-group scroller-inner">
+            <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts">
+              <h5 class="list-group-item-heading">{{font.family}}</h5>
+              <p class="list-group-item-text small">{{font.category}} · {{font.variants.length}} variants</p>
+            </a>
+          </ul>
+        </div>
       </div>
-      <div class="col-lg-10 col-md-9 col-sm-8 col-xs-6 scroller">
-        <div ui-view></div>
+      <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 scroller" ng-hide="busy">
+        <div class="scroller-wrapper">
+          <div class="scroller-inner" ui-view>
+            <h2>Please select a font.</h2>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-  <a href="https://github.com/majodev/google-webfonts-helper"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+  <!-- </div> -->
+  <!-- <a class="ribbon" href="https://github.com/majodev/google-webfonts-helper"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a> -->
 </div>
