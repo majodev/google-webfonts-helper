@@ -4,12 +4,12 @@
 <h4>{{variant.id}}</h4>
 <pre>
 @font-face {
-  font-family: '{{fontItem.family}}';
-  font-style: normal;
-  font-weight: {{variant.id}};
+  font-family: {{variant.fontFamily}};
+  font-style: {{variant.fontStyle}};
+  font-weight: {{variant.fontWeight}};
   src:
-    local('{{fontItem.family}}'),
-    local('PTSerif-Regular'),
+    local('{{variant.local[0]}}'),
+    local('{{variant.local[1]}}'),
     url('<a href="{{variant.eot}}">{{variant.eot}}</a>') format('embedded-opentype'),
     url('<a href="{{variant.woff}}">{{variant.woff}}</a>') format('woff'),
     url('<a href="{{variant.ttf}}">{{variant.ttf}}</a>') format('truetype'),

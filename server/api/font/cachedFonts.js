@@ -41,28 +41,18 @@ var USER_AGENTS = {
 
     res.on('end', function() {
 
-      var id = 1;
-
       googleAPIFontItems = JSON.parse(output).items;
 
       // populate our items
       _.each(googleAPIFontItems, function(item) {
 
-        var properVariants = [];
-        _.each(item.variants, function (variantID) {
-          if(variantID === "regular") {
-            properVariants.push("400");
-          } else {
-            properVariants.push(variantID);
-          }
-        })
-
         cachedFonts.push({
           id: getSlug(item.family),
           family: item.family,
-          variants: properVariants
+          variants: item.variants,
+          category: item.category
         });
-        id += 1;
+
       });
 
     });
@@ -104,6 +94,16 @@ function parseRemoteCSS(remoteCSS, type, callback) {
       resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+\\." + type)[0];
     } else {
       resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+")[0];
+    }
+
+    // get both local names via regex
+    var localNames = resource.src.split(/local\(\'(.*?)\'\)/g);
+    if (localNames.length >= 3) {
+      resource.localName = [];
+      resource.localName.push(localNames[1]);
+      if (localNames.length >= 5) {
+        resource.localName.push(localNames[3]);
+      }
     }
 
     // push the current rule (= resource) to the resources array
@@ -173,10 +173,31 @@ function getDownloadPaths(font, callback) {
           return;
         }
 
-        //urlStore[font.family][variant][typeAgentPair[0]] = resources;
-        //urlStore[font.family][variant][typeAgentPair[0]] = resources[0]._extracted.url;
+        // save the type (woff, eot, svg, ttf, usw...)
         variantItem[typeAgentPair[0]] = resources[0]._extracted.url;
 
+        // if not defined, also save procedded font-family, fontstyle, font-weight, unicode-range
+        if (_.isUndefined(variantItem.fontFamily) && _.isUndefined(resources[0]["font-family"]) === false) {
+          variantItem.fontFamily = resources[0]["font-family"];
+        }
+
+        if (_.isUndefined(variantItem.fontStyle) && _.isUndefined(resources[0]["font-style"]) === false) {
+          variantItem.fontStyle = resources[0]["font-style"];
+        }
+
+        if (_.isUndefined(variantItem.fontWeight) && _.isUndefined(resources[0]["font-weight"]) === false) {
+          variantItem.fontWeight = resources[0]["font-weight"];
+        }
+
+        if (_.isUndefined(variantItem.local) && _.isUndefined(resources[0].localName) === false) {
+          variantItem.local = resources[0].localName;
+        }
+
+        if (_.isUndefined(variantItem.unicodeRange) && _.isUndefined(resources[0]["unicode-range"]) === false) {
+          variantItem.unicodeRange = resources[0]["unicode-range"];
+        }
+
+        // successfully added type of variant, callback...
         requestCB(null);
 
       });
