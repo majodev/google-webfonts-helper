@@ -31,7 +31,65 @@
       </div>
     </div>
 
-    <!-- Show CSS to use these fonts -->
+    <h4>CSS Snippets</h4>
+    
+    
+    
+
+    <div role="tabpanel">
+
+      <!-- Nav tabs -->
+      <ul id="cssTabMenu" class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#best-support-local" aria-controls="best-support-local" role="tab" data-toggle="tab">Self hosting</a></li>
+        <li role="presentation"><a href="#best-support" aria-controls="best-support" role="tab" data-toggle="tab">Google hosting</a></li>
+        <!-- <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li> -->
+        <li role="presentation"><a href="#original" aria-controls="original" role="tab" data-toggle="tab">Original</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="best-support-local">
+        <h5>Instructions:</h5>
+        <p>Download each font, rename the files and copy/paste the CSS snippet.</p>
+<pre><span id="{{variant.id}}" ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
+@font-face {
+  font-family: {{variant.fontFamily}};
+  font-style: {{variant.fontStyle}};
+  font-weight: {{variant.fontWeight}};
+  src: url('<a href="{{variant.eot}}">../fonts/{{fontID}}-{{variant.id}}.eot</a>'); /* IE9 Compat Modes */
+  src: url('../fonts/{{fontID}}-{{variant.id}}.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('<a href="{{variant.woff}}">../fonts/{{fontID}}-{{variant.id}}.woff</a>') format('woff'), /* Pretty Modern Browsers */
+       url('<a href="{{variant.ttf}}">../fonts/{{fontID}}-{{variant.id}}.ttf</a>')  format('truetype'), /* Safari, Android, iOS */
+       url('<a href="{{variant.svg}}">../fonts/{{fontID}}-{{variant.id}}.svg#{{variant.svg.substring(variant.svg.indexOf('#')+1);}}</a>') format('svg'); /* Legacy iOS */
+}
+
+</span></pre>
+        </div>
+
+
+        <div role="tabpanel" class="tab-pane" id="best-support">
+        <h5>Instructions:</h5>
+        <p>Use google as your fonts provider (just add the CSS snippet).</p>
+<pre><span id="{{variant.id}}" ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
+@font-face {
+  font-family: {{variant.fontFamily}};
+  font-style: {{variant.fontStyle}};
+  font-weight: {{variant.fontWeight}};
+  src: url('<a href="{{variant.eot}}">{{variant.eot}}</a>'); /* IE9 Compat Modes */
+  src: url('{{variant.eot}}?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('<a href="{{variant.woff}}">{{variant.woff}}</a>') format('woff'), /* Pretty Modern Browsers */
+       url('<a href="{{variant.ttf}}">{{variant.ttf}}</a>')  format('truetype'), /* Safari, Android, iOS */
+       url('<a href="{{variant.svg}}">{{variant.svg}}</a>') format('svg'); /* Legacy iOS */
+}
+
+</span></pre>
+        </div>
+
+        <!-- <div role="tabpanel" class="tab-pane" id="messages">...</div> -->
+
+        <div role="tabpanel" class="tab-pane" id="original">
+        <h5>Instructions:</h5>
+        <p>Same as google hosting but use local fonts if available (just add the CSS snippet).</p>
 <pre><span id="{{variant.id}}" ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
 @font-face {
   font-family: {{variant.fontFamily}};
@@ -47,6 +105,11 @@
 }
 
 </span></pre>
+        </div>
+
+      </div>
+
+    </div>
     
   </div> <!-- FONT VARIANT ENDS -->
 </div>
