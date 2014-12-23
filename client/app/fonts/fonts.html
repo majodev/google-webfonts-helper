@@ -1,5 +1,5 @@
 <div class="container-fluid">
-  <h4 class="page-header"><a href="https://github.com/majodev/google-webfonts-helper" target="_blank">majodev</a>'s google webfonts helper<br/><small>CSS snippets for <ng-pluralize count="fonts.length"
+  <h4 class="page-header"><a href="https://github.com/majodev/google-webfonts-helper" target="_blank">majodev</a>'s google webfonts helper<br/><small>CSS snippets for&nbsp;<ng-pluralize count="fonts.length"
                 when="{'0': 'some webfonts',
                        'one': 'one webfonts',
                        'other': '{} webfonts'}">
@@ -9,7 +9,7 @@
       <ul class="list-group">
         <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts">
           <h5 class="list-group-item-heading">{{font.family}}</h5>
-          <p class="list-group-item-text small">{{font.category}} · <ng-pluralize count="font.variants.length"
+          <p class="list-group-item-text small">{{font.category}}&nbsp;·&nbsp;<ng-pluralize count="font.variants.length"
                 when="{'0': 'no variant',
                        'one': 'single variant',
                        'other': '{} variants'}">
