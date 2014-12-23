@@ -13,7 +13,7 @@ angular.module('googleWebfontsHelperApp')
 
   })
 
-.controller('FontsItemCtrl', function($scope, $stateParams, $http, $timeout) {
+.controller('FontsItemCtrl', function($scope, $stateParams, $http) {
   $scope.fontID = $stateParams.id;
   $scope.fontItem = {};
 
@@ -25,14 +25,14 @@ angular.module('googleWebfontsHelperApp')
     $scope.busy = false;
 
 
-    $timeout(function() {
-      // activate tabs after timeout
-      // http://stackoverflow.com/questions/16935766/run-jquery-code-after-angularjs-completes-rendering-html
-      $('#cssTabMenu a').click(function(e) {
-        e.preventDefault();
-        $(this).tab('show');
-      });
-    });
+    // $timeout(function() {
+    //   // activate tabs after timeout
+    //   // http://stackoverflow.com/questions/16935766/run-jquery-code-after-angularjs-completes-rendering-html
+    //   $('#cssTabMenu a').click(function(e) {
+    //     e.preventDefault();
+    //     $(this).tab('show');
+    //   });
+    // });
 
   });
 

@@ -17,80 +17,72 @@
 
 <div cg-busy="{promise: fontItemPromise, message: 'Fetching {{fontID}}...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
   <h3 ng-hide="busy">{{fontItem.family}} <small>{{fontItem.category}}</small></h3>
-  <h5 ng-hide="busy">last modified on {{fontItem.lastModified}} ({{fontItem.version}}).</h5>
+  <h5 ng-hide="busy">{{fontItem.variants.length}} variants <small>last modified on {{fontItem.lastModified}} ({{fontItem.version}})</small></h5>
   
 
   <div ng-hide="busy" class="fontVariant"> <!-- FONT VARIANT BEGINS -->
 
-  <!-- Show a preview of all fonts -->
+    <!-- <h4>Preview</h4> -->
+
+    <!-- Show a preview of all fonts -->
     <div class="row">
       <div class="preview col-md-3 col-sm-4 col-xs-6" ng-repeat="variant in fontItem.variants" style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}};">
-        <a href="#{{variant.id}}"></a>
-        <h4 class="nonSelectable">{{variant.id}}</h4>
-        <p class="nonSelectable">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
+        <!-- <a href="#{{variant.id}}"></a> -->
+        <h4>{{variant.id}}</h4>
+        <textarea class="form-control" rows="3">The quick brown fox jumps over the lazy dog.</textarea>
+        <!-- <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p> -->
       </div>
     </div>
 
     <h4>CSS Snippets</h4>
-    
-    
-    
 
-    <div role="tabpanel">
-
-      <!-- Nav tabs -->
-      <ul id="cssTabMenu" class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#best-support-local" aria-controls="best-support-local" role="tab" data-toggle="tab">Self hosting</a></li>
-        <li role="presentation"><a href="#best-support" aria-controls="best-support" role="tab" data-toggle="tab">Google hosting</a></li>
-        <!-- <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li> -->
-        <li role="presentation"><a href="#original" aria-controls="original" role="tab" data-toggle="tab">Original</a></li>
-      </ul>
-
-      <!-- Tab panes -->
-      <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="best-support-local">
+    <tabset>
+      <tab heading="Self hosting">
         <h5>Instructions:</h5>
-        <p>Download each font, rename the files and copy/paste the CSS snippet.</p>
-<pre><span id="{{variant.id}}" ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
+        <ol>
+          <li class="form-inline">Customize the folder prefix: <div class="form-group">
+          <!-- <label>Folder prefix:</label> -->
+          <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
+        </div></li>
+          <li>Download each <code>.woff</code>,<code>.ttf</code>,<code>.svg</code> and <code>.eot</code> file of your font variants</li>
+          <li><strong>Rename</strong> the downloaded files</li>
+          <li>Copy/paste the CSS snippet</li>
+        </ol>
+        
+<pre ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
 @font-face {
   font-family: {{variant.fontFamily}};
   font-style: {{variant.fontStyle}};
   font-weight: {{variant.fontWeight}};
-  src: url('<a href="{{variant.eot}}">../fonts/{{fontID}}-{{variant.id}}.eot</a>'); /* IE9 Compat Modes */
-  src: url('../fonts/{{fontID}}-{{variant.id}}.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('<a href="{{variant.woff}}">../fonts/{{fontID}}-{{variant.id}}.woff</a>') format('woff'), /* Pretty Modern Browsers */
-       url('<a href="{{variant.ttf}}">../fonts/{{fontID}}-{{variant.id}}.ttf</a>')  format('truetype'), /* Safari, Android, iOS */
-       url('<a href="{{variant.svg}}">../fonts/{{fontID}}-{{variant.id}}.svg#{{variant.svg.substring(variant.svg.indexOf('#')+1);}}</a>') format('svg'); /* Legacy iOS */
+  src: url('<a href="{{variant.eot}}">{{folderPrefix}}{{fontID}}-{{variant.id}}.eot</a>'); /* IE9 Compat Modes */
+  src: url('{{folderPrefix}}{{fontID}}-{{variant.id}}.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('<a href="{{variant.woff}}">{{folderPrefix}}{{fontID}}-{{variant.id}}.woff</a>') format('woff'), /* Modern Browsers */
+       url('<a href="{{variant.ttf}}">{{folderPrefix}}{{fontID}}-{{variant.id}}.ttf</a>')  format('truetype'), /* Safari, Android, iOS */
+       url('<a href="{{variant.svg}}">{{folderPrefix}}{{fontID}}-{{variant.id}}.svg#{{variant.svg.substring(variant.svg.indexOf('#')+1);}}</a>') format('svg'); /* Legacy iOS */
 }
-
-</span></pre>
-        </div>
-
-
-        <div role="tabpanel" class="tab-pane" id="best-support">
-        <h5>Instructions:</h5>
-        <p>Use google as your fonts provider (just add the CSS snippet).</p>
-<pre><span id="{{variant.id}}" ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
+</pre>
+      </tab>
+      <tab heading="Google hosting">
+        <!-- <h5>Instructions:</h5>
+        <p>Use google as your fonts provider (just add the CSS snippet).</p> -->
+<pre ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
 @font-face {
   font-family: {{variant.fontFamily}};
   font-style: {{variant.fontStyle}};
   font-weight: {{variant.fontWeight}};
   src: url('<a href="{{variant.eot}}">{{variant.eot}}</a>'); /* IE9 Compat Modes */
   src: url('{{variant.eot}}?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('<a href="{{variant.woff}}">{{variant.woff}}</a>') format('woff'), /* Pretty Modern Browsers */
+       url('<a href="{{variant.woff}}">{{variant.woff}}</a>') format('woff'), /* Modern Browsers */
        url('<a href="{{variant.ttf}}">{{variant.ttf}}</a>')  format('truetype'), /* Safari, Android, iOS */
        url('<a href="{{variant.svg}}">{{variant.svg}}</a>') format('svg'); /* Legacy iOS */
 }
+</pre>
 
-</span></pre>
-        </div>
-
-        <!-- <div role="tabpanel" class="tab-pane" id="messages">...</div> -->
-
-        <div role="tabpanel" class="tab-pane" id="original">
-        <h5>Instructions:</h5>
-        <p>Same as google hosting but use local fonts if available (just add the CSS snippet).</p>
-<pre><span id="{{variant.id}}" ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
+      </tab>
+      <tab heading="Google hosting (local fallback)">
+        <!-- <h5>Instructions:</h5>
+        <p>Same as google hosting but use local fonts if available (just add the CSS snippet).</p> -->
+<pre ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
 @font-face {
   font-family: {{variant.fontFamily}};
   font-style: {{variant.fontStyle}};
@@ -103,13 +95,10 @@
     url('<a href="{{variant.ttf}}">{{variant.ttf}}</a>') format('truetype'),
     url('<a href="{{variant.svg}}">{{variant.svg}}</a>') format('svg');
 }
+</pre>
+      </tab>
+    </tabset>
 
-</span></pre>
-        </div>
-
-      </div>
-
-    </div>
     
   </div> <!-- FONT VARIANT ENDS -->
 </div>
