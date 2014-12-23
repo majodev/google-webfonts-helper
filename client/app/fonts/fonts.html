@@ -1,15 +1,23 @@
 <div class="container-fluid">
-  <h4 class="page-header"><a href="https://github.com/majodev/google-webfonts-helper" target="_blank">majodev</a>'s google webfonts helper<br/><small>Easy CSS snippets for {{fonts.length}} webfonts</small></h4>
+  <h4 class="page-header"><a href="https://github.com/majodev/google-webfonts-helper" target="_blank">majodev</a>'s google webfonts helper<br/><small>CSS snippets for <ng-pluralize count="fonts.length"
+                when="{'0': 'some webfonts',
+                       'one': 'one webfonts',
+                       'other': '{} webfonts'}">
+  </ng-pluralize></small></h4>
   <div class="row" cg-busy="{promise: fontsPromise, message: 'Loading fonts...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
-    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scroller" ng-hide="busy">
+    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scroller scrollerLeft" ng-hide="busy">
       <ul class="list-group">
         <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts">
           <h5 class="list-group-item-heading">{{font.family}}</h5>
-          <p class="list-group-item-text small">{{font.category}} · {{font.variants.length}} variants</p>
+          <p class="list-group-item-text small">{{font.category}} · <ng-pluralize count="font.variants.length"
+                when="{'0': 'no variant',
+                       'one': 'single variant',
+                       'other': '{} variants'}">
+  </ng-pluralize></p>
         </a>
       </ul>
     </div>
-    <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 scroller" ng-hide="busy">
+    <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 scroller scrollerRight" ng-hide="busy">
       <div ui-view>
         <h2>Please select a font.</h2>
       </div>

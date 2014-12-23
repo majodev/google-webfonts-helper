@@ -17,7 +17,11 @@
 
 <div cg-busy="{promise: fontItemPromise, message: 'Fetching {{fontID}}...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
   <h3 ng-hide="busy">{{fontItem.family}} <small>{{fontItem.category}}</small></h3>
-  <h5 ng-hide="busy">{{fontItem.variants.length}} variants <small>last modified on {{fontItem.lastModified}} ({{fontItem.version}})</small></h5>
+  <h5 ng-hide="busy"><ng-pluralize count="fontItem.variants.length"
+                when="{'0': 'no variant',
+                       'one': 'Single variant',
+                       'other': '{} variants'}">
+  </ng-pluralize>&nbsp;<small>last modified on {{fontItem.lastModified}} ({{fontItem.version}})</small></h5>
   
 
   <div ng-hide="busy" class="fontVariant"> <!-- FONT VARIANT BEGINS -->
@@ -40,7 +44,7 @@
       <tab heading="Self hosting">
         <h5>Instructions:</h5>
         <ol>
-          <li class="form-inline">Customize the folder prefix: <div class="form-group">
+          <li class="form-inline">Customize the folder prefix:&nbsp;<div class="form-group">
           <!-- <label>Folder prefix:</label> -->
           <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
         </div></li>
@@ -79,7 +83,7 @@
 </pre>
 
       </tab>
-      <tab heading="Google hosting (local fallback)">
+      <tab heading="Google hosting with local fallback">
         <!-- <h5>Instructions:</h5>
         <p>Same as google hosting but use local fonts if available (just add the CSS snippet).</p> -->
 <pre ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
