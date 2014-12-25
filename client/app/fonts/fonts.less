@@ -1,15 +1,25 @@
+.fonts-top-container, .top-overlay {
+  min-width: 600px;
+}
+
 .scroller {
   height: 100vh;
   overflow-y: scroll;
-  
 }
 
 .scrollerLeft {
-  padding-top: 10px;
+  padding-top: 60px;
+  background: #eee;
+  // #gradient > .striped(#eee; 45deg);
+  // #gradient > .vertical(#eee; #bbb);
 }
 
 .scrollerRight {
-  padding-top: 30px;
+  padding-top: 60px;
+}
+
+.fonts-list {
+  padding-top: 10px;
 }
 
 /* ui bootstrap click to pointers */
@@ -32,22 +42,31 @@ code {
   user-select: none;
 }
 
-.page-header {
+.top-overlay {
   position: absolute;
   top: 0px;
   left: 0px;
   right: 0px;
   height: 60px;
   padding: 10px 15px 25px 15px;
-  margin: 0;
-  text-align: right;
-  border-bottom: none;
-  text-shadow: 0px 0px 5px rgba(37,37,37,0.25);
-  // text-transform: uppercase;
-  // color: #efefef;
-  // background: fade(#444, 30%);
+  // background: fade(#fff, 95%);
+  border-bottom: #eee solid 1px;
+  background: #fff;
   z-index: 1000;
   pointer-events: none;
+}
+
+.top-overlay input {
+  pointer-events: initial;
+}
+
+.page-header {
+  margin: 0;
+  // text-align: right;
+  border-bottom: none;
+  // text-shadow: 0px 0px 5px rgba(37,37,37,0.25);
+  // text-transform: uppercase;
+  // color: #efefef;
 }
 
 .page-header a {
@@ -56,6 +75,16 @@ code {
 
 textarea {
    resize: none;
+}
+
+// search field
+#searchbox {
+  // position: fixed;
+  // top: 0px;
+  // z-index: 1000;
+  padding-top: 3px;
+  // right: 0px;
+  // left: 0px;
 }
 
 // .preview a {

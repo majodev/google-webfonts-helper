@@ -1,13 +1,22 @@
-<div class="container-fluid">
-  <h4 class="page-header"><a href="https://github.com/majodev/google-webfonts-helper" target="_blank">majodev</a>'s google webfonts helper<br/><small>CSS snippets for&nbsp;<ng-pluralize count="fonts.length"
+<div class="container-fluid fonts-top-container">
+
+  <div class="top-overlay">
+    <div class="row">
+      <div id="searchbox" class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+        <input class="form-control" ng-model="query" type="text" placeholder="Search fonts by name" autofocus>
+      </div>
+      <h4 class="col-lg-10 col-md-9 col-sm-9 col-xs-8 page-header"><a href="https://github.com/majodev/google-webfonts-helper" target="_blank">majodev</a>'s google webfonts helper<br/><small>CSS snippets for&nbsp;<ng-pluralize count="fonts.length"
                 when="{'0': 'some webfonts',
                        'one': 'one webfonts',
-                       'other': '{} webfonts'}">
-  </ng-pluralize></small></h4>
+                       'other': '{} webfonts'}"></ng-pluralize></small></h4>
+    </div>
+  </div>
+
+ 
   <div class="row" cg-busy="{promise: fontsPromise, message: 'Loading fonts...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scroller scrollerLeft" ng-hide="busy">
-      <ul class="list-group">
-        <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts">
+      <ul class="list-group fonts-list">
+        <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts | filter:query | orderBy: 'family'">
           <h5 class="list-group-item-heading">{{font.family}}</h5>
           <p class="list-group-item-text small">{{font.category}}&nbsp;·&nbsp;<ng-pluralize count="font.variants.length"
                 when="{'0': 'no variant',
