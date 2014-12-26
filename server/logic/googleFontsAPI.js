@@ -5,7 +5,7 @@ var getSlug = require('speakingurl');
 var GOOGLE_FONTS_API_KEY = 'AIzaSyDY-C-Lt9uyPP5fSTjMCR4bB944SlI4spw';
 
 // build up fonts cache via google API...
-var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts) {
+var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts, cb) {
   var req = https.request({
     hostname: "www.googleapis.com",
     method: 'GET',
@@ -42,6 +42,8 @@ var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts) {
         });
 
       });
+
+      cb(cachedFonts);
 
     });
 

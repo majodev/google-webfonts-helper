@@ -90,7 +90,7 @@ function fetchUrls(font, urlStore, callback) {
       } else {
 
         // push complete variantItem to urlStore's variants
-        urlStore[font.family].variants.push(variantItem);
+        urlStore[font.id].variants.push(variantItem);
 
         variantCB();
       }
@@ -101,7 +101,7 @@ function fetchUrls(font, urlStore, callback) {
       console.log(err);
     } else {
       // console.log("All variants processed.");
-      callback(_.merge(_.cloneDeep(font), urlStore[font.family]));
+      callback(_.merge(_.cloneDeep(font), urlStore[font.id]));
     }
   });
 }

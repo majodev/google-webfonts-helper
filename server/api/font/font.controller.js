@@ -29,14 +29,26 @@ exports.show = function(req, res) {
   if (req.query.download === "zip") {
     // don't return a json, return a zipped download...
 
-    fontStore.getDownload(req.params.id, function (localZipPath) {
-      res.download(localZipPath);
+    fontStore.getDownload(req.params.id, function(localZipPath) {
+
+      if (localZipPath === null) {
+        res.status(404) // HTTP status 404: NotFound
+          .send('Not found');
+      } else {
+        res.download(localZipPath);
+      }
+
     });
 
   } else {
     fontStore.get(req.params.id, function(item) {
       // setTimeout(function() {
-      res.json(item);
+      if (item === null) {
+        res.status(404) // HTTP status 404: NotFound
+          .send('Not found');
+      } else {
+        res.json(item);
+      }
       // }, 3000);
     });
   }
