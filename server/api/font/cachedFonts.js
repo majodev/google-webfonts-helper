@@ -50,6 +50,7 @@ var USER_AGENTS = {
           id: getSlug(item.family),
           family: item.family,
           variants: item.variants,
+          subsets: item.subsets,
           category: item.category,
           version: item.version,
           lastModified: item.lastModified
@@ -176,15 +177,44 @@ function getDownloadPaths(font, callback) {
         }
 
         // save the type (woff, eot, svg, ttf, usw...)
-        // rewrite url to use https instead on http!
+
 
         var type = typeAgentPair[0];
         var url = resources[0]._extracted.url;
 
-        url = url.replace(/^http:\/\//i, 'https://');
+        // woff2 has multiple urls and unicode-range set - return an array with url, unicodeRange and subset properties
+        if (type === "woff2") {
 
-        variantItem[type] = url;
-        
+          variantItem[type] = [];
+
+          _.each(resources, function(resource, index) {
+            var woff2url = resource._extracted.url;
+            // rewrite url to use https instead on http!
+            woff2url = woff2url.replace(/^http:\/\//i, 'https://');
+
+            if (_.isUndefined(resource["unicode-range"]) !== true) {
+
+              // it looks like the order of the css statements correlates to the 
+              // subsets array provided by google api
+              // attach that information too
+
+              variantItem[type].push({
+                url: woff2url,
+                unicodeRange: resource["unicode-range"],
+                subset: font.subsets[index]
+              });
+            } else {
+              console.error("Cannot produce woff2 entry for " + resources[0]["font-family"] + ", unicode-range missing")
+            }
+
+          });
+        } else {
+          // safe the url directly
+          // rewrite url to use https instead on http!
+          url = url.replace(/^http:\/\//i, 'https://');
+          variantItem[type] = url;
+        }
+
 
         // if not defined, also save procedded font-family, fontstyle, font-weight, unicode-range
         if (_.isUndefined(variantItem.fontFamily) && _.isUndefined(resources[0]["font-family"]) === false) {
@@ -203,9 +233,9 @@ function getDownloadPaths(font, callback) {
           variantItem.local = resources[0].localName;
         }
 
-        if (_.isUndefined(variantItem.unicodeRange) && _.isUndefined(resources[0]["unicode-range"]) === false) {
-          variantItem.unicodeRange = resources[0]["unicode-range"];
-        }
+        // if (_.isUndefined(variantItem.unicodeRange) && _.isUndefined(resources[0]["unicode-range"]) === false) {
+        //   variantItem.unicodeRange = resources[0]["unicode-range"];
+        // }
 
         // successfully added type of variant, callback...
         requestCB(null);
@@ -268,7 +298,7 @@ module.exports.get = function get(id, callback) {
     });
   } else {
     // font not found!
-    // console.error("font not found!");
+    console.error("font not found: " + id);
     callback(null);
   }
 

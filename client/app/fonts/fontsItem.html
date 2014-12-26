@@ -17,6 +17,7 @@
 
 <div cg-busy="{promise: fontItemPromise, message: 'Fetching {{fontID}}...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
   <h3 ng-hide="busy">{{fontItem.family}} <small>{{fontItem.category}}</small></h3>
+  <h4 ng-hide="busy"><small><span ng-repeat="subset in fontItem.subsets">{{subset}}{{$last ? "" : ", "}}</span></small></h4>
   <h5 ng-hide="busy"><ng-pluralize count="fontItem.variants.length"
                 when="{'0': 'no variant',
                        'one': 'Single variant',
@@ -41,7 +42,7 @@
     <h4>CSS Snippets</h4>
 
     <tabset>
-      <tab heading="Self hosting">
+      <tab heading="Best support">
         <h5>Instructions:</h5>
         <ol>
           <li class="form-inline">Customize the folder prefix:&nbsp;<div class="form-group">
@@ -53,22 +54,43 @@
           <li>Copy/paste the CSS snippet</li>
         </ol>
         
-<pre ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
+<pre ng-repeat="variant in fontItem.variants">/* {{fontID}}-{{variant.id}} */
 @font-face {
   font-family: {{variant.fontFamily}};
   font-style: {{variant.fontStyle}};
   font-weight: {{variant.fontWeight}};
   src: url('<a href="{{variant.eot}}">{{folderPrefix}}{{fontID}}-{{variant.id}}.eot</a>'); /* IE9 Compat Modes */
-  src: url('{{folderPrefix}}{{fontID}}-{{variant.id}}.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  src: local('{{variant.local[0]}}'),{{variant.local[1].length > 0 ? " local('" + variant.local[1] + "')," : ""}}
+       url('{{folderPrefix}}{{fontID}}-{{variant.id}}.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
        url('<a href="{{variant.woff}}">{{folderPrefix}}{{fontID}}-{{variant.id}}.woff</a>') format('woff'), /* Modern Browsers */
        url('<a href="{{variant.ttf}}">{{folderPrefix}}{{fontID}}-{{variant.id}}.ttf</a>')  format('truetype'), /* Safari, Android, iOS */
        url('<a href="{{variant.svg}}">{{folderPrefix}}{{fontID}}-{{variant.id}}.svg#{{variant.svg.substring(variant.svg.indexOf('#')+1);}}</a>') format('svg'); /* Legacy iOS */
 }
 </pre>
       </tab>
-      <tab heading="Google hosting">
-        <!-- <h5>Instructions:</h5>
-        <p>Use google as your fonts provider (just add the CSS snippet).</p> -->
+      <tab heading="woff2 subsets">
+        <h5>Instructions:</h5>
+        <ol>
+          <li class="form-inline">Customize the folder prefix:&nbsp;<div class="form-group">
+          <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
+        </div></li>
+          <li>Download each <code>.woff2</code> file of your font variants and required subsets</li>
+          <li><strong>Rename</strong> the downloaded files</li>
+          <li>Copy/paste the CSS snippet</li>
+        </ol>
+        
+<pre ng-repeat="variant in fontItem.variants"><span ng-repeat="woff2Item in variant.woff2">/* {{fontID}}-{{variant.id}} - {{woff2Item.subset}} subset */
+@font-face {
+  font-family: {{variant.fontFamily}};  
+  font-style: {{variant.fontStyle}};
+  font-weight: {{variant.fontWeight}};
+  src: local('{{variant.local[0]}}'),{{variant.local[1].length > 0 ? " local('" + variant.local[1] + "')," : ""}} 
+       url('<a href="{{woff2Item.url}}">{{folderPrefix}}{{fontID}}-{{variant.id}}-{{woff2Item.subset}}.woff2</a>') format('woff2');
+  unicode-range: {{woff2Item.unicodeRange}};
+}
+</span></pre>
+      </tab>
+      <!-- <tab heading="Google hosting">
 <pre ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
 @font-face {
   font-family: {{variant.fontFamily}};
@@ -84,8 +106,6 @@
 
       </tab>
       <tab heading="Google hosting with local fallback">
-        <!-- <h5>Instructions:</h5>
-        <p>Same as google hosting but use local fonts if available (just add the CSS snippet).</p> -->
 <pre ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
 @font-face {
   font-family: {{variant.fontFamily}};
@@ -100,7 +120,7 @@
     url('<a href="{{variant.svg}}">{{variant.svg}}</a>') format('svg');
 }
 </pre>
-      </tab>
+      </tab> -->
     </tabset>
 
     
