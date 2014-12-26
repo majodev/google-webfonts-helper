@@ -23,7 +23,6 @@
                        'one': 'Single variant',
                        'other': '{} variants'}">
   </ng-pluralize>&nbsp;<small>last modified on {{fontItem.lastModified}} ({{fontItem.version}})</small></h5>
-  
 
   <div ng-hide="busy" class="fontVariant"> <!-- FONT VARIANT BEGINS -->
 
@@ -39,19 +38,22 @@
       </div>
     </div>
 
+    <h4>Download</h4>
+
+    <a ng-hide="busy" href="/api/fonts/{{fontItem.id}}?download=zip" target="_blank" role="button" class="btn btn-primary btn-lg">zip archive (includes .eot, .ttf, .svg, .woff, .woff2)</a>
+
     <h4>CSS Snippets</h4>
 
     <tabset>
       <tab heading="Best support">
         <h5>Instructions:</h5>
         <ol>
+          <!-- <li></li> -->
           <li class="form-inline">Customize the folder prefix:&nbsp;<div class="form-group">
           <!-- <label>Folder prefix:</label> -->
           <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
         </div></li>
-          <li>Download each <code>.woff</code>,<code>.ttf</code>,<code>.svg</code> and <code>.eot</code> file of your font variants</li>
-          <li><strong>Rename</strong> the downloaded files</li>
-          <li>Copy/paste the CSS snippet</li>
+          <li>Copy &amp; paste the CSS snippet</li>
         </ol>
         
 <pre ng-repeat="variant in fontItem.variants">/* {{fontID}}-{{variant.id}} */
@@ -74,9 +76,9 @@
           <li class="form-inline">Customize the folder prefix:&nbsp;<div class="form-group">
           <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
         </div></li>
-          <li>Download each <code>.woff2</code> file of your font variants and required subsets</li>
-          <li><strong>Rename</strong> the downloaded files</li>
-          <li>Copy/paste the CSS snippet</li>
+          <!-- <li>Download each <code>.woff2</code> file of your font variants and required subsets</li> -->
+          <!-- <li><strong>Rename</strong> the downloaded files</li> -->
+          <li>Copy &amp; paste the CSS snippet</li>
         </ol>
         
 <pre ng-repeat="variant in fontItem.variants"><span ng-repeat="woff2Item in variant.woff2">/* {{fontID}}-{{variant.id}} - {{woff2Item.subset}} subset */

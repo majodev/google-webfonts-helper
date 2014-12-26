@@ -166,7 +166,8 @@ module.exports = function (grunt) {
           ]
         }]
       },
-      server: '.tmp'
+      server: '.tmp',
+      cachedFonts: 'server/logic/cachedFonts/*.*'
     },
 
     // Add vendor prefixed styles
@@ -567,6 +568,7 @@ module.exports = function (grunt) {
     if (target === 'debug') {
       return grunt.task.run([
         'clean:server',
+        'clean:cachedFonts',
         'env:all',
         'injector:less', 
         'concurrent:server',
@@ -579,6 +581,7 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
+      'clean:cachedFonts',
       'env:all',
       'injector:less', 
       'concurrent:server',
@@ -609,6 +612,7 @@ module.exports = function (grunt) {
     else if (target === 'client') {
       return grunt.task.run([
         'clean:server',
+        'clean:cachedFonts',
         'env:all',
         'injector:less', 
         'concurrent:test',
@@ -621,6 +625,7 @@ module.exports = function (grunt) {
     else if (target === 'e2e') {
       return grunt.task.run([
         'clean:server',
+        'clean:cachedFonts',
         'env:all',
         'env:test',
         'injector:less', 

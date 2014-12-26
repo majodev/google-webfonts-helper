@@ -2,6 +2,8 @@ var _ = require('lodash');
 
 var googleFontsAPI = require('./googleFontsAPI');
 var urlFetcher = require('./urlFetcher');
+var downloader = require('./downloader');
+var zipper = require('./zipper');
 
 
 // -----------------------------------------------------------------------------
@@ -11,6 +13,7 @@ var urlFetcher = require('./urlFetcher');
 var googleAPIFontItems = [];
 var cachedFonts = [];
 var urlStore = {};
+var zipStore = {};
 
 
 // -----------------------------------------------------------------------------
@@ -23,15 +26,22 @@ function getDownloadPaths(font, callback) {
     // already cached, return instantly
     callback(_.merge(_.cloneDeep(font), urlStore[font.family]));
     return;
-  } 
-    
+  }
+
   // Download path wasn't fetched till now
   // add a new entry
   urlStore[font.family] = {};
   urlStore[font.family].variants = [];
 
   // Fetch it!
-  urlFetcher(font, urlStore, callback);
+  urlFetcher(font, urlStore, function(fontItem) {
+    downloader(fontItem, function(localPaths) {
+      zipper(fontItem.id, localPaths, function(zipItemPath) {
+        zipStore[font.family] = zipItemPath;
+        callback(fontItem);
+      });
+    });
+  });
 }
 
 // -----------------------------------------------------------------------------
@@ -73,6 +83,30 @@ module.exports.get = function get(id, callback) {
     getDownloadPaths(font, function(item) {
       callback(item);
     });
+  } else {
+    // font not found!
+    console.error("font not found: " + id);
+    callback(null);
+  }
+
+};
+
+module.exports.getDownload = function getDownload(id, callback) {
+
+  var font = _.find(cachedFonts, {
+    id: id
+  });
+
+  if (_.isUndefined(font) === false) {
+    if (_.isUndefined(zipStore[font.family]) === true) {
+      // font wasn't downloaded, do it...
+      getDownloadPaths(font, function(item) {
+        callback(zipStore[font.family]);
+      });
+    } else {
+      // font downloaded and path found, return it...
+      callback(zipStore[font.family]);
+    }
   } else {
     // font not found!
     console.error("font not found: " + id);

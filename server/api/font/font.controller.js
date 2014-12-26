@@ -17,7 +17,7 @@ exports.index = function(req, res) {
 
   fontStore.getAll(function(items) {
     // setTimeout(function() {
-      res.json(items);
+    res.json(items);
     // }, 3000);
   })
 
@@ -26,11 +26,19 @@ exports.index = function(req, res) {
 // Get specific fonts including links
 exports.show = function(req, res) {
 
-  fontStore.get(req.params.id, function(item) {
-    // setTimeout(function() {
-      res.json(item);
-    // }, 3000);
+  if (req.query.download === "zip") {
+    // don't return a json, return a zipped download...
 
-  });
+    fontStore.getDownload(req.params.id, function (localZipPath) {
+      res.download(localZipPath);
+    });
+
+  } else {
+    fontStore.get(req.params.id, function(item) {
+      // setTimeout(function() {
+      res.json(item);
+      // }, 3000);
+    });
+  }
 
 };
