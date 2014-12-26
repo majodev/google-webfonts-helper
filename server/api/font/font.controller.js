@@ -1,21 +1,21 @@
 /**
  * Using Rails-like standard naming convention for endpoints.
- * GET     /things              ->  index
- * POST    /things              ->  create
- * GET     /things/:id          ->  show
- * PUT     /things/:id          ->  update
- * DELETE  /things/:id          ->  destroy
+ * GET     /fonts              ->  index
+ * POST    /fonts              ->  create
+ * GET     /fonts/:id          ->  show
+ * PUT     /fonts/:id          ->  update
+ * DELETE  /fonts/:id          ->  destroy
  */
 'use strict';
 
 var _ = require('lodash');
 
-var cachedFonts = require('./cachedFonts');
+var fontStore = require('./../../logic/fontStore');
 
 // Get list of fonts
 exports.index = function(req, res) {
 
-  cachedFonts.getAll(function(items) {
+  fontStore.getAll(function(items) {
     // setTimeout(function() {
       res.json(items);
     // }, 3000);
@@ -26,7 +26,7 @@ exports.index = function(req, res) {
 // Get specific fonts including links
 exports.show = function(req, res) {
 
-  cachedFonts.get(req.params.id, function(item) {
+  fontStore.get(req.params.id, function(item) {
     // setTimeout(function() {
       res.json(item);
     // }, 3000);
