@@ -3,6 +3,7 @@ Ever wanted to know where Google hosts their webfonts? This service might be han
 
 ## [google-webfonts-helper hosted on Heroku](https://google-webfonts-helper.herokuapp.com)
 
+![pic running](http://ranf.tl/static/apps/google-webfonts-helper/full_view.png)
 
 ### REST API
 The API is public, feel free to use it directly.
