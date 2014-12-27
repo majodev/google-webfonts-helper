@@ -75,18 +75,17 @@
 
     <h4>CSS snippets</h4>
 
+    <!-- <h5>Instructions:</h5> -->
+    <ol>
+      <li class="form-inline">Customize the folder prefix:&nbsp;<div class="form-group">
+      <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
+    </div></li>
+      <li>Copy &amp; paste the CSS snippet</li>
+    </ol>
+
     <tabset>
       <tab heading="Best support">
-        <h5>Instructions:</h5>
-        <ol>
-          <!-- <li></li> -->
-          <li class="form-inline">Customize the folder prefix:&nbsp;<div class="form-group">
-          <!-- <label>Folder prefix:</label> -->
-          <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
-        </div></li>
-          <li>Copy &amp; paste the CSS snippet</li>
-        </ol>
-        
+
 <pre ng-repeat="variant in fontItem.variants">/* {{fontID}}-{{variant.id}} */
 @font-face {
   font-family: {{variant.fontFamily}};
@@ -101,17 +100,22 @@
 }
 </pre>
       </tab>
-      <tab heading="woff2 subsets">
-        <h5>Instructions:</h5>
-        <ol>
-          <li class="form-inline">Customize the folder prefix:&nbsp;<div class="form-group">
-          <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
-        </div></li>
-          <!-- <li>Download each <code>.woff2</code> file of your font variants and required subsets</li> -->
-          <!-- <li><strong>Rename</strong> the downloaded files</li> -->
-          <li>Copy &amp; paste the CSS snippet</li>
-        </ol>
-        
+
+      <tab heading="Modern browsers (woff only)">
+      <p><a href="http://caniuse.com/#feat=woff" target="blank">Can I use woff? (compatibility information)</a></p>
+<pre ng-repeat="variant in fontItem.variants">/* {{fontID}}-{{variant.id}} */
+@font-face {
+  font-family: {{variant.fontFamily}};
+  font-style: {{variant.fontStyle}};
+  font-weight: {{variant.fontWeight}};
+  src: local('{{variant.local[0]}}'),{{variant.local[1].length > 0 ? " local('" + variant.local[1] + "')," : ""}}
+       url('<a href="{{variant.woff}}">{{folderPrefix}}{{fontID}}-{{variant.id}}.woff</a>') format('woff'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+</pre>
+      </tab>
+
+      <tab heading="Bleeding edge (woff2 with subsets)">
+      <p><a href="http://caniuse.com/#feat=woff2" target="blank">Can I use woff2? (compatibility information)</a></p>
 <pre ng-repeat="variant in fontItem.variants"><span ng-repeat="woff2Item in variant.woff2">/* {{fontID}}-{{variant.id}} - {{woff2Item.subset}} subset */
 @font-face {
   font-family: {{variant.fontFamily}};  
