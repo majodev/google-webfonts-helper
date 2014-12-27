@@ -127,37 +127,6 @@
 }
 </span></pre>
       </tab>
-      <!-- <tab heading="Google hosting">
-<pre ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
-@font-face {
-  font-family: {{variant.fontFamily}};
-  font-style: {{variant.fontStyle}};
-  font-weight: {{variant.fontWeight}};
-  src: url('<a href="{{variant.eot}}">{{variant.eot}}</a>'); /* IE9 Compat Modes */
-  src: url('{{variant.eot}}?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('<a href="{{variant.woff}}">{{variant.woff}}</a>') format('woff'), /* Modern Browsers */
-       url('<a href="{{variant.ttf}}">{{variant.ttf}}</a>')  format('truetype'), /* Safari, Android, iOS */
-       url('<a href="{{variant.svg}}">{{variant.svg}}</a>') format('svg'); /* Legacy iOS */
-}
-</pre>
-
-      </tab>
-      <tab heading="Google hosting with local fallback">
-<pre ng-repeat="variant in fontItem.variants">/* {{variant.id}} */
-@font-face {
-  font-family: {{variant.fontFamily}};
-  font-style: {{variant.fontStyle}};
-  font-weight: {{variant.fontWeight}};
-  src:
-    local('{{variant.local[0]}}'),
-    local('{{variant.local[1]}}'),
-    url('<a href="{{variant.eot}}">{{variant.eot}}</a>') format('embedded-opentype'),
-    url('<a href="{{variant.woff}}">{{variant.woff}}</a>') format('woff'),
-    url('<a href="{{variant.ttf}}">{{variant.ttf}}</a>') format('truetype'),
-    url('<a href="{{variant.svg}}">{{variant.svg}}</a>') format('svg');
-}
-</pre>
-      </tab> -->
     </tabset>
 
     

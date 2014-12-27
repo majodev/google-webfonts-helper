@@ -2,10 +2,17 @@
 
   <div class="top-overlay">
     <div class="row">
-      <div id="searchbox" class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
-        <input class="form-control" ng-model="query" type="text" placeholder="Search fonts by name" autofocus>
+      <div id="searchbox" class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
+        <div class="ordering small"><!-- <span>Order&nbsp;</span> --><div class="btn-group">
+            <label class="btn btn-info btn-xs" ng-model="predicate" btn-radio="'family'">name</label>
+            <label class="btn btn-info btn-xs" ng-model="predicate" btn-radio="'category'">category</label>
+            <label class="btn btn-info btn-xs" ng-model="predicate" btn-radio="'-variants.length'">num styles</label>
+          </div><span>&nbsp;·&nbsp;</span><a class="btn btn-success btn-xs" href="" ng-click="reverse=!reverse">{{reverse === true ? "↑ asc" : "↓ desc"}}</a></div>
+        <input class="form-control" ng-model="query" type="text" placeholder="Search fonts..." autofocus>
+        <!-- <p class="small">Sort <a href="" ng-click="reverse=!reverse">{{reverse === true ? "↑ asc" : "↓ desc"}}</a> by <a href="" ng-click="predicate = 'family'">name</a>&nbsp;·&nbsp;<a href="" ng-click="predicate = '-variants.length'">styles</a>&nbsp;·&nbsp;<a href="" ng-click="predicate = 'category'">category</a></p> -->
+        
       </div>
-      <h4 class="col-lg-10 col-md-9 col-sm-9 col-xs-8 page-header">Google Webfonts Helper by <a href="http://ranf.tl" target="_blank">Mario Ranftl</a><br/><small>Get <code>eot</code>, <code>ttf</code>, <code>svg</code>, <code>woff</code> and <code>woff2</code> files + CSS snippets&nbsp;·&nbsp;<a href="https://github.com/majodev/google-webfonts-helper#rest-api" target="_blank">API</a></small></h4>
+      <h4 class="col-lg-9 col-md-8 col-sm-8 col-xs-7 page-header">Google Webfonts Helper by <a href="http://ranf.tl" target="_blank">Mario Ranftl</a><br/><small>Get <code>eot</code>, <code>ttf</code>, <code>svg</code>, <code>woff</code> and <code>woff2</code> files + CSS snippets&nbsp;·&nbsp;<a href="https://github.com/majodev/google-webfonts-helper#rest-api" target="_blank">API</a></small></h4>
     </div>
     <div class="githubOverlay">
       <iframe id="githubCount" src="https://mdo.github.io/github-buttons/github-btn.html?user=majodev&amp;repo=google-webfonts-helper&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="130px" height="30px"></iframe>
@@ -13,33 +20,28 @@
   </div>
 
  
-  <div class="box">
-
-  <div class="row-fluid" cg-busy="{promise: fontsPromise, message: 'Loading fonts...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
-    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scroller scrollerLeft column" ng-hide="busy">
-      <ul class="list-group fonts-list">
-        <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts | filter:query | orderBy: 'family'">
-          <h5 class="list-group-item-heading">{{font.family}}</h5>
-          <p class="list-group-item-text small">{{font.category}}&nbsp;·&nbsp;<ng-pluralize count="font.variants.length"
-                when="{'0': 'no style',
-                       'one': '{} style',
-                       'other': '{} styles'}">
-  </ng-pluralize></p>
-        </a>
-      </ul>
-    </div>
-    <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 scroller scrollerRight column" ng-hide="busy">
-      <div ui-view>
-        <h2><ng-pluralize count="fonts.length"
-                when="{'0': '... fonts',
-                       'one': '{} font',
-                       'other': '{} fonts'}"></ng-pluralize>&nbsp;available.<small><br/><i class="fa fa-angle-double-left"></i> Please select a font!</small></h2>
-
+  <div class="box"> <!-- wrapper for scrollbar divs -->
+    <div class="row-fluid" cg-busy="{promise: fontsPromise, message: 'Loading fonts...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
+      <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5 scrollerLeft column" ng-hide="busy">
+        <div class="list-group">
+          <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts | filter:query | orderBy:predicate:reverse">
+            <h5 class="list-group-item-heading">{{font.family}} <small>{{font.category}}&nbsp;·&nbsp;<ng-pluralize count="font.variants.length"
+                  when="{'0': 'no style',
+                         'one': '{} style',
+                         'other': '{} styles'}"></ng-pluralize></small></h5>
+            <!-- <p class="list-group-item-text small"></p> -->
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-9 col-md-8 col-sm-8 col-xs-7 scrollerRight column" ng-hide="busy">
+        <div ui-view> <!-- fontItem details template gets appended here -->
+          <h2><ng-pluralize count="fonts.length"
+                  when="{'0': '... fonts',
+                         'one': '{} font',
+                         'other': '{} fonts'}"></ng-pluralize>&nbsp;available.<small><br/><i class="fa fa-angle-double-left"></i> Please select a font!</small></h2>
+        </div>
       </div>
     </div>
-  </div>
-
-
   </div>
 
 </div>

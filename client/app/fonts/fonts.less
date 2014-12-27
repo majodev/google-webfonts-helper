@@ -1,3 +1,6 @@
+/* ui bootstrap click to pointers */
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
 html, body {
     height: 100%;
 }
@@ -26,7 +29,7 @@ html, body {
     left: 0;
     position: absolute;
     right: 0;
-    top:60px;
+    top:80px;
 }
 
 .column {
@@ -35,28 +38,17 @@ html, body {
     *zoom:1;
 }
 
-.scroller {
-  // height: 100vh;
-  // overflow-y: scroll;
+.list-group {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .scrollerLeft {
-  // padding-top: 60px;
   background: #eee;
-  // #gradient > .striped(#eee; 45deg);
-  // #gradient > .vertical(#eee; #bbb);
 }
 
 .scrollerRight {
-  // padding-top: 60px;
 }
-
-.fonts-list {
-  // padding-top: 10px;
-}
-
-/* ui bootstrap click to pointers */
-.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
 pre {
   font-size: 80%;
@@ -76,70 +68,33 @@ code {
 }
 
 .top-overlay {
-  // position: absolute;
-  // top: 0px;
-  // left: 0px;
-  // right: 0px;
-  height: 60px;
+  height: 80px;
   padding: 10px 15px 25px 15px;
-  // background: fade(#fff, 95%);
   border-bottom: #eee solid 1px;
   background: #fff;
-  z-index: 1000;
-  // pointer-events: none;
-  // box-shadow: 0 1px 5px rgba(0,0,0,.3);
+  // z-index: 1000;
 }
-
-// .top-overlay input {
-//   pointer-events: initial;
-// }
 
 .page-header {
   margin: 0;
-  // text-align: right;
+  margin-top: 25px;
   border-bottom: none;
-  // text-shadow: 0px 0px 5px rgba(37,37,37,0.25);
-  // text-transform: uppercase;
-  // color: #efefef;
 }
-
-// .page-header a {
-//   pointer-events: initial;
-// }
 
 textarea {
    resize: none;
 }
 
 .githubOverlay {
-  // pointer-events: initial;
   position: absolute;
   top: 14px;
   right: 0;
 }
 
-// search field
-#searchbox {
-  // position: fixed;
-  // top: 0px;
-  // z-index: 1000;
-  padding-top: 3px;
-  // right: 0px;
-  // left: 0px;
+.ordering {
+  margin-bottom: 5px;
 }
 
 .download-button {
   margin-top: 30px;
 }
-
-// .preview a {
-//   position: absolute;
-//   top: 0;
-//   bottom: 0;
-//   left: 0;
-//   right: 0;
-// }
-
-// .preview a:hover {
-//   background: fade(#333, 20%)
-// }
