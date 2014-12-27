@@ -16,33 +16,64 @@
 
 
 <div cg-busy="{promise: fontItemPromise, message: 'Fetching {{fontID}}...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
-  <h3 ng-hide="busy">{{fontItem.family}} <small>{{fontItem.category}}</small></h3>
-  <h4 ng-hide="busy"><small><span ng-repeat="subset in fontItem.subsets">{{subset}}{{$last ? "" : ", "}}</span></small></h4>
-  <h5 ng-hide="busy"><ng-pluralize count="fontItem.variants.length"
-                when="{'0': 'no variant',
-                       'one': 'Single variant',
-                       'other': '{} variants'}">
-  </ng-pluralize>&nbsp;<small>last modified on {{fontItem.lastModified}} ({{fontItem.version}})</small></h5>
+  <div class="row" ng-hide="busy">
+    <div class="col-sm-6">
+      <h3>{{fontItem.family}} <small>{{fontItem.category}}</small></h3>
+      <h4><ng-pluralize count="fontItem.variants.length"
+                    when="{'0': 'no style',
+                           'one': '{} style',
+                           'other': '{} styles'}">
+      </ng-pluralize>&nbsp;<small><span ng-repeat="variant in fontItem.variants">{{variant.id}}{{$last ? "" : ", "}}</span></small></h4>
+      <h5><ng-pluralize count="fontItem.subsets.length"
+                    when="{'0': 'no subsets',
+                           'one': '{} subset',
+                           'other': '{} subsets'}">
+      </ng-pluralize>&nbsp;<small><span ng-repeat="subset in fontItem.subsets">{{subset}}{{$last ? "" : ", "}}</span></small></h5>
+      
+      <button class="btn btn-default btn-sm" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true" style="font-family:{{fontItem.variants[0].fontFamily}}; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">The quick brown fox jumps over the lazy dog.</button>
+    </div>
+
+    <div class="col-sm-6">
+      <!-- <div class="well well-sm"> -->
+      <a href="/api/fonts/{{fontItem.id}}?download=zip" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}.zip&nbsp;<br/><small>.eot, .ttf, .svg, .woff and .woff2 files included</small></a>
+      <p><small>last modified on {{fontItem.lastModified}} ({{fontItem.version}})</small></p>
+      <!-- </div> -->
+    </div>
+
+  </div>
+  
+
+  
+
+  <!-- <hr> -->
 
   <div ng-hide="busy" class="fontVariant"> <!-- FONT VARIANT BEGINS -->
 
-    <!-- <h4>Preview</h4> -->
+    
 
-    <!-- Show a preview of all fonts -->
-    <div class="row">
-      <div class="preview col-md-3 col-sm-4 col-xs-6" ng-repeat="variant in fontItem.variants" style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}};">
-        <!-- <a href="#{{variant.id}}"></a> -->
-        <h4>{{variant.id}}</h4>
-        <textarea class="form-control" rows="3">The quick brown fox jumps over the lazy dog.</textarea>
-        <!-- <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p> -->
+    <!-- <h4>Font archive</h4> -->
+
+    
+    
+
+    <div collapse="isCollapsed">
+      <hr>    
+
+      <!-- Show a preview of all fonts -->
+      <div class="row" >
+        <div class="preview col-md-3 col-sm-4 col-xs-6" ng-repeat="variant in fontItem.variants" style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}};">
+          <!-- <a href="#{{variant.id}}"></a> -->
+          <h4>{{variant.id}}</h4>
+          <textarea class="form-control" rows="3">The quick brown fox jumps over the lazy dog.</textarea>
+          <!-- <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p> -->
+        </div>
       </div>
+
     </div>
 
-    <h4>Download</h4>
+    <hr>
 
-    <a ng-hide="busy" href="/api/fonts/{{fontItem.id}}?download=zip" target="_blank" role="button" class="btn btn-primary btn-lg">zip archive (includes .eot, .ttf, .svg, .woff, .woff2)</a>
-
-    <h4>CSS Snippets</h4>
+    <h4>CSS snippets</h4>
 
     <tabset>
       <tab heading="Best support">

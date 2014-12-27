@@ -5,10 +5,10 @@
       <div id="searchbox" class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
         <input class="form-control" ng-model="query" type="text" placeholder="Search fonts by name" autofocus>
       </div>
-      <h4 class="col-lg-10 col-md-9 col-sm-9 col-xs-8 page-header"><a href="https://github.com/majodev/google-webfonts-helper" target="_blank">majodev</a>'s google webfonts helper<br/><small>CSS snippets for&nbsp;<ng-pluralize count="fonts.length"
-                when="{'0': 'some webfonts',
-                       'one': 'one webfonts',
-                       'other': '{} webfonts'}"></ng-pluralize></small></h4>
+      <h4 class="col-lg-10 col-md-9 col-sm-9 col-xs-8 page-header">Google Webfonts Helper by <a href="http://ranf.tl" target="_blank">Mario Ranftl</a><br/><small>Get <code>eot</code>, <code>ttf</code>, <code>svg</code>, <code>woff</code> and <code>woff2</code> files + CSS snippets</small></h4>
+    </div>
+    <div class="githubOverlay">
+      <iframe id="githubCount" src="//ghbtns.com/github-btn.html?user=majodev&amp;repo=google-webfonts-helper&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="130px" height="30px"></iframe>
     </div>
   </div>
 
@@ -19,16 +19,20 @@
         <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts | filter:query | orderBy: 'family'">
           <h5 class="list-group-item-heading">{{font.family}}</h5>
           <p class="list-group-item-text small">{{font.category}}&nbsp;·&nbsp;<ng-pluralize count="font.variants.length"
-                when="{'0': 'no variant',
-                       'one': 'single variant',
-                       'other': '{} variants'}">
+                when="{'0': 'no style',
+                       'one': '{} style',
+                       'other': '{} styles'}">
   </ng-pluralize></p>
         </a>
       </ul>
     </div>
     <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 scroller scrollerRight" ng-hide="busy">
       <div ui-view>
-        <h2>Please select a font.</h2>
+        <h2><ng-pluralize count="fonts.length"
+                when="{'0': '... fonts',
+                       'one': '{} font',
+                       'other': '{} fonts'}"></ng-pluralize>&nbsp;available.<small><br/><i class="fa fa-angle-double-left"></i> Please select a font!</small></h2>
+
       </div>
     </div>
   </div>
