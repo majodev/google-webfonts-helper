@@ -1,25 +1,58 @@
-.fonts-top-container, .top-overlay {
+html, body {
+    height: 100%;
+}
+
+.fonts-top-container, .top-overlay, .box {
   min-width: 768px;
 }
 
+.fonts-top-container, .row-fluid {
+  height: 100%;
+}
+
+.fonts-top-container:before, .fonts-top-container:after,
+.column:before, .column:after {
+    content: "";
+    display: table;
+}
+
+.fonts-top-container:after,
+.column:after {
+    clear: both;
+}
+
+.box {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top:60px;
+}
+
+.column {
+    height: 100%;
+    overflow: auto;
+    *zoom:1;
+}
+
 .scroller {
-  height: 100vh;
-  overflow-y: scroll;
+  // height: 100vh;
+  // overflow-y: scroll;
 }
 
 .scrollerLeft {
-  padding-top: 60px;
+  // padding-top: 60px;
   background: #eee;
   // #gradient > .striped(#eee; 45deg);
   // #gradient > .vertical(#eee; #bbb);
 }
 
 .scrollerRight {
-  padding-top: 60px;
+  // padding-top: 60px;
 }
 
 .fonts-list {
-  padding-top: 10px;
+  // padding-top: 10px;
 }
 
 /* ui bootstrap click to pointers */
@@ -43,23 +76,23 @@ code {
 }
 
 .top-overlay {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  right: 0px;
+  // position: absolute;
+  // top: 0px;
+  // left: 0px;
+  // right: 0px;
   height: 60px;
   padding: 10px 15px 25px 15px;
   // background: fade(#fff, 95%);
   border-bottom: #eee solid 1px;
   background: #fff;
   z-index: 1000;
-  pointer-events: none;
+  // pointer-events: none;
   // box-shadow: 0 1px 5px rgba(0,0,0,.3);
 }
 
-.top-overlay input {
-  pointer-events: initial;
-}
+// .top-overlay input {
+//   pointer-events: initial;
+// }
 
 .page-header {
   margin: 0;
@@ -70,16 +103,16 @@ code {
   // color: #efefef;
 }
 
-.page-header a {
-  pointer-events: initial;
-}
+// .page-header a {
+//   pointer-events: initial;
+// }
 
 textarea {
    resize: none;
 }
 
 .githubOverlay {
-  pointer-events: initial;
+  // pointer-events: initial;
   position: absolute;
   top: 14px;
   right: 0;

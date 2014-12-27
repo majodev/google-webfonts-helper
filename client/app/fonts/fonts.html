@@ -1,4 +1,4 @@
-<div class="container-fluid fonts-top-container">
+<div class="fonts-top-container">
 
   <div class="top-overlay">
     <div class="row">
@@ -13,8 +13,10 @@
   </div>
 
  
-  <div class="row" cg-busy="{promise: fontsPromise, message: 'Loading fonts...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
-    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scroller scrollerLeft" ng-hide="busy">
+  <div class="box">
+
+  <div class="row-fluid" cg-busy="{promise: fontsPromise, message: 'Loading fonts...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
+    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scroller scrollerLeft column" ng-hide="busy">
       <ul class="list-group fonts-list">
         <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts | filter:query | orderBy: 'family'">
           <h5 class="list-group-item-heading">{{font.family}}</h5>
@@ -26,7 +28,7 @@
         </a>
       </ul>
     </div>
-    <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 scroller scrollerRight" ng-hide="busy">
+    <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 scroller scrollerRight column" ng-hide="busy">
       <div ui-view>
         <h2><ng-pluralize count="fonts.length"
                 when="{'0': '... fonts',
@@ -36,4 +38,8 @@
       </div>
     </div>
   </div>
+
+
+  </div>
+
 </div>

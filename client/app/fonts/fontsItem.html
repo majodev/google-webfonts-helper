@@ -17,7 +17,7 @@
 
 <div cg-busy="{promise: fontItemPromise, message: 'Fetching {{fontID}}...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
   <div class="row" ng-hide="busy">
-    <div class="col-sm-6">
+    <div class="col-sm-6 column">
       <h3>{{fontItem.family}} <small>{{fontItem.category}}</small></h3>
       <h4><ng-pluralize count="fontItem.variants.length"
                     when="{'0': 'no style',
@@ -33,7 +33,7 @@
       <button class="btn btn-default btn-sm" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true" style="font-family:{{fontItem.variants[0].fontFamily}}; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">The quick brown fox jumps over the lazy dog.</button>
     </div>
 
-    <div class="col-sm-6">
+    <div class="col-sm-6 column">
       <!-- <div class="well well-sm"> -->
       <a href="/api/fonts/{{fontItem.id}}?download=zip" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}.zip&nbsp;<br/><small>.eot, .ttf, .svg, .woff and .woff2 files included</small></a>
       <p><small>last modified on {{fontItem.lastModified}} ({{fontItem.version}})</small></p>
