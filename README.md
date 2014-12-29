@@ -33,19 +33,20 @@ Returns a font with urls to the actual font files google's servers. E.g. `curl h
   "family": "Antic",
   "variants": [{
     "id": "regular",
-    "woff2": [{
+    "eot": "https://fonts.gstatic.com/s/antic/v7/jrYPXvXYC1H4Vn_CQx7BJQ.eot",
+    "fontFamily": "'Antic'",
+    "fontStyle": "normal",
+    "fontWeight": "400",
+    "woff2Subsets": [{
       "url": "https://fonts.gstatic.com/s/antic/v7/XHDNSBKb2dlIyyA7tXPbSA.woff2",
       "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000",
       "subset": "latin"
     }],
-    "fontFamily": "'Antic'",
-    "fontStyle": "normal",
-    "fontWeight": "400",
     "local": ["Antic", "Antic-Regular"],
     "woff": "https://fonts.gstatic.com/s/antic/v7/2GNslY5EMAZwbbytmM9wFw.woff",
-    "eot": "https://fonts.gstatic.com/s/antic/v7/jrYPXvXYC1H4Vn_CQx7BJQ.eot",
-    "ttf": "https://fonts.gstatic.com/s/antic/v7/oPxV1dkj-zBXVn8gGPEP7w.ttf",
-    "svg": "https://fonts.gstatic.com/l/font?kit=auEONVTS9YXogC-LoZ073Q#Antic"
+    "svg": "https://fonts.gstatic.com/l/font?kit=auEONVTS9YXogC-LoZ073Q#Antic",
+    "woff2": "https://fonts.gstatic.com/s/antic/v7/IVZiQl5Ww-TJ-PrbjA5gMKCWcynf_cDxXwCLxiixG1c.woff2",
+    "ttf": "https://fonts.gstatic.com/s/antic/v7/oPxV1dkj-zBXVn8gGPEP7w.ttf"
   }],
   "subsets": ["latin"],
   "category": "sans-serif",
