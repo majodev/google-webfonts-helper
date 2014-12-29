@@ -1,7 +1,27 @@
 {
   "name": "google-webfonts-helper",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "homepage": "https://google-webfonts-helper.herokuapp.com",
   "main": "server/app.js",
+  "author": "majodev",
+  "license": "MIT",
+  "keywords": [
+    "google fonts",
+    "web fonts",
+    "download",
+    "woff",
+    "svg",
+    "ttf",
+    "woff2",
+    "eot",
+    "css",
+    "snippet",
+    "hosting"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/majodev/google-webfonts-helper.git"
+  },
   "dependencies": {
     "archiver": "^0.13.0",
     "async": "^0.9.0",

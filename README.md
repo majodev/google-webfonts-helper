@@ -9,17 +9,18 @@ Ever wanted to know where Google hosts their webfonts? This service might be han
 The API is public, feel free to use it directly.
 
 #### GET `/api/fonts`
-Returns a list of all fonts. E.g. `curl https://google-webfonts-helper.herokuapp.com/api/fonts`:
+Returns a list of all fonts, sorted by popularity. E.g. `curl https://google-webfonts-helper.herokuapp.com/api/fonts`:
 ```json
 [{
-  "id": "abeezee",
-  "family": "ABeeZee",
-  "variants": ["regular", "italic"],
-  "subsets": ["latin"],
+  "id": "open-sans",
+  "family": "Open Sans",
+  "variants": ["300", "300italic", "regular", "italic", "600", "600italic", "700", "700italic", "800", "800italic"],
+  "subsets": ["cyrillic-ext", "vietnamese", "greek", "latin-ext", "latin", "devanagari", "cyrillic", "greek-ext"],
   "category": "sans-serif",
-  "version": "v4",
-  "lastModified": "2014-08-28"
-} ...
+  "version": "v10",
+  "lastModified": "2014-10-17",
+  "popularity": 1
+} [...]
 ]
 ```
 
@@ -41,15 +42,16 @@ Returns a font with urls to the actual font files google's servers. E.g. `curl h
     "fontStyle": "normal",
     "fontWeight": "400",
     "local": ["Antic", "Antic-Regular"],
+    "woff": "https://fonts.gstatic.com/s/antic/v7/2GNslY5EMAZwbbytmM9wFw.woff",
     "eot": "https://fonts.gstatic.com/s/antic/v7/jrYPXvXYC1H4Vn_CQx7BJQ.eot",
     "ttf": "https://fonts.gstatic.com/s/antic/v7/oPxV1dkj-zBXVn8gGPEP7w.ttf",
-    "svg": "https://fonts.gstatic.com/l/font?kit=auEONVTS9YXogC-LoZ073Q#Antic",
-    "woff": "https://fonts.gstatic.com/s/antic/v7/2GNslY5EMAZwbbytmM9wFw.woff"
+    "svg": "https://fonts.gstatic.com/l/font?kit=auEONVTS9YXogC-LoZ073Q#Antic"
   }],
   "subsets": ["latin"],
   "category": "sans-serif",
   "version": "v7",
-  "lastModified": "2014-08-28"
+  "lastModified": "2014-08-28",
+  "popularity": 249
 }
 ```
 

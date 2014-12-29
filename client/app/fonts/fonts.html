@@ -51,10 +51,15 @@
       </div>
       <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 scrollerRight column" ng-hide="busy">
         <div ui-view> <!-- fontItem details template gets appended here -->
-          <h2><ng-pluralize count="fonts.length"
+          
+          <!-- Placeholder no item selected -->
+          <div id="noItemSelectedPlaceholder">
+            <h2><ng-pluralize count="fonts.length"
                   when="{'0': '... fonts',
                          'one': '{} font',
                          'other': '{} fonts'}"></ng-pluralize>&nbsp;available.<small><br/><i class="fa fa-angle-double-left"></i> Please select a font!</small></h2>
+          </div>
+          
         </div>
       </div>
     </div>
