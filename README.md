@@ -64,6 +64,11 @@ Download a zipped archive with all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` fil
 
 This was originally a prototype, that I've started to get familiar with Angular and Express. All magic by [generator-angular-fullstack](https://github.com/DaftMonk/generator-angular-fullstack). See [my note here](http://ranf.tl/2014/12/23/self-hosting-google-web-fonts/). That's all folks.
 
+### Contributing
+
+Everything is welcome, **especially tests**! Fork, change and send me a pull request. However, please add a description to your changes, not only code!
+**Attention designers:**: Searching for a logo and proper styling (I'm more a usability / backends guy).
+
 ## License
 (c) Mario Ranftl - majodev
 [MIT License](http://majodev.mit-license.org/)
