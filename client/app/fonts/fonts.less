@@ -1,6 +1,19 @@
+// Variables
+// -----------------------------------------------------------------------------
+
+@header-height: 80px;
+
+
+// Fixes
+// -----------------------------------------------------------------------------
+
 /* ui bootstrap click to pointers */
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
 
+
+
+// Page wide
+// -----------------------------------------------------------------------------
 html, body {
     height: 100%;
 }
@@ -24,55 +37,15 @@ html, body {
     clear: both;
 }
 
-.box {
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top:80px;
-}
 
-.column {
-    height: 100%;
-    overflow: auto;
-    *zoom:1;
-}
-
-.list-group {
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
-.scrollerLeft {
-  background: #eee;
-}
-
-.scrollerRight {
-}
-
-pre {
-  font-size: 80%;
-}
-
-code {
-  font-size: 75%;
-}
-
-.nonSelectable {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+// Header
+// -----------------------------------------------------------------------------
 
 .top-overlay {
-  height: 80px;
+  height: @header-height;
   padding: 10px 15px 25px 15px;
   border-bottom: #eee solid 1px;
   background: #fff;
-  // z-index: 1000;
 }
 
 .page-header {
@@ -86,20 +59,66 @@ code {
   float: right;
 }
 
-textarea {
-   resize: none;
-}
-
-// .githubOverlay {
-//   position: absolute;
-//   top: 14px;
-//   right: 5px;
-// }
-
 .ordering {
   margin-bottom: 5px;
 }
 
+
+// Scroll colums
+// -----------------------------------------------------------------------------
+
+.box {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: @header-height;
+}
+
+.column {
+    height: 100%;
+    overflow: auto;
+    *zoom:1;
+}
+
+.scrollerLeft {
+  background: #eee;
+}
+
+.scrollerRight {
+}
+
+// Font content
+// -----------------------------------------------------------------------------
+
+.list-group {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
 .download-button {
   margin-top: 30px;
+}
+
+.folderPrefixBar {
+  margin-bottom: 5px;
+}
+
+.nav-tabs {
+  margin-bottom: 5px;
+}
+
+// General
+// -----------------------------------------------------------------------------
+
+pre {
+  font-size: 80%;
+}
+
+code {
+  font-size: 75%;
+}
+
+textarea {
+   resize: none;
 }
