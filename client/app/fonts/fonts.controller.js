@@ -14,6 +14,19 @@ angular.module('googleWebfontsHelperApp')
       $scope.busy = false;
     });
 
+
+    $scope.scrollListTop = function () {
+      $('.scrollerLeft').scrollTop(0);
+    };
+
+    $scope.status = {
+    isopen: false
+  };
+
+    $scope.toggled = function(open) {
+      console.log('Dropdown is now: ', open);
+    };
+
   })
 
 .controller('FontsItemCtrl', function($scope, $stateParams, $http) {

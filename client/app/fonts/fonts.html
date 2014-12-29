@@ -1,31 +1,45 @@
 <div class="fonts-top-container">
 
   <div class="top-overlay"> <!-- header -->
+
     <div class="row">
-      <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5">
-        <div class="ordering">
-          <div class="btn-group">
-            <label class="btn btn-info btn-xs" ng-model="predicate" btn-radio="'popularity'">popularity</label>
-            <label class="btn btn-info btn-xs" ng-model="predicate" btn-radio="'family'">name</label>
-            <label class="btn btn-info btn-xs" ng-model="predicate" btn-radio="['category','family']">category</label>
-            <label class="btn btn-info btn-xs" ng-model="predicate" btn-radio="['-variants.length','family']">num styles</label>
-          </div><span>&nbsp;·&nbsp;</span><a class="btn btn-success btn-xs" href="" ng-click="reverse=!reverse">{{reverse === true ? "↑ asc" : "↓ desc"}}</a></div>
-        <div id="searchwrap" class="btn-group">
-          <input id="searchinput" class="form-control" ng-model="query" type="search" placeholder="Search fonts..." autofocus>
-          <span id="searchclear" class="glyphicon glyphicon-remove-circle" ng-class="{'show': query.length > 0}" ng-click="query = ''"></span>
+      <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
+        <div class="input-group">
+          <div id="searchwrap" class="btn-group">
+            <input id="searchinput" class="form-control" ng-model="query" type="search" placeholder="Search fonts..." autofocus>
+            <span id="searchclear" class="glyphicon glyphicon-remove-circle" ng-class="{'show': query.length > 0}" ng-click="query = ''"></span>
+          </div>
+          <div class="input-group-btn" dropdown is-open="status.isopen">
+            <button id="orderButton" type="button" class="btn btn-default" dropdown-toggle ng-disabled="disabled">
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li role="presentation" class="dropdown-header">Order by</li>
+              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="'popularity'"><a href="#">Popularity</a></li>
+              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="'family'"><a href="#">Family name</a></li>
+              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="['category','family']"><a href="#">Category name</a></li>
+              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="['-variants.length','family']"><a href="#">Number of styles</a></li>
+              <li class="divider"></li>
+              <li ng-click="reverse=!reverse; scrollListTop()"><a href="#">{{reverse === true ? "↑ ascending" : "↓ descending"}}</a></li>
+            </ul>
+          </div>
         </div>
+
       </div>
-      <div class="col-lg-9 col-md-8 col-sm-8 col-xs-7">
-        <h4 class="page-header">Google Webfonts Helper by <a href="http://ranf.tl/2014/12/23/self-hosting-google-web-fonts/" target="_blank">majodev</a><br/><small>Get <code>eot</code>, <code>ttf</code>, <code>svg</code>, <code>woff</code> and <code>woff2</code> files + CSS snippets&nbsp;·&nbsp;<a href="https://github.com/majodev/google-webfonts-helper#rest-api" target="_blank">API</a></small></h4>
+      <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8">
+        
+        <!-- <h4 class="page-header">google-webfonts-helper</h4> -->
+        <h4 class="page-header">google-webfonts-helper by <a href="http://ranf.tl/2014/12/23/self-hosting-google-web-fonts/" target="_blank">majodev</a><br/><small>Get <code>eot</code>, <code>ttf</code>, <code>svg</code>, <code>woff</code> and <code>woff2</code> files + CSS snippets&nbsp;·&nbsp;<a href="https://github.com/majodev/google-webfonts-helper#rest-api" target="_blank">API</a></small></h4>
         <iframe id="githubCount" src="https://mdo.github.io/github-buttons/github-btn.html?user=majodev&amp;repo=google-webfonts-helper&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="130px" height="30px"></iframe>
       </div>
     </div>
+
   </div>
 
  
   <div class="box"> <!-- wrapper for scrollbar divs -->
     <div class="row-fluid" cg-busy="{promise: fontsPromise, message: 'Loading fonts...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
-      <div class="col-lg-3 col-md-4 col-sm-4 col-xs-5 scrollerLeft column" ng-hide="busy">
+      <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scrollerLeft column" ng-hide="busy">
         <div class="list-group">
           <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts | filter:query | orderBy:predicate:reverse">
             <h5 class="list-group-item-heading">{{font.family}} <small>{{font.category}}&nbsp;·&nbsp;<ng-pluralize count="font.variants.length"
@@ -35,7 +49,7 @@
           </a>
         </div>
       </div>
-      <div class="col-lg-9 col-md-8 col-sm-8 col-xs-7 scrollerRight column" ng-hide="busy">
+      <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 scrollerRight column" ng-hide="busy">
         <div ui-view> <!-- fontItem details template gets appended here -->
           <h2><ng-pluralize count="fonts.length"
                   when="{'0': '... fonts',
