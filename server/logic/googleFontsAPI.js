@@ -2,7 +2,7 @@ var _ = require('lodash');
 var https = require('https');
 var getSlug = require('speakingurl');
 
-var GOOGLE_FONTS_API_KEY = 'AIzaSyDY-C-Lt9uyPP5fSTjMCR4bB944SlI4spw';
+var conf = require('./conf');
 
 // build up fonts cache via google API...
 var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts, cb) {
@@ -10,7 +10,7 @@ var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts, cb) {
     hostname: "www.googleapis.com",
     method: 'GET',
     port: 443,
-    path: '/webfonts/v1/webfonts?key=' + GOOGLE_FONTS_API_KEY,
+    path: '/webfonts/v1/webfonts?key=' + conf.GOOGLE_FONTS_API_KEY,
     headers: {
       'Accept': 'application/json',
     }

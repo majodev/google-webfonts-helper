@@ -2,11 +2,11 @@ var fs = require('fs');
 var archiver = require('archiver');
 var _ = require('lodash');
 
-var CACHE_DIR = __dirname + "/cachedFonts/";
+var conf = require('./conf');
 
 function zip(fontID, filePaths, cb) {
 
-  var filename = CACHE_DIR + fontID + '.zip';
+  var filename = conf.CACHE_DIR + fontID + '.zip';
 
   var output = fs.createWriteStream(filename);
   var archive = archiver('zip');
@@ -28,7 +28,7 @@ function zip(fontID, filePaths, cb) {
 
   _.each(filePaths, function(path) {
     archive.append(fs.createReadStream(path), {
-      name: path.replace(CACHE_DIR, '')
+      name: path.replace(conf.CACHE_DIR, '')
     })
   });
 

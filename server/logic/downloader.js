@@ -4,27 +4,25 @@ var fs = require('fs');
 var https = require('https');
 var mkdirp = require('mkdirp');
 
-
-var CACHE_DIR = __dirname + "/cachedFonts/";
-var FONT_FORMATS = ["ttf", "svg", "woff", "eot", "woff2"]; // no woff2 now.
+var conf = require('./conf');
 
 function downloadFontFiles(fontItem, cb) {
 
   var filePaths = [];
 
-  mkdirp(CACHE_DIR, function(err) {
+  mkdirp(conf.CACHE_DIR, function(err) {
     if (err) {
       throw new Error("unable to create CACHE directory!" + err);
     } else {
       async.each(fontItem.variants, function(variantItem, variantCB) {
-        async.each(FONT_FORMATS, function(formatKey, typeCB) {
+        async.each(conf.FONT_FORMATS, function(formatKey, typeCB) {
 
-          var filename = CACHE_DIR + fontItem.id + "-" + variantItem.id + "." + formatKey;
+          var filename = conf.CACHE_DIR + fontItem.id + "-" + variantItem.id + "." + formatKey;
 
           if (formatKey === "woff2") {
             // woff2 has multiple files
             async.each(variantItem.woff2, function(woff2item, woff2CB) {
-              var woff2Filename = CACHE_DIR + fontItem.id + "-" + variantItem.id + "-" + woff2item.subset + "." + formatKey;
+              var woff2Filename = conf.CACHE_DIR + fontItem.id + "-" + variantItem.id + "-" + woff2item.subset + "." + formatKey;
               downloadFile(woff2item.url, woff2Filename, function() {
                 filePaths.push(woff2Filename);
                 woff2CB();
