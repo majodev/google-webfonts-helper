@@ -30,15 +30,16 @@
                            'other': '{} subsets'}">
       </ng-pluralize>&nbsp;<small><span ng-repeat="subset in fontItem.subsets">{{subset}}{{$last ? "" : ", "}}</span></small></h5>
       
-      <p><small>Last modified on {{fontItem.lastModified}} ({{fontItem.version}})</small></p>
-
-      <button class="btn btn-default btn-sm" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true" style="font-family:{{fontItem.variants[0].fontFamily}}; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">The quick brown fox jumps over the lazy dog.</button>
+      <p><small>{{fontItem.popularity}}/{{fonts.length}} in popularity<br/>Last modified on {{fontItem.lastModified}} ({{fontItem.version}})</small></p>
+      
     </div>
 
     <div class="col-sm-6 column">
       <!-- <div class="well well-sm"> -->
       <a href="/api/fonts/{{fontItem.id}}?download=zip" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}.zip&nbsp;<br/><small>.eot, .ttf, .svg, .woff and .woff2 files included</small></a>
       <p><small>Fonts are copyright of their respective authors.</small></p>
+
+      <button class="btn btn-default btn-sm btn-block" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true" style="font-family:{{fontItem.variants[0].fontFamily}}; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">Preview: The quick brown fox jumps over the lazy dog.</button>
       <!-- </div> -->
     </div>
 

@@ -10,7 +10,7 @@ var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts, cb) {
     hostname: "www.googleapis.com",
     method: 'GET',
     port: 443,
-    path: '/webfonts/v1/webfonts?key=' + conf.GOOGLE_FONTS_API_KEY,
+    path: '/webfonts/v1/webfonts?sort=popularity&key=' + conf.GOOGLE_FONTS_API_KEY,
     headers: {
       'Accept': 'application/json',
     }
@@ -29,8 +29,11 @@ var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts, cb) {
       googleAPIFontItems = JSON.parse(output).items;
 
       // populate our items
-      _.each(googleAPIFontItems, function(item) {
+      _.each(googleAPIFontItems, function(item, index) {
 
+        // console.log(index + " - " + item.family);
+
+        // property order is guranteed --> popularity. 
         cachedFonts.push({
           id: getSlug(item.family),
           family: item.family,
@@ -38,7 +41,8 @@ var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts, cb) {
           subsets: item.subsets,
           category: item.category,
           version: item.version,
-          lastModified: item.lastModified
+          lastModified: item.lastModified,
+          popularity: index + 1
         });
 
       });

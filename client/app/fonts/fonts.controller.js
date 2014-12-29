@@ -6,7 +6,7 @@ angular.module('googleWebfontsHelperApp')
     $scope.fonts = [];
     $scope.busy = true;
 
-    $scope.predicate = 'family'; // ordering
+    $scope.predicate = 'popularity'; // default ordering predicate
     $scope.reverse = false;
 
     $scope.fontsPromise = $http.get('/api/fonts').success(function(fonts) {
