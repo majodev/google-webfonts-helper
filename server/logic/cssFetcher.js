@@ -24,10 +24,12 @@ function parseRemoteCSS(remoteCSS, type, callback) {
     // parse the resource (_extracted is hopefully not used as CSS property very often!)
     resource._extracted = {};
 
-    if (type !== "svg") {
-      resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+\\." + type)[0];
-    } else {
+    if (type === "svg") {
       resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+")[0];
+    } else if (type === "woff2Subsets") {
+      resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+\\." + "woff2")[0];
+    } else {
+      resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+\\." + type)[0];
     }
 
     // get both local names via regex

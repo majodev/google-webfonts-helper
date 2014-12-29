@@ -24,7 +24,7 @@ function fetchUrls(font, urlStore, callback) {
         var url = resources[0]._extracted.url;
 
         // woff2 has multiple urls and unicode-range set - return an array with url, unicodeRange and subset properties
-        if (type === "woff2") {
+        if (type === "woff2Subsets") {
 
           variantItem[type] = [];
 

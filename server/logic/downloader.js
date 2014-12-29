@@ -15,21 +15,22 @@ function downloadFontFiles(fontItem, cb) {
       throw new Error("unable to create CACHE directory!" + err);
     } else {
       async.each(fontItem.variants, function(variantItem, variantCB) {
-        async.each(conf.FONT_FORMATS, function(formatKey, typeCB) {
+        // console.log(_.keys(conf.USER_AGENTS));
+        async.each(_.keys(conf.USER_AGENTS), function(formatKey, typeCB) {
 
           var filename = conf.CACHE_DIR + fontItem.id + "-" + variantItem.id + "." + formatKey;
 
-          if (formatKey === "woff2") {
+          if (formatKey === "woff2Subsets") {
             // woff2 has multiple files
-            async.each(variantItem.woff2, function(woff2item, woff2CB) {
-              var woff2Filename = conf.CACHE_DIR + fontItem.id + "-" + variantItem.id + "-" + woff2item.subset + "." + formatKey;
+            async.each(variantItem.woff2Subsets, function(woff2item, woff2CB) {
+              var woff2Filename = conf.CACHE_DIR + fontItem.id + "-" + variantItem.id + "-" + woff2item.subset + "." + "woff2";
               downloadFile(woff2item.url, woff2Filename, function() {
                 filePaths.push(woff2Filename);
                 woff2CB();
               });
             }, function(err) {
               if (err) {
-                typeCB("woff2 failed! err: " + err);
+                typeCB("woff2Subsets failed! err: " + err);
               } else {
                 typeCB();
               }
@@ -73,7 +74,7 @@ function downloadFile(url, dest, cb) {
   });
 
   req.on('error', function(e) {
-    console.log('problem with request: ' + e.message);
+    console.log('problem with request: ' + e.message + " for url: " + url);
   });
 
   req.end();
