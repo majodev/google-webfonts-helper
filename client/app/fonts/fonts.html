@@ -9,7 +9,10 @@
             <label class="btn btn-info btn-xs" ng-model="predicate" btn-radio="'category'">category</label>
             <label class="btn btn-info btn-xs" ng-model="predicate" btn-radio="'-variants.length'">num styles</label>
           </div><span>&nbsp;·&nbsp;</span><a class="btn btn-success btn-xs" href="" ng-click="reverse=!reverse">{{reverse === true ? "↑ asc" : "↓ desc"}}</a></div>
-        <input class="form-control" ng-model="query" type="text" placeholder="Search fonts..." autofocus>
+        <div id="searchwrap" class="btn-group">
+          <input id="searchinput" class="form-control" ng-model="query" type="search" placeholder="Search fonts..." autofocus>
+          <span id="searchclear" class="glyphicon glyphicon-remove-circle" ng-class="{'show': query.length > 0}" ng-click="query = ''"></span>
+        </div>
       </div>
       <div class="col-lg-9 col-md-8 col-sm-8 col-xs-7">
         <h4 class="page-header">Google Webfonts Helper by <a href="http://ranf.tl/2014/12/23/self-hosting-google-web-fonts/" target="_blank">majodev</a><br/><small>Get <code>eot</code>, <code>ttf</code>, <code>svg</code>, <code>woff</code> and <code>woff2</code> files + CSS snippets&nbsp;·&nbsp;<a href="https://github.com/majodev/google-webfonts-helper#rest-api" target="_blank">API</a></small></h4>
