@@ -20,7 +20,9 @@ var cachedFonts = []; // holds actual item list that can get requested - houses 
 
 // urlStore holds fetched urls (prop = font.id) to all conf.USER_AGENTS font formats
 // gets merged with an item from cachedFonts to form a so called "fontItem" Object
-var urlStore = {}; 
+var urlStore = {};
+
+// TODO: Augment the urlStore with a subsetStore utilzing the subsetTuples generator!
 
 // zipStore holds path (prop = font.id) to locally cached zip (with all fonts in it)
 // the socalled "zipItem" Object

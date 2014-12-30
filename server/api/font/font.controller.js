@@ -10,12 +10,12 @@
 
 var _ = require('lodash');
 
-var fontStore = require('./../../logic/fontStore');
+var core = require('./../../logic/core');
 
 // Get list of fonts
 exports.index = function(req, res) {
 
-  fontStore.getAll(function(items) {
+  core.getAll(function(items) {
     // setTimeout(function() {
     res.json(items);
     // }, 3000);
@@ -29,7 +29,7 @@ exports.show = function(req, res) {
   if (req.query.download === "zip") {
     // don't return a json, return a zipped download...
 
-    fontStore.getDownload(req.params.id, function(localZipPath) {
+    core.getDownload(req.params.id, function(localZipPath) {
 
       if (localZipPath === null) {
         res.status(404) // HTTP status 404: NotFound
@@ -41,7 +41,7 @@ exports.show = function(req, res) {
     });
 
   } else {
-    fontStore.get(req.params.id, function(item) {
+    core.get(req.params.id, function(item) {
       // setTimeout(function() {
       if (item === null) {
         res.status(404) // HTTP status 404: NotFound
