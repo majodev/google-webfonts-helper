@@ -6,22 +6,31 @@ var MINIMAL_SUBSET_SIZE = 1;
 // get all possible unique subset combinations of a font, based on its subset array
 // adapted from http://stackoverflow.com/questions/5752002/find-all-possible-subset-combos-in-an-array
 function getSubsets(input) {
+
+  if (_.isArray(input) === false || input.length < MINIMAL_SUBSET_SIZE) {
+    return {};
+  }
+
+  var uniqueInput = _.uniq(input);
   var results = [],
-    result, mask, total = Math.pow(2, input.length);
+    result, mask, total = Math.pow(2, uniqueInput.length);
+
   for (mask = 0; mask < total; mask++) {
     result = [];
-    var i = input.length - 1;
+    var i = uniqueInput.length - 1;
     do {
       if ((mask & (1 << i)) !== 0) {
-        result.push(input[i]);
+        result.push(uniqueInput[i]);
       }
     } while (i--);
     if (result.length >= MINIMAL_SUBSET_SIZE) {
 
       // save in a object with unique id not array - as not as easily manipulateable
-      results[getUniqueStoreID(result)] = getDefaultSubsetObj(result, input);
+      // if (_.isUndefined(results[getUniqueStoreID(result)]) === true) {
+      results[getUniqueStoreID(result)] = getDefaultSubsetObj(result, uniqueInput);
+      // }
 
-      //results.push(getDefaultSubsetObj(result, input));
+      //results.push(getDefaultSubsetObj(result, uniqueInput));
     }
   }
 
