@@ -46,12 +46,19 @@ angular.module('googleWebfontsHelperApp')
   $scope.error = false;
 
   $scope.downloadSubSetID = '';
+  $scope.subSetsSelected = 0;
 
   $scope.fontItemPromise = $http.get('/api/fonts/' + $stateParams.id + '?subsets=' + subSetString)
     .success(function(fontItem) {
       $scope.fontItem = fontItem;
 
       $scope.downloadSubSetID = fontItem.storeID.replace(/_/g, ',');
+
+      $.each($scope.fontItem.subsetMap, function(item) {
+        if ($scope.fontItem.subsetMap[item] === true) {
+          $scope.subSetsSelected += 1;
+        }
+      });
 
       $scope.busy = false;
     })
@@ -60,6 +67,10 @@ angular.module('googleWebfontsHelperApp')
     });
 
   $scope.subsetSelect = function() {
+
+    if ($scope.fontItem.subsetMap.length === 1) {
+      return;
+    }
 
     setTimeout(function() {
       var queryParams = '';
@@ -70,8 +81,14 @@ angular.module('googleWebfontsHelperApp')
         }
       });
 
-      // remove last comma from string
-      queryParams = queryParams.substring(0, queryParams.length - 1);
+      if (queryParams.length === 0) {
+        // you will get the defaultset
+        // queryParams = $scope.fontItem.defSubset;
+        $scope.fontItem.subsetMap[$scope.fontItem.defSubset] = true;
+      } else {
+        // remove last comma from string
+        queryParams = queryParams.substring(0, queryParams.length - 1);
+      }
 
       $state.go('fonts.item', {
         id: $scope.fontID,

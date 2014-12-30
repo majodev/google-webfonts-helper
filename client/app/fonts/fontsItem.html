@@ -26,26 +26,32 @@
                            'one': '{} style',
                            'other': '{} styles'}">
       </ng-pluralize>&nbsp;<small><span ng-repeat="variant in fontItem.variants">{{variant.id}}{{$last ? "" : ", "}}</span></small></h4>
-      <h5><ng-pluralize count="fontItem.subsets.length"
+      <h5><ng-pluralize count="subSetsSelected"
                     when="{'0': 'no subsets',
                            'one': '{} subset',
                            'other': '{} subsets'}">
-      </ng-pluralize>&nbsp;<small><span ng-repeat="subset in fontItem.subsets">{{subset}}{{$last ? "" : ", "}}</span></small></h5>
+      </ng-pluralize>&nbsp;selected&nbsp;<small><ng-pluralize count="fontItem.subsets.length"
+                    when="{'0': 'no subsets',
+                           'one': '{} subset',
+                           'other': '{} subsets'}">
+      </ng-pluralize>&nbsp;available<!-- <span ng-repeat="subset in fontItem.subsets">{{subset}}{{$last ? "" : ", "}}</span> --></small></h5>
+      <div class="btn-group">
+        <label class="btn btn-success btn-xs" ng-repeat="(key,value) in fontItem.subsetMap" ng-model="fontItem.subsetMap[key]" btn-radio="key" btn-checkbox ng-click="subsetSelect()">{{key}}</label>
+      </div>
       
       <p><small>Ranks {{fontItem.popularity}}. popular font of {{fonts.length}} fonts in total<br/>Last modified on {{fontItem.lastModified}} ({{fontItem.version}})</small></p>
       
-      <button class="btn btn-default btn-sm btn-block" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true" style="font-family:{{fontItem.variants[0].fontFamily}}; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">Preview: The quick brown fox jumps over the lazy dog.</button>
+      
 
     </div>
 
     <div class="col-sm-6 column">
 
-      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.storeID}}.zip&nbsp;<br/><small>.eot, .ttf, .svg, .woff and .woff2 files included</small></a>
+      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>Download&nbsp;archive&nbsp;<br/><small>.eot, .ttf, .svg, .woff and .woff2 files included</small></a>
+      <p><small><strong>{{fontItem.id}}-{{fontItem.storeID}}.zip</strong></small></p>
       <p><small>Fonts are copyright of their respective authors.</small></p>
-      <h5>Customize supported subsets</h5>
-      <div class="btn-group">
-        <label class="btn btn-default btn-xs" ng-repeat="(key,value) in fontItem.subsetMap" ng-model="fontItem.subsetMap[key]" btn-radio="key" btn-checkbox ng-click="subsetSelect()">{{key}}</label>
-      </div>
+
+      <button class="btn btn-default btn-sm btn-block" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true" style="font-family:{{fontItem.variants[0].fontFamily}}; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">Preview: The quick brown fox jumps over the lazy dog.</button>
       
       <!-- </div> -->
     </div>
@@ -79,7 +85,7 @@
     <tabset>
       <tab heading="Best Support">
         
-<pre ng-repeat="variant in fontItem.variants">/* {{fontID}}-{{variant.id}} */
+<pre ng-repeat="variant in fontItem.variants">/* {{fontID}}-{{variant.id}} - {{downloadSubSetID}} */
 @font-face {
   font-family: {{variant.fontFamily}};
   font-style: {{variant.fontStyle}};
@@ -97,7 +103,7 @@
 
       <tab heading="Modern Browsers">
       <p>css-tricks.com: <a href="http://css-tricks.com/snippets/css/using-font-face/" target="blank">Things are shifting heavily toward WOFF</a><br/>caniuse.com: <a href="http://caniuse.com/#feat=woff" target="blank">Can I use woff? (compatibility information)</a></p>
-<pre ng-repeat="variant in fontItem.variants">/* {{fontID}}-{{variant.id}} */
+<pre ng-repeat="variant in fontItem.variants">/* {{fontID}}-{{variant.id}} - {{downloadSubSetID}} */
 @font-face {
   font-family: {{variant.fontFamily}};
   font-style: {{variant.fontStyle}};
