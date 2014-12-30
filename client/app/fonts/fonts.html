@@ -11,7 +11,7 @@
           </div>
           <div class="input-group-btn" dropdown is-open="status.isopen">
             <button id="orderButton" type="button" class="btn btn-default" dropdown-toggle ng-disabled="disabled">
-              <span class="caret"></span>
+              <i class="fa fa-filter"></i>
             </button>
             <ul class="dropdown-menu" role="menu">
               <li role="presentation" class="dropdown-header">Order by</li>
@@ -50,7 +50,7 @@
                          'other': '{} styles'}"></ng-pluralize>&nbsp;·&nbsp;<ng-pluralize count="font.subsets.length"
                   when="{'0': 'no subsets',
                          'one': '{} subset',
-                         'other': '{} subsets'}"></ng-pluralize></p>
+                         'other': '{} subsets'}"></ng-pluralize><!-- &nbsp;·&nbsp;Popularity {{font.popularity}} --></p>
           </a>
         </div>
       </div>
