@@ -20,28 +20,28 @@ function downloadFontFiles(fontItem, cb) {
 
           var filename = conf.CACHE_DIR + fontItem.id + "-" + fontItem.storeID + "-" + variantItem.id + "." + formatKey;
 
-          if (formatKey === "woff2Subsets") {
-            // woff2 has multiple files
-            async.each(variantItem.woff2Subsets, function(woff2item, woff2CB) {
-              var woff2Filename = conf.CACHE_DIR + fontItem.id + "-" + variantItem.id + "-" + woff2item.subset + "." + "woff2";
-              downloadFile(woff2item.url, woff2Filename, function() {
-                filePaths.push(woff2Filename);
-                woff2CB();
-              });
-            }, function(err) {
-              if (err) {
-                typeCB("woff2Subsets failed! err: " + err);
-              } else {
-                typeCB();
-              }
-            });
+          // if (formatKey === "woff2Subsets") {
+          //   // woff2 has multiple files
+          //   async.each(variantItem.woff2Subsets, function(woff2item, woff2CB) {
+          //     var woff2Filename = conf.CACHE_DIR + fontItem.id + "-" + variantItem.id + "-" + woff2item.subset + "." + "woff2";
+          //     downloadFile(woff2item.url, woff2Filename, function() {
+          //       filePaths.push(woff2Filename);
+          //       woff2CB();
+          //     });
+          //   }, function(err) {
+          //     if (err) {
+          //       typeCB("woff2Subsets failed! err: " + err);
+          //     } else {
+          //       typeCB();
+          //     }
+          //   });
 
-          } else {
+          // } else {
             downloadFile(variantItem[formatKey], filename, function() {
               filePaths.push(filename);
               typeCB();
             });
-          }
+          // }
 
         }, function(err) {
           if (err) {

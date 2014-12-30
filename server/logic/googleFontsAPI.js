@@ -43,7 +43,7 @@ var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts, cb) {
           version: item.version,
           lastModified: item.lastModified,
           popularity: index + 1,
-          defSubset: _.contains(item.subsets, 'latin') ? 'latin' : item.subsets[0]
+          defSubset: _.contains(item.subsets, 'latin') ? 'latin' : item.subsets[0] // use latin per default, else first found font
         });
 
         // if(_.contains(item.subsets, 'latin') === false) {

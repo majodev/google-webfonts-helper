@@ -26,8 +26,8 @@ function parseRemoteCSS(remoteCSS, type, callback) {
 
     if (type === "svg") {
       resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+")[0];
-    } else if (type === "woff2Subsets") {
-      resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+\\." + "woff2")[0];
+    // } else if (type === "woff2Subsets") {
+    //   resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+\\." + "woff2")[0];
     } else {
       resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+\\." + type)[0];
     }
