@@ -4,7 +4,15 @@ var async = require('async');
 var conf = require('./conf');
 var cssFetcher = require('./cssFetcher');
 
-function fetchUrls(font, urlStore, callback) {
+function fetchUrls(font, storeID, callback) {
+
+  var tmpUrlStoreObject = {
+    variants: [],
+    storeID: storeID
+  };
+
+  var cssSubsetString = _.clone(storeID).replace('_', ',')
+
   async.each(font.variants, function(variant, variantCB) {
 
     var variantItem = {
@@ -13,7 +21,7 @@ function fetchUrls(font, urlStore, callback) {
 
     async.each(_.pairs(conf.USER_AGENTS), function(typeAgentPair, requestCB) {
 
-      cssFetcher(font.family + ":" + variant, typeAgentPair[0], typeAgentPair[1], function(err, resources) {
+      cssFetcher(font.family + ":" + variant, cssSubsetString, typeAgentPair[0], typeAgentPair[1], function(err, resources) {
         if (err) {
           requestCB(err);
           return;
@@ -84,7 +92,7 @@ function fetchUrls(font, urlStore, callback) {
       } else {
 
         // push complete variantItem to urlStore's variants
-        urlStore[font.id].variants.push(variantItem);
+        tmpUrlStoreObject.variants.push(variantItem);
 
         variantCB();
       }
@@ -95,7 +103,8 @@ function fetchUrls(font, urlStore, callback) {
       console.log(err);
     } else {
       // console.log("All variants processed.");
-      callback(_.merge(_.cloneDeep(font), urlStore[font.id]));
+      // return the processed urlStoreObject...
+      callback(tmpUrlStoreObject);
     }
   });
 }

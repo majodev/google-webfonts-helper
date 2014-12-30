@@ -26,10 +26,16 @@ exports.index = function(req, res) {
 // Get specific fonts including links
 exports.show = function(req, res) {
 
+  // get the subset string if it was supplied... 
+  // e.g. "subset=latin,latin-ext," will be transformed into ["latin","latin-ext"] (non whitespace arrays)
+  var subsetsArr = _.isUndefined(req.query.subsets) ? null : _.without(req.query.subsets.split(/[,]+/), '');
+
+  // console.log(subsets);
+
   if (req.query.download === "zip") {
     // don't return a json, return a zipped download...
 
-    core.getDownload(req.params.id, function(localZipPath) {
+    core.getDownload(req.params.id, subsetsArr, function(localZipPath) {
 
       if (localZipPath === null) {
         res.status(404) // HTTP status 404: NotFound
@@ -41,7 +47,7 @@ exports.show = function(req, res) {
     });
 
   } else {
-    core.get(req.params.id, function(item) {
+    core.get(req.params.id, subsetsArr, function(item) {
       // setTimeout(function() {
       if (item === null) {
         res.status(404) // HTTP status 404: NotFound

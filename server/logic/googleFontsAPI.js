@@ -42,8 +42,15 @@ var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts, cb) {
           category: item.category,
           version: item.version,
           lastModified: item.lastModified,
-          popularity: index + 1
+          popularity: index + 1,
+          defSubset: _.contains(item.subsets, 'latin') ? 'latin' : item.subsets[0]
         });
+
+        // if(_.contains(item.subsets, 'latin') === false) {
+        //   console.log(item.subsets[0] + " - " + item.family);
+        // }
+
+        
 
       });
 

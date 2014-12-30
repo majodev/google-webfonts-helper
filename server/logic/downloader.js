@@ -18,7 +18,7 @@ function downloadFontFiles(fontItem, cb) {
         // console.log(_.keys(conf.USER_AGENTS));
         async.each(_.keys(conf.USER_AGENTS), function(formatKey, typeCB) {
 
-          var filename = conf.CACHE_DIR + fontItem.id + "-" + variantItem.id + "." + formatKey;
+          var filename = conf.CACHE_DIR + fontItem.id + "-" + fontItem.storeID + "-" + variantItem.id + "." + formatKey;
 
           if (formatKey === "woff2Subsets") {
             // woff2 has multiple files

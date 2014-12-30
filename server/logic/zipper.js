@@ -4,9 +4,9 @@ var _ = require('lodash');
 
 var conf = require('./conf');
 
-function zip(fontID, filePaths, cb) {
+function zip(fontItem, filePaths, cb) {
 
-  var filename = conf.CACHE_DIR + fontID + '.zip';
+  var filename = conf.CACHE_DIR + fontItem.id + "-" + fontItem.storeID + '.zip';
 
   var output = fs.createWriteStream(filename);
   var archive = archiver('zip');

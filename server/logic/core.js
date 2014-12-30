@@ -4,6 +4,7 @@ var googleFontsAPI = require('./googleFontsAPI');
 var urlFetcher = require('./urlFetcher');
 var downloader = require('./downloader');
 var zipper = require('./zipper');
+var subsetGen = require('./subsetGen');
 
 var EventEmitter = require('events').EventEmitter;
 
@@ -18,30 +19,78 @@ var emitter = new EventEmitter();
 var googleAPIFontItems = []; // holds originally fetched items from the Google Fonts API
 var cachedFonts = []; // holds actual item list that can get requested - houses a "font" Object
 
-// urlStore holds fetched urls (prop = font.id) to all conf.USER_AGENTS font formats
-// gets merged with an item from cachedFonts to form a so called "fontItem" Object
-var urlStore = {};
 
-// TODO: Augment the urlStore with a subsetStore utilzing the subsetTuples generator!
+
+// The subsetStore is utilzing the subsetTuples generator and identified by the font.id!
+var subsetStore = {}; // every item in here holds a urlStore Object + a unique subset combo.
+// urlStore holds fetched urls to all conf.USER_AGENTS font formats
+// gets merged with an item from cachedFonts to form a so called "fontItem" Object
 
 // zipStore holds path (prop = font.id) to locally cached zip (with all fonts in it)
 // the socalled "zipItem" Object
-var zipStore = {}; 
+var zipStore = {};
 
 
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
 
-function getFontItem(font, callback) {
+function getFilterObject(font, subsetArr) {
+  var filterObj = {};
 
-  if (_.isUndefined(urlStore[font.id]) === false) {
-    if (urlStore[font.id].isDirty !== true) {
+  if (_.isArray(subsetArr) === false || subsetArr.length === 0) {
+    _.each(font.subsets, function(subsetItem) {
+      // supply filter with the default subset as defined in googleFontsAPI fetcher (latin or if no found other)
+      filterObj[subsetItem] = (subsetItem === font.defSubset) ? true : false;
+    });
+  } else {
+    _.each(font.subsets, function(subsetItem) {
+      filterObj[subsetItem] = _.contains(subsetArr, subsetItem);
+    });
+  }
+
+
+  // console.log(filterObj);
+  return filterObj;
+}
+
+function getUrlStoreKey(font, subsetArr) {
+
+  var fontSubsetStore = subsetStore[font.id];
+  var fontSubsetKey;
+
+  // console.log(fontSubsetStore);
+
+  if (_.isUndefined(fontSubsetStore) === false) {
+    fontSubsetKey = _.findKey(fontSubsetStore, getFilterObject(font, subsetArr));
+    // console.log(fontSubsetKey);
+    if (_.isUndefined(fontSubsetKey) === false) {
+      return fontSubsetKey;
+    } else {
+      throw new Error("fontSubsetKey for " + font.id + " subset " + subsetArr + " not found!");
+    }
+  } else {
+    throw new Error("fontSubsetStore for " + font.id + " not found!");
+  }
+}
+
+
+function getFontItem(font, subsetArr, callback) {
+
+  // find the relevant subsetStore Object that holds the needed unique urlStore to fetch
+  var subsetStoreKey = getUrlStoreKey(font, subsetArr);
+  var urlStore = subsetStore[font.id][subsetStoreKey].urlStore;
+
+  if (_.isUndefined(urlStore.variants) === false) {
+    // console.log(urlStore);
+    if (urlStore.isDirty !== true) {
       // already cached, return instantly
-      callback(_.merge(_.cloneDeep(font), urlStore[font.id]));
+      // console.log("already cached!");
+      callback(_.merge(_.cloneDeep(font), urlStore));
     } else {
       // process has already begun, wait until it has finished...
-      emitter.once(font.id + "-pathFetched", function(fontItem) {
+      // console.log("waiting until cache...");
+      emitter.once(font.id + "-pathFetched-" + urlStore.storeID, function(fontItem) {
         callback(fontItem);
       });
     }
@@ -49,44 +98,50 @@ function getFontItem(font, callback) {
     return;
   }
 
-  // Download path wasn't fetched till now
+  // Download paths weren't fetched till now
   // add a new entry
-  urlStore[font.id] = {};
-  urlStore[font.id].variants = [];
-  urlStore[font.id].isDirty = true;
+  urlStore.variants = [];
+  urlStore.isDirty = true;
 
-  // Fetch it!
-  // setTimeout(function() {
-  urlFetcher(font, urlStore, function(fontItem) {
+  // console.log(subsetStore);
+
+  // Fetch fontItem for the first time...
+  urlFetcher(font, subsetStoreKey, function(urlStoreObject) {
+
+    var fontItem = _.merge(_.cloneDeep(font), urlStoreObject)
 
     // fontItem is ready, no longer dirty (but files still are!)
     // remove dirty flag from store...
-    delete urlStore[font.id].isDirty;
+    // delete urlStore[font.id].isDirty;
     // .. and cloned fontItem
-    delete fontItem.isDirty;
+    // delete fontItem.isDirty;
+
+    // save the urlStoreObject...
+    subsetStore[font.id][subsetStoreKey].urlStore = urlStoreObject
 
     // fullfill the original request
     callback(fontItem);
 
     // fullfill still pending requests awaiting process completion
-    emitter.emit(font.id + "-pathFetched", fontItem);
+    emitter.emit(font.id + "-pathFetched-" + urlStoreObject.storeID, fontItem);
 
     // trigger obviating downloading of font files (even tough it's might not needed!)
     getFontFiles(fontItem, null);
 
+    // console.log(urlStore);
+
   });
-  // }, 10000);
 }
 
 function getFontFiles(fontItem, cb) {
 
-  if (_.isUndefined(zipStore[fontItem.id]) === false) {
-    if (zipStore[fontItem.id].isDirty !== true) {
+  if (_.isUndefined(zipStore[fontItem.id + "-" + fontItem.storeID]) === false) {
+    if (zipStore[fontItem.id + "-" + fontItem.storeID].isDirty !== true) {
       // already cached, return instantly
       // callback (if null, it's only obviating)
       if (_.isFunction(cb) === true) {
         // fullfill the original request
-        cb(zipStore[fontItem.id]);
+        cb(zipStore[fontItem.id + "-" + fontItem.storeID]);
       } else {
         // nothing needs to be done, no callback (obviating)!
       }
@@ -108,32 +163,32 @@ function getFontFiles(fontItem, cb) {
     return;
   }
 
-  zipStore[fontItem.id] = {};
-  zipStore[fontItem.id].isDirty = true;
+  zipStore[fontItem.id + "-" + fontItem.storeID] = {};
+  zipStore[fontItem.id + "-" + fontItem.storeID].isDirty = true;
 
 
   // trigger downloading of font files...
   downloader(fontItem, function(localPaths) {
-    zipper(fontItem.id, localPaths, function(zipItemPath) {
+    zipper(fontItem, localPaths, function(zipItemPath) {
 
       // save path to zip with all fonts in store
-      zipStore[fontItem.id].zip = zipItemPath;
+      zipStore[fontItem.id + "-" + fontItem.storeID].zip = zipItemPath;
 
       // zip is ready, no longer dirty
       // remove dirty flag from store...
-      delete zipStore[fontItem.id].isDirty;
+      delete zipStore[fontItem.id + "-" + fontItem.storeID].isDirty;
 
       // callback (if null, it's only obviating)
       if (_.isFunction(cb) === true) {
         // fullfill the original request
         // console.log("Download: fulfill original request...");
-        cb(zipStore[fontItem.id]);
+        cb(zipStore[fontItem.id + "-" + fontItem.storeID]);
       } else {
         // console.log("obsiation, no callback!");
       }
 
       // fullfill still pending requests awaiting process completion
-      emitter.emit(fontItem.id + "-filesFetched", zipStore[fontItem.id]);
+      emitter.emit(fontItem.id + "-filesFetched", zipStore[fontItem.id + "-" + fontItem.storeID]);
 
     });
   });
@@ -147,8 +202,25 @@ function getFontFiles(fontItem, cb) {
   // setTimeout(function() {
 
   googleFontsAPI(googleAPIFontItems, cachedFonts, function(items) {
+
+    // items are cached, build up the subsetStore...
+    var subsetStoreUniqueCombos = 0;
+
+    _.each(items, function(item) {
+      var uniqueSubsetCombos = subsetGen(item.subsets);
+
+      // Create subsetStore for item
+      subsetStore[item.id] = uniqueSubsetCombos;
+
+      // for startup: remember count of items to print it out...
+      subsetStoreUniqueCombos += _.keys(uniqueSubsetCombos).length;
+    });
+
     emitter.emit("initialized");
-    console.log("initialized.");
+
+    console.log("fonts cached and initialized. num fonts: " + items.length +
+      " num unique subset combos: " + subsetStoreUniqueCombos);
+
   });
 
   // }, 10000);
@@ -168,14 +240,14 @@ module.exports.getAll = function getAll(callback) {
   }
 };
 
-module.exports.get = function get(id, callback) {
+module.exports.get = function get(id, subsetArr, callback) {
 
   var font = _.find(cachedFonts, {
     id: id
   });
 
   if (_.isUndefined(font) === false) {
-    getFontItem(font, function(fontItem) {
+    getFontItem(font, subsetArr, function(fontItem) {
       callback(fontItem);
     });
   } else {
@@ -186,14 +258,14 @@ module.exports.get = function get(id, callback) {
 
 };
 
-module.exports.getDownload = function getDownload(id, callback) {
+module.exports.getDownload = function getDownload(id, subsetArr, callback) {
 
   var font = _.find(cachedFonts, {
     id: id
   });
 
   if (_.isUndefined(font) === false) {
-    getFontItem(font, function(fontItem) {
+    getFontItem(font, subsetArr, function(fontItem) {
       getFontFiles(fontItem, function(zipItem) {
         callback(zipItem.zip);
       });

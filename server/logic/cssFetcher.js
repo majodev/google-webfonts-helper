@@ -50,12 +50,12 @@ function parseRemoteCSS(remoteCSS, type, callback) {
   callback(null, resources);
 }
 
-function fetchCSS(family, type, userAgent, callback) {
+function fetchCSS(family, cssSubsetString, type, userAgent, callback) {
   var req = http.request({
     hostname: "fonts.googleapis.com",
     method: 'GET',
     port: 80,
-    path: '/css?family=' + encodeURIComponent(family),
+    path: '/css?family=' + encodeURIComponent(family) + '&subset=' + cssSubsetString,
     headers: {
       'accept': 'text/css,*/*;q=0.1',
       'User-Agent': userAgent
