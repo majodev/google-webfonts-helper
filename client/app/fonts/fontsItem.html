@@ -48,18 +48,7 @@
   </div>
   
 
-  
-
-  <!-- <hr> -->
-
   <div ng-hide="busy" class="fontVariant"> <!-- FONT VARIANT BEGINS -->
-
-    
-
-    <!-- <h4>Font archive</h4> -->
-
-    
-    
 
     <div collapse="isCollapsed">
       <hr>    
@@ -78,29 +67,9 @@
 
     <h4>CSS snippets</h4>
 
-    <!-- <div class="form-group">
-      <label for="folderPrefix">Folder prefix</label>
-      <input id="folderPrefix" class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
-    </div> -->
-
-    <!-- <div class="form-group">
-      <label for="folderPrefix" class="col-sm-2 control-label">Folder prefix</label>
-      <div class="col-sm-10">
-        <input id="folderPrefix" class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
-      </div>
-    </div> -->
-
     <div class="form-inline folderPrefixBar">Folder prefix:&nbsp;<div class="form-group">
       <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
     </div></div>
-
-    <!-- <h5>Instructions:</h5> -->
-    <!-- <ol>
-      <li class="form-inline">Customize the folder prefix:&nbsp;<div class="form-group">
-      <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
-    </div></li>
-      <li>Copy &amp; paste the CSS snippet</li>
-    </ol> -->
 
     <tabset>
       <tab heading="Best support">
@@ -152,4 +121,10 @@
 
     
   </div> <!-- FONT VARIANT ENDS -->
+</div>
+
+<div class="apiError" ng-class="{'show': error === true}">
+  <h2>API Error ({{errorStatus}})</h2>
+  <pre>REQUEST CONFIG: {{errorConfig}}
+REQUEST HEADERS: {{errorHeaders}}</pre>
 </div>

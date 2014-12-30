@@ -54,15 +54,21 @@
           </a>
         </div>
       </div>
-      <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 scrollerRight column" ng-hide="busy">
+      <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 scrollerRight column">
         <div ui-view> <!-- fontItem details template gets appended here -->
           
           <!-- Placeholder no item selected -->
-          <div id="noItemSelectedPlaceholder">
+          <div id="noItemSelectedPlaceholder" ng-hide="busy">
             <h2><ng-pluralize count="fonts.length"
                   when="{'0': '... fonts',
                          'one': '{} font',
                          'other': '{} fonts'}"></ng-pluralize>&nbsp;available.<small><br/><i class="fa fa-angle-double-left"></i> Please select a font!</small></h2>
+          </div>
+
+          <div class="apiError" ng-class="{'show': error === true}">
+            <h2>API Error ({{errorStatus}})</h2>
+            <pre>REQUEST CONFIG: {{errorConfig}}
+REQUEST HEADERS: {{errorHeaders}}</pre>
           </div>
           
         </div>
