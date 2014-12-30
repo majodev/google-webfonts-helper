@@ -35,7 +35,7 @@
       <p><small>Ranks {{fontItem.popularity}}. popular font of {{fonts.length}} fonts in total<br/>Last modified on {{fontItem.lastModified}} ({{fontItem.version}})</small></p>
       
       <button class="btn btn-default btn-sm btn-block" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true" style="font-family:{{fontItem.variants[0].fontFamily}}; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">Preview: The quick brown fox jumps over the lazy dog.</button>
-      
+
     </div>
 
     <div class="col-sm-6 column">
@@ -44,10 +44,8 @@
       <p><small>Fonts are copyright of their respective authors.</small></p>
       <!-- <hr> -->
       <div class="btn-group">
-        <label class="btn btn-info btn-xs" ng-repeat="(key,value) in fontItem.subsetMap" ng-model="fontItem.subsetMap[key]" btn-radio="key" btn-checkbox>{{key}}</label>
+        <label class="btn btn-info btn-xs" ng-repeat="(key,value) in fontItem.subsetMap" ng-model="fontItem.subsetMap[key]" btn-radio="key" btn-checkbox ng-click="subsetSelect()">{{key}}</label>
       </div>
-      
-
       
       <!-- </div> -->
     </div>

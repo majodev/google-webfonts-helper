@@ -39,20 +39,49 @@ angular.module('googleWebfontsHelperApp')
   $scope.busy = true;
   $scope.error = false;
 
-  $scope.subsetRadio = {
-    model: undefined
-  };
+  // $scope.subsetRadio = {
+  //   model: undefined
+  // };
+
+  $scope.selectedSubsets = [];
 
   $scope.fontItemPromise = $http.get('/api/fonts/' + $stateParams.id)
     .success(function(fontItem) {
       $scope.fontItem = fontItem;
 
-      $scope.subsetRadioModelButtons = fontItem.subsets;
+      // $scope.subsetRadioModelButtons = fontItem.subsets;
 
       $scope.busy = false;
     })
     .error(function(data, status, headers, config) {
       apiError($scope, status, headers, config);
     });
+
+  $scope.subsetSelect = function() {
+    // $scope.busy = true;
+    setTimeout(function () {
+      var queryParams = '';
+      
+      $.each($scope.fontItem.subsetMap, function (item) {
+        if($scope.fontItem.subsetMap[item] === true) {
+          queryParams += item + ',';
+        }
+      });
+
+      console.log(queryParams);
+
+      $http.get('/api/fonts/' + $scope.fontID + '?subsets=' + queryParams)
+        .success(function(fontItem) {
+          $scope.fontItem = fontItem;
+        })
+        .error(function(data, status, headers, config) {
+          apiError($scope, status, headers, config);
+        });
+
+    }, 250);
+
+    
+    // $scope
+  };
 
 });

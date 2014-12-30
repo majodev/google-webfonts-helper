@@ -3,7 +3,17 @@ var _ = require('lodash');
 var http = require('http');
 
 function parseRemoteCSS(remoteCSS, type, callback) {
-  var parsedCSS = css.parse(remoteCSS);
+  var parsedCSS;
+
+  try {
+    parsedCSS = css.parse(remoteCSS);
+  } catch (e) {
+    console.error("CSS couldn't be parsed:" + type);
+    // console.error(e);
+    callback("CSS couldn't be parsed:" + type + " error:" + e, []);
+    return;
+  }
+
 
   var resources = [];
 
@@ -26,8 +36,8 @@ function parseRemoteCSS(remoteCSS, type, callback) {
 
     if (type === "svg") {
       resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+")[0];
-    // } else if (type === "woff2Subsets") {
-    //   resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+\\." + "woff2")[0];
+      // } else if (type === "woff2Subsets") {
+      //   resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+\\." + "woff2")[0];
     } else {
       resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+\\." + type)[0];
     }
@@ -51,6 +61,9 @@ function parseRemoteCSS(remoteCSS, type, callback) {
 }
 
 function fetchCSS(family, cssSubsetString, type, userAgent, callback) {
+
+  // console.log("fonts.googleapis.com" + '/css?family=' + encodeURIComponent(family) + '&subset=' + cssSubsetString);
+
   var req = http.request({
     hostname: "fonts.googleapis.com",
     method: 'GET',

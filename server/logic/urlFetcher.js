@@ -11,7 +11,8 @@ function fetchUrls(font, storeID, callback) {
     storeID: storeID
   };
 
-  var cssSubsetString = _.clone(storeID).replace('_', ',')
+  var cssSubsetString = _.clone(storeID).replace(/_/g, ","); // make the variant string google API compatible...
+  // console.log(cssSubsetString);
 
   async.each(font.variants, function(variant, variantCB) {
 
