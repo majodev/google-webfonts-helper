@@ -23,7 +23,7 @@ function fetchUrls(font, urlStore, callback) {
         var type = typeAgentPair[0];
         var url = resources[0]._extracted.url;
 
-        // woff2 has multiple urls and unicode-range set - return an array with url, unicodeRange and subset properties
+        // woff2Subsets has multiple urls and unicode-range set - return an array with url, unicodeRange and subset properties
         if (type === "woff2Subsets") {
 
           variantItem[type] = [];
@@ -44,7 +44,7 @@ function fetchUrls(font, urlStore, callback) {
                 subset: font.subsets[index]
               });
             } else {
-              console.error("Cannot produce woff2 entry for " + resources[0]["font-family"] + ", unicode-range missing")
+              console.error("Cannot produce woff2Subsets entry for " + resources[0]["font-family"] + ", unicode-range missing")
             }
 
           });

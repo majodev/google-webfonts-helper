@@ -19,6 +19,7 @@
               <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="'family'"><a href="#">Family name</a></li>
               <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="['category','family']"><a href="#">Category name</a></li>
               <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="['-variants.length','family']"><a href="#">Number of styles</a></li>
+              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="['-subsets.length','family']"><a href="#">Number of subsets</a></li>
               <li class="divider"></li>
               <li ng-click="reverse=!reverse; scrollListTop()"><a href="#">{{reverse === true ? "↑ ascending" : "↓ descending"}}</a></li>
             </ul>
@@ -42,10 +43,14 @@
       <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scrollerLeft column" ng-hide="busy">
         <div class="list-group">
           <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts | filter:query | orderBy:predicate:reverse">
-            <h5 class="list-group-item-heading">{{font.family}} <small>{{font.category}}&nbsp;·&nbsp;<ng-pluralize count="font.variants.length"
+            <h5 class="list-group-item-heading">{{font.family}} <small>{{font.category}}</small></h5>
+            <p class="list-group-item-text mini text-muted"><ng-pluralize count="font.variants.length"
                   when="{'0': 'no style',
                          'one': '{} style',
-                         'other': '{} styles'}"></ng-pluralize></small></h5>
+                         'other': '{} styles'}"></ng-pluralize>&nbsp;·&nbsp;<ng-pluralize count="font.subsets.length"
+                  when="{'0': 'no subsets',
+                         'one': '{} subset',
+                         'other': '{} subsets'}"></ng-pluralize></p>
           </a>
         </div>
       </div>

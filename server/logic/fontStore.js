@@ -15,10 +15,16 @@ var EventEmitter = require('events').EventEmitter;
 // manage multiple requests to non-complete resources via an emitter ()
 var emitter = new EventEmitter();
 
-var googleAPIFontItems = [];
-var cachedFonts = [];
-var urlStore = {};
-var zipStore = {};
+var googleAPIFontItems = []; // holds originally fetched items from the Google Fonts API
+var cachedFonts = []; // holds actual item list that can get requested - houses a "font" Object
+
+// urlStore holds fetched urls (prop = font.id) to all conf.USER_AGENTS font formats
+// gets merged with an item from cachedFonts to form a so called "fontItem" Object
+var urlStore = {}; 
+
+// zipStore holds path (prop = font.id) to locally cached zip (with all fonts in it)
+// the socalled "zipItem" Object
+var zipStore = {}; 
 
 
 // -----------------------------------------------------------------------------
