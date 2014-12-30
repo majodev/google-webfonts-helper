@@ -39,10 +39,10 @@
 
  
   <div class="box"> <!-- wrapper for scrollbar divs -->
-    <div class="row-fluid" cg-busy="{promise: fontsPromise, message: 'Loading fonts...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
+    <div class="row-fluid" cg-busy="{promise: fontsPromise, message: 'Loading Font List...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
       <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scrollerLeft column" ng-hide="busy">
         <div class="list-group">
-          <a href="/fonts/{{font.id}}" class="list-group-item" ng-repeat="font in fonts | filter:query | orderBy:predicate:reverse">
+          <a href="/fonts/{{font.id}}?subsets={{font.defSubset}}" class="list-group-item" ng-repeat="font in fonts | filter:query | orderBy:predicate:reverse">
             <h5 class="list-group-item-heading">{{font.family}} <small>{{font.category}}</small></h5>
             <p class="list-group-item-text mini text-muted"><ng-pluralize count="font.variants.length"
                   when="{'0': 'no style',

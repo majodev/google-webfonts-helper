@@ -9,7 +9,7 @@ angular.module('googleWebfontsHelperApp')
         controller: 'FontsCtrl'
       })
       .state('fonts.item', {
-        url: '/:id',
+        url: '/:id?subsets',
         templateUrl: 'app/fonts/fontsItem.html',
         controller: 'FontsItemCtrl'
       });
