@@ -17,7 +17,7 @@ function getSubsets(input) {
       }
     } while (i--);
     if (result.length >= MINIMAL_SUBSET_SIZE) {
-      
+
       // save in a object with unique id not array - as not as easily manipulateable
       results[getUniqueStoreID(result)] = getDefaultSubsetObj(result, input);
 
@@ -27,19 +27,6 @@ function getSubsets(input) {
 
   return results;
 }
-
-
-// represent the data with a set of booleans, which is duplicate free 
-// and easy to filter
-// e.g. one tuple:
-// {
-//   greek-ext: true,
-//   latin: false,
-//   vietnamese: false,
-//   urlStore: {
-//     storeID: "greek-ext"
-//   }
-// }
 
 function getUniqueStoreID(uniqueCombArr) {
   var storeID = '';
@@ -57,35 +44,22 @@ function getUniqueStoreID(uniqueCombArr) {
   return storeID;
 }
 
-function getDefaultSubsetObj(uniqueCombArr, inputArr) {
 
-  var obj = {
-    urlStore: { // within the subset object, a urlStore is setuped. 
-    }
+
+// represent the data with a set of booleans, which is duplicate free 
+// and easy to filter
+function getDefaultSubsetObj(uniqueCombArr, inputArr) {
+  // within the subset object, a urlStore is setuped. 
+  var urlStore = {
+    subsetMap: {}
   };
 
-  //var lastItemIndex = uniqueCombArr.length - 1;
-
   _.each(inputArr, function(inputItem) {
-    obj[inputItem] = _.contains(uniqueCombArr, inputItem);
+    urlStore.subsetMap[inputItem] = _.contains(uniqueCombArr, inputItem);
   });
 
-  //_.each(uniqueCombArr, function(uniqueItem) {
 
-    //obj[uniqueItem] = true;
-
-    // console.log(uniqueItem);
-
-    // if (index < lastItemIndex) {
-    //   obj.urlStore.storeID += uniqueItem + "_";
-    //   // e.g. IDpart_IDpart_IDpart
-    // } else {
-    //   obj.urlStore.storeID += uniqueItem;
-    // }
-
-  //});
-
-  return obj;
+  return urlStore;
 }
 
 

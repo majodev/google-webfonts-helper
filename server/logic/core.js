@@ -62,7 +62,9 @@ function getUrlStoreKey(font, subsetArr) {
   // console.log(fontSubsetStore);
 
   if (_.isUndefined(fontSubsetStore) === false) {
-    fontSubsetKey = _.findKey(fontSubsetStore, getFilterObject(font, subsetArr));
+    fontSubsetKey = _.findKey(fontSubsetStore, {
+      subsetMap: getFilterObject(font, subsetArr)
+    });
     // console.log(fontSubsetKey);
     if (_.isUndefined(fontSubsetKey) === false) {
       return fontSubsetKey;
@@ -79,7 +81,9 @@ function getFontItem(font, subsetArr, callback) {
 
   // find the relevant subsetStore Object that holds the needed unique urlStore to fetch
   var subsetStoreKey = getUrlStoreKey(font, subsetArr);
-  var urlStore = subsetStore[font.id][subsetStoreKey].urlStore;
+  var urlStore = subsetStore[font.id][subsetStoreKey];
+
+  // console.log(urlStore);
 
   if (_.isUndefined(urlStore.variants) === false) {
     // console.log(urlStore);
@@ -108,16 +112,18 @@ function getFontItem(font, subsetArr, callback) {
   // Fetch fontItem for the first time...
   urlFetcher(font, subsetStoreKey, function(urlStoreObject) {
 
-    var fontItem = _.merge(_.cloneDeep(font), urlStoreObject)
+    var fontItem;
+
+    // save the urlStoreObject...
+    _.assign(subsetStore[font.id][subsetStoreKey], urlStoreObject);
 
     // fontItem is ready, no longer dirty (but files still are!)
     // remove dirty flag from store...
-    // delete urlStore[font.id].isDirty;
-    // .. and cloned fontItem
-    // delete fontItem.isDirty;
+    delete subsetStore[font.id][subsetStoreKey].isDirty;
 
-    // save the urlStoreObject...
-    subsetStore[font.id][subsetStoreKey].urlStore = urlStoreObject
+
+    // set and build up a proper fontItem
+    fontItem = _.merge(_.cloneDeep(font), subsetStore[font.id][subsetStoreKey])
 
     // fullfill the original request
     callback(fontItem);

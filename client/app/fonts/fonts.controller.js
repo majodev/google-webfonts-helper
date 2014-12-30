@@ -39,9 +39,16 @@ angular.module('googleWebfontsHelperApp')
   $scope.busy = true;
   $scope.error = false;
 
+  $scope.subsetRadio = {
+    model: undefined
+  };
+
   $scope.fontItemPromise = $http.get('/api/fonts/' + $stateParams.id)
     .success(function(fontItem) {
       $scope.fontItem = fontItem;
+
+      $scope.subsetRadioModelButtons = fontItem.subsets;
+
       $scope.busy = false;
     })
     .error(function(data, status, headers, config) {
