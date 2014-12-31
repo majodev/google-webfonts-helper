@@ -153,7 +153,7 @@ function getFontFiles(fontItem, cb) {
       }
     } else {
       // process has already begun, wait until it has finished...
-      emitter.once(fontItem.id + "-filesFetched", function(zipItem) {
+      emitter.once(fontItem.id + "-filesFetched-" + fontItem.storeID, function(zipItem) {
         // console.log("Download: fulfilling pending download request...");
         // callback (if null, it's only obviating)
         if (_.isFunction(cb) === true) {
@@ -194,7 +194,7 @@ function getFontFiles(fontItem, cb) {
       }
 
       // fullfill still pending requests awaiting process completion
-      emitter.emit(fontItem.id + "-filesFetched", zipStore[fontItem.id + "-" + fontItem.storeID]);
+      emitter.emit(fontItem.id + "-filesFetched-" + fontItem.storeID, zipStore[fontItem.id + "-" + fontItem.storeID]);
 
     });
   });
