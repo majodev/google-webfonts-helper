@@ -17,7 +17,7 @@
 </style>
 
 
-<div cg-busy="{promise: fullLoadingPromise, message: 'Loading {{fontID}}...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
+<div cg-busy="{promise: fullLoadingPromise, message: 'Loading {{fontID}}...'}">
   <div class="row" ng-hide="busy">
     <div class="col-sm-6 column">
       <h3>{{fontItem.family}} <small>{{fontItem.category}}</small></h3>
@@ -54,7 +54,7 @@
       
 
     </div>
-    <div cg-busy="{promise: partialLoadingPromise, message: 'Grabbing links...', templateUrl: 'app/fonts/customLoadingTemplate.html'}" class="col-sm-6 column">
+    <div cg-busy="{promise: partialLoadingPromise, message: 'Packaging...'}" class="col-sm-6 column">
 
       <h4 class="download-block"><strong>2.</strong> Download font files for self-hosting:<br/><small>Archives are auto-generated and only include your selected character sets (but all font styles).</small></h4>
 
@@ -85,9 +85,9 @@
 
     </div>
 
-    <hr>
+    <!-- <hr> -->
 
-    <div cg-busy="{promise: partialLoadingPromise, message: 'Inventing CSS...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
+    <div class="fontItemCSSWrap" cg-busy="{promise: partialLoadingPromise, message: 'Inventing CSS...'}">
 
       <h4><strong>3.</strong> Copy these CSS snippets for your desired styles:<br/><small>Select <code>Best Support</code> if old browsers need to be supported. Customize the folder prefix so that it matches your folder structure.</small></h4>
 
@@ -145,8 +145,13 @@
       </tab> -->
       </tabset>
     </div>
-    
+    <hr>
+    <h4><strong>4.</strong> You should now be ready to use {{fontItem.family}}.<br/><small>If this service has actually been helpful for you, please <a href="https://github.com/majodev/google-webfonts-helper/" target="_blank">star it on GitHub</a>. If you've encountered serious problems file an issue <a href="https://github.com/majodev/google-webfonts-helper/issues">here</a>.</small></h4>
+    <hr>
   </div> <!-- FONT VARIANT ENDS -->
+
+  
+
 </div>
 
 <div class="apiError" ng-class="{'show': error === true}">
