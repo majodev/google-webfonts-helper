@@ -17,16 +17,18 @@
 </style>
 
 
-<div cg-busy="{promise: fontItemPromise, message: loadingMessage, subMessage: loadingSubMessage, templateUrl: 'app/fonts/customLoadingTemplate.html'}">
+<div cg-busy="{promise: fullLoadingPromise, message: 'Loading {{fontID}}...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
   <div class="row" ng-hide="busy">
     <div class="col-sm-6 column">
       <h3>{{fontItem.family}} <small>{{fontItem.category}}</small></h3>
-      <h4><ng-pluralize count="fontItem.variants.length"
+      <p><small><!-- Ranks {{fontItem.popularity}}. popular font of {{fonts.length}} fonts in total<br/> -->Last modified on {{fontItem.lastModified}} ({{fontItem.version}})</small></p>
+      <hr>
+      <h5><ng-pluralize count="fontItem.variants.length"
                     when="{'0': 'no style',
                            'one': '{} style',
                            'other': '{} styles'}">
-      </ng-pluralize>&nbsp;<small><span ng-repeat="variant in fontItem.variants">{{variant.id}}{{$last ? "" : ", "}}</span></small></h4>
-      <h5><ng-pluralize count="subSetsSelected"
+      </ng-pluralize>&nbsp;<small><span ng-repeat="variant in fontItem.variants">{{variant.id}}{{$last ? "" : ", "}}</span></small></h5>
+      <!-- <h5><ng-pluralize count="subSetsSelected"
                     when="{'0': 'no subsets',
                            'one': '{} subset',
                            'other': '{} subsets'}">
@@ -34,21 +36,30 @@
                     when="{'0': 'no subsets',
                            'one': '{} subset',
                            'other': '{} subsets'}">
-      </ng-pluralize>&nbsp;available<!-- <span ng-repeat="subset in fontItem.subsets">{{subset}}{{$last ? "" : ", "}}</span> --></small></h5>
-      <div class="btn-group">
-        <label class="btn btn-success btn-xs" ng-repeat="(key,value) in fontItem.subsetMap" ng-model="fontItem.subsetMap[key]" btn-radio="key" btn-checkbox ng-click="subsetSelect()">{{key}}</label>
+      </ng-pluralize>&nbsp;available<span ng-repeat="subset in fontItem.subsets">{{subset}}{{$last ? "" : ", "}}</span></small></h5> -->
+      <hr>
+      <h4><strong>1.</strong> Choose the character sets you want:<br/><small>Select at least one character set (default is <code>{{fontItem.defSubset}}</code>). </small></h4>
+      <div class="subsetGroup">
+        <label class="checkbox-inline" ng-repeat="(key,value) in fontItem.subsetMap">
+          <input type="checkbox" ng-model="fontItem.subsetMap[key]" name="key" ng-click="subsetSelect()" data-ng-disabled="checkSubsetMinimalSelection(key)">{{key}}
+        </label>
       </div>
+
+      <!-- <div class="btn-group">
+        <label class="btn btn-success btn-xs" ng-repeat="(key,value) in fontItem.subsetMap" ng-model="fontItem.subsetMap[key]" btn-radio="key" btn-checkbox ng-click="subsetSelect()">{{key}}</label>
+      </div> -->
       
-      <p><small>Ranks {{fontItem.popularity}}. popular font of {{fonts.length}} fonts in total<br/>Last modified on {{fontItem.lastModified}} ({{fontItem.version}})</small></p>
+      
       
       
 
     </div>
+    <div cg-busy="{promise: partialLoadingPromise, message: 'Grabbing links...', templateUrl: 'app/fonts/customLoadingTemplate.html'}" class="col-sm-6 column">
 
-    <div class="col-sm-6 column">
+      <h4 class="download-block"><strong>2.</strong> Download font files for self-hosting:<br/><small>Archives are auto-generated and only include your selected character sets (but all font styles).</small></h4>
 
-      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>Download&nbsp;archive&nbsp;<br/><small>.eot, .ttf, .svg, .woff and .woff2 files included</small></a>
-      <p><small><strong>{{fontItem.id}}-{{fontItem.storeID}}.zip</strong></small></p>
+      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.storeID}}.zip&nbsp;<br/><small>.eot, .ttf, .svg, .woff and .woff2 files included</small></a>
+      <!-- <p><small><strong>{{fontItem.id}}-{{fontItem.storeID}}.zip</strong></small></p> -->
       <p><small>Fonts are copyright of their respective authors.</small></p>
 
       <button class="btn btn-default btn-sm btn-block" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true" style="font-family:{{fontItem.variants[0].fontFamily}}; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">Preview: The quick brown fox jumps over the lazy dog.</button>
@@ -59,7 +70,7 @@
   </div>
   
 
-  <div ng-hide="busy" class="fontVariant"> <!-- FONT VARIANT BEGINS -->
+  <div class="fontVariant" ng-hide="busy"> <!-- FONT VARIANT BEGINS -->
 
     <div collapse="isCollapsed">
       <hr>    
@@ -76,14 +87,18 @@
 
     <hr>
 
-    <h4>CSS snippets</h4>
+    <div cg-busy="{promise: partialLoadingPromise, message: 'Inventing CSS...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
 
-    <div class="form-inline folderPrefixBar">Folder prefix:&nbsp;<div class="form-group">
-      <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
-    </div></div>
+      <h4><strong>3.</strong> Copy these CSS snippets for your desired styles:<br/><small>Select <code>Best Support</code> if old browsers need to be supported. Customize the folder prefix so that it matches your folder structure.</small></h4>
 
-    <tabset>
-      <tab heading="Best Support">
+
+
+      <div class="form-inline folderPrefixBar">Folder prefix:&nbsp;<div class="form-group">
+        <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
+      </div></div>
+
+      <tabset>
+        <tab heading="Best Support">
         
 <pre ng-repeat="variant in fontItem.variants">/* {{fontID}}-{{variant.id}} - {{downloadSubSetID}} */
 @font-face {
@@ -99,10 +114,10 @@
        url('<a href="{{variant.svg}}">{{folderPrefix}}{{fontID}}-{{fontItem.storeID}}-{{variant.id}}.svg#{{variant.svg.substring(variant.svg.indexOf('#')+1);}}</a>') format('svg'); /* Legacy iOS */
 }
 </pre>
-      </tab>
+        </tab>
 
-      <tab heading="Modern Browsers">
-      <p>css-tricks.com: <a href="http://css-tricks.com/snippets/css/using-font-face/" target="blank">Things are shifting heavily toward WOFF</a><br/>caniuse.com: <a href="http://caniuse.com/#feat=woff" target="blank">Can I use woff? (compatibility information)</a></p>
+        <tab heading="Modern Browsers">
+        <p>css-tricks.com: <a href="http://css-tricks.com/snippets/css/using-font-face/" target="blank">Things are shifting heavily toward WOFF</a><br/>caniuse.com: <a href="http://caniuse.com/#feat=woff" target="blank">Can I use woff? (compatibility information)</a></p>
 <pre ng-repeat="variant in fontItem.variants">/* {{fontID}}-{{variant.id}} - {{downloadSubSetID}} */
 @font-face {
   font-family: {{variant.fontFamily}};
@@ -113,7 +128,7 @@
        url('<a href="{{variant.woff}}">{{folderPrefix}}{{fontID}}-{{fontItem.storeID}}-{{variant.id}}.woff</a>') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 </pre>
-      </tab>
+        </tab>
 
 <!--       <tab heading="woff2 with subsets">
       <p>gist.github.com: <a href="https://gist.github.com/sergejmueller/cf6b4f2133bcb3e2f64a" target="blank">Learn more about WOFF2</a><br/>caniuse.com: <a href="http://caniuse.com/#feat=woff2" target="blank">Can I use woff2? (compatibility information)</a></p>
@@ -128,8 +143,8 @@
 }
 </span></pre>
       </tab> -->
-    </tabset>
-
+      </tabset>
+    </div>
     
   </div> <!-- FONT VARIANT ENDS -->
 </div>

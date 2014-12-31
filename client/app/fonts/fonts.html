@@ -19,7 +19,7 @@
               <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="'family'"><a href="#">Family name</a></li>
               <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="['category','family']"><a href="#">Category name</a></li>
               <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="['-variants.length','family']"><a href="#">Number of styles</a></li>
-              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="['-subsets.length','family']"><a href="#">Number of subsets</a></li>
+              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="['-subsets.length','family']"><a href="#">Number of charsets</a></li>
               <li class="divider"></li>
               <li ng-click="reverse=!reverse; scrollListTop()"><a href="#">{{reverse === true ? "↑ ascending" : "↓ descending"}}</a></li>
             </ul>
@@ -39,8 +39,8 @@
 
  
   <div class="box"> <!-- wrapper for scrollbar divs -->
-    <div class="row-fluid" cg-busy="{promise: fontsPromise, message: 'Loading Font List...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
-      <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scrollerLeft column" ng-hide="busy">
+    <div class="row-fluid">
+      <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scrollerLeft column" cg-busy="{promise: fontsPromise, message: 'Loading Font List...', templateUrl: 'app/fonts/customLoadingTemplate.html'}">
         <div class="list-group">
           <a href="/fonts/{{font.id}}?subsets={{font.defSubset}}" class="list-group-item" ng-repeat="font in fonts | filter:query | orderBy:predicate:reverse">
             <h5 class="list-group-item-heading">{{font.family}} <small>{{font.category}}</small></h5>
@@ -48,9 +48,9 @@
                   when="{'0': 'no style',
                          'one': '{} style',
                          'other': '{} styles'}"></ng-pluralize>&nbsp;·&nbsp;<ng-pluralize count="font.subsets.length"
-                  when="{'0': 'no subsets',
-                         'one': '{} subset',
-                         'other': '{} subsets'}"></ng-pluralize><!-- &nbsp;·&nbsp;Popularity {{font.popularity}} --></p>
+                  when="{'0': 'no charsets',
+                         'one': '{} charset',
+                         'other': '{} charsets'}"></ng-pluralize><!-- &nbsp;·&nbsp;Popularity {{font.popularity}} --></p>
           </a>
         </div>
       </div>
@@ -58,7 +58,7 @@
         <div ui-view> <!-- fontItem details template gets appended here -->
           
           <!-- Placeholder no item selected -->
-          <div id="noItemSelectedPlaceholder" ng-hide="busy">
+          <div id="noItemSelectedPlaceholder">
             <h2><ng-pluralize count="fonts.length"
                   when="{'0': '... fonts',
                          'one': '{} font',
