@@ -9,8 +9,10 @@ angular.module('googleWebfontsHelperApp', [
     'cgBusy'
   ])
   .config(function($stateProvider, $urlRouterProvider, $locationProvider) {
+    
     $urlRouterProvider
-      .otherwise('/fonts');
+      .otherwise('/fonts'); // default urls is /fonts
 
     $locationProvider.html5Mode(true);
+
   });

@@ -14,6 +14,7 @@
     <!-- build:css(client) app/vendor.css -->
       <!-- bower:css -->
       <link rel="stylesheet" href="bower_components/angular-busy/dist/angular-busy.css" />
+      <link rel="stylesheet" href="bower_components/highlightjs/styles/github.css" />
       <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,client}) app/app.css -->
@@ -59,16 +60,16 @@
       <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
       <script src="bower_components/angular-animate/angular-animate.js"></script>
       <script src="bower_components/angular-busy/dist/angular-busy.js"></script>
+      <script src="bower_components/highlightjs/highlight.pack.js"></script>
       <!-- endbower -->
     <!-- endbuild -->
 
         <!-- build:js({.tmp,client}) app/app.js -->
         <script src="app/app.js"></script>
           <!-- injector:js -->
+          <script src="app/cssCode/cssCode.directive.js"></script>
           <script src="app/fonts/fonts.controller.js"></script>
           <script src="app/fonts/fonts.js"></script>
-          <script src="components/modal/modal.service.js"></script>
-          <script src="components/navbar/navbar.controller.js"></script>
           <!-- endinjector -->
         <!-- endbuild -->
 </body>

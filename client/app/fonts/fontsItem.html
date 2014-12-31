@@ -99,50 +99,27 @@
 
       <tabset>
         <tab heading="Best Support">
-        
-<pre ng-repeat="variant in fontItem.variants">/* {{fontID}}-{{variant.id}} - {{downloadSubSetID}} */
-@font-face {
-  font-family: {{variant.fontFamily}};
-  font-style: {{variant.fontStyle}};
-  font-weight: {{variant.fontWeight}};
-  src: url('<a href="{{variant.eot}}">{{folderPrefix}}{{fontID}}-{{fontItem.storeID}}-{{variant.id}}.eot</a>'); /* IE9 Compat Modes */
-  src: local('{{variant.local[0]}}'),{{variant.local[1].length > 0 ? " local('" + variant.local[1] + "')," : ""}}
-       url('{{folderPrefix}}{{fontID}}-{{fontItem.storeID}}-{{variant.id}}.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('<a href="{{variant.woff2}}">{{folderPrefix}}{{fontID}}-{{fontItem.storeID}}-{{variant.id}}.woff2</a>') format('woff2'), /* Super Modern Browsers */
-       url('<a href="{{variant.woff}}">{{folderPrefix}}{{fontID}}-{{fontItem.storeID}}-{{variant.id}}.woff</a>') format('woff'), /* Modern Browsers */
-       url('<a href="{{variant.ttf}}">{{folderPrefix}}{{fontID}}-{{fontItem.storeID}}-{{variant.id}}.ttf</a>') format('truetype'), /* Safari, Android, iOS */
-       url('<a href="{{variant.svg}}">{{folderPrefix}}{{fontID}}-{{fontItem.storeID}}-{{variant.id}}.svg#{{variant.svg.substring(variant.svg.indexOf('#')+1);}}</a>') format('svg'); /* Legacy iOS */
-}
-</pre>
+          <div ng-repeat="variant in fontItem.variants" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{bestSupport:true}"></div>
         </tab>
 
         <tab heading="Modern Browsers">
-        <p>css-tricks.com: <a href="http://css-tricks.com/snippets/css/using-font-face/" target="blank">Things are shifting heavily toward WOFF</a><br/>caniuse.com: <a href="http://caniuse.com/#feat=woff" target="blank">Can I use woff? (compatibility information)</a></p>
-<pre ng-repeat="variant in fontItem.variants">/* {{fontID}}-{{variant.id}} - {{downloadSubSetID}} */
-@font-face {
-  font-family: {{variant.fontFamily}};
-  font-style: {{variant.fontStyle}};
-  font-weight: {{variant.fontWeight}};
-  src: local('{{variant.local[0]}}'),{{variant.local[1].length > 0 ? " local('" + variant.local[1] + "')," : ""}}
-       url('<a href="{{variant.woff2}}">{{folderPrefix}}{{fontID}}-{{fontItem.storeID}}-{{variant.id}}.woff2</a>') format('woff2'), /* Chrome 26+, Opera 23+ */
-       url('<a href="{{variant.woff}}">{{folderPrefix}}{{fontID}}-{{fontItem.storeID}}-{{variant.id}}.woff</a>') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-}
-</pre>
+          <p>css-tricks.com: <a href="http://css-tricks.com/snippets/css/using-font-face/" target="blank">Things are shifting heavily toward WOFF</a><br/>caniuse.com: <a href="http://caniuse.com/#feat=woff" target="blank">Can I use woff? (compatibility information)</a></p>
+          <div ng-repeat="variant in fontItem.variants" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{modernBrowsers:true}"></div>
         </tab>
 
-<!--       <tab heading="woff2 with subsets">
-      <p>gist.github.com: <a href="https://gist.github.com/sergejmueller/cf6b4f2133bcb3e2f64a" target="blank">Learn more about WOFF2</a><br/>caniuse.com: <a href="http://caniuse.com/#feat=woff2" target="blank">Can I use woff2? (compatibility information)</a></p>
-<pre ng-repeat="variant in fontItem.variants"><span ng-repeat="woff2Item in variant.woff2Subsets">/* {{fontID}}-{{variant.id}} - {{woff2Item.subset}} subset */
-@font-face {
-  font-family: {{variant.fontFamily}};  
-  font-style: {{variant.fontStyle}};
-  font-weight: {{variant.fontWeight}};
-  src: local('{{variant.local[0]}}'),{{variant.local[1].length > 0 ? " local('" + variant.local[1] + "')," : ""}} 
-       url('<a href="{{woff2Item.url}}">{{folderPrefix}}{{fontID}}-{{fontItem.storeID}}-{{variant.id}}-{{woff2Item.subset}}.woff2</a>') format('woff2');
-  unicode-range: {{woff2Item.unicodeRange}};
-}
-</span></pre>
-      </tab> -->
+        <tab heading="Files served by Google">
+          <div ng-repeat="variant in fontItem.variants">
+            <h5>{{fontItem.id}}-{{variant.id}} <small>{{fontItem.storeID}}</small></h5>
+            <ul>
+              <li><a href="{{variant.eot}}">{{variant.eot}}</a></li>
+              <li><a href="{{variant.woff2}}">{{variant.woff2}}</a></li>
+              <li><a href="{{variant.woff}}">{{variant.woff}}</a></li>
+              <li><a href="{{variant.ttf}}">{{variant.ttf}}</a></li>
+              <li><a href="{{variant.svg}}">{{variant.svg}}</a></li>
+            </ul>
+          </div>
+        </tab>
+
       </tabset>
     </div>
     <hr>
