@@ -81,7 +81,7 @@ angular.module('googleWebfontsHelperApp')
   }
 
   $scope.checkSubsetMinimalSelection = function(key) {
-    console.log(key);
+    // console.log(key);
 
     // var anySelection = '';
 
@@ -93,7 +93,7 @@ angular.module('googleWebfontsHelperApp')
     // });
 
     if($scope.subSetsSelected === 1 && $scope.fontItem.subsetMap[key] === true) {
-      console.log(key);
+      // console.log(key);
       return true;
     } else {
       return false;
