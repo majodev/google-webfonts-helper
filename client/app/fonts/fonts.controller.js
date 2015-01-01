@@ -10,6 +10,8 @@ function apiError($scope, status, headers, config) {
 }
 
 var previousFontItem = false;
+var checkboxTimeout = null;
+
 
 angular.module('googleWebfontsHelperApp')
   .controller('FontsCtrl', function($scope, $http) {
@@ -38,14 +40,21 @@ angular.module('googleWebfontsHelperApp')
 .controller('FontsItemCtrl', function($scope, $stateParams, $http, $state) {
 
   var subSetString = $stateParams.subsets || '';
+
+  if (checkboxTimeout) {
+    clearTimeout(checkboxTimeout);
+  }
+
   $scope.fontID = $stateParams.id;
 
   if (previousFontItem && previousFontItem.id === $stateParams.id) {
     // former item is a candiate for instant population until load is complete.
     $scope.fontItem = previousFontItem;
+    $scope.loadingMessage = 'Customizing ' + $stateParams.id + '...';
   } else {
     // clear it
     previousFontItem = false;
+    $scope.loadingMessage = 'Loading ' + $stateParams.id + '...';
   }
 
   $scope.error = false;
@@ -53,7 +62,7 @@ angular.module('googleWebfontsHelperApp')
   $scope.downloadSubSetID = '';
   $scope.subSetsSelected = 0;
 
-  var promise = $http.get('/api/fonts/' + $stateParams.id + '?subsets=' + subSetString)
+  $scope.loadingPromise = $http.get('/api/fonts/' + $stateParams.id + '?subsets=' + subSetString)
     .success(function(fontItem) {
       $scope.fontItem = fontItem;
 
@@ -74,10 +83,10 @@ angular.module('googleWebfontsHelperApp')
 
 
   if (previousFontItem === false) {
-    $scope.fullLoadingPromise = promise;
+    // $scope.fullLoadingPromise = promise;
     $scope.busy = true;
   } else {
-    $scope.partialLoadingPromise = promise;
+    // $scope.partialLoadingPromise = promise;
   }
 
   $scope.checkSubsetMinimalSelection = function(key) {
@@ -92,7 +101,7 @@ angular.module('googleWebfontsHelperApp')
     //   }
     // });
 
-    if($scope.subSetsSelected === 1 && $scope.fontItem.subsetMap[key] === true) {
+    if ($scope.subSetsSelected === 1 && $scope.fontItem.subsetMap[key] === true) {
       // console.log(key);
       return true;
     } else {
@@ -102,24 +111,30 @@ angular.module('googleWebfontsHelperApp')
 
   $scope.subsetSelect = function() {
 
-    if ($scope.fontItem.subsetMap.length === 1) {
-      return;
+    if (checkboxTimeout) {
+      clearTimeout(checkboxTimeout);
     }
 
     setTimeout(function() {
       var queryParams = '';
+      var lenChecked = 0;
+      var map = $scope.fontItem.subsetMap;
+      var defaultSet = $scope.fontItem.defSubset;
 
-      $.each($scope.fontItem.subsetMap, function(item) {
-        if ($scope.fontItem.subsetMap[item] === true) {
+      $.each(map, function(item) {
+        if (map[item] === true) {
           queryParams += item + ',';
+          lenChecked += 1;
         }
       });
 
-      if (queryParams.length === 0) {
+      $scope.subSetsSelected = lenChecked;
+
+      if (lenChecked === 0) {
         // you will get the defaultset
         // queryParams = $scope.fontItem.defSubset;
-        $scope.fontItem.subsetMap[$scope.fontItem.defSubset] = true;
-        queryParams = $scope.fontItem.defSubset;
+        map[defaultSet] = true;
+        queryParams = defaultSet;
       } else {
         // remove last comma from string
         queryParams = queryParams.substring(0, queryParams.length - 1);
@@ -127,10 +142,15 @@ angular.module('googleWebfontsHelperApp')
 
       previousFontItem = $scope.fontItem;
 
-      $state.go('fonts.item', {
-        id: $scope.fontID,
-        subsets: queryParams
-      });
+      // wait 500ms until dong the request...
+      checkboxTimeout = setTimeout(function() {
+        $state.go('fonts.item', {
+          id: $scope.fontID,
+          subsets: queryParams
+        });
+      }, 500);
+
+
 
     }, 0);
 

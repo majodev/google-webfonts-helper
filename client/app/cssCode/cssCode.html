@@ -22,3 +22,17 @@
        url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.storeID}}-{{variant.id}}.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 </code></pre>
+<style ng-if="type.styleTag" type="text/css">
+@font-face {
+  font-family: {{variant.fontFamily}};
+  font-style: {{variant.fontStyle}};
+  font-weight: {{variant.fontWeight}};
+  src: url('{{variant.eot}}'); /* IE9 Compat Modes */
+  src: local('{{variant.local[0]}}'),{{variant.local[1].length > 0 ? " local('" + variant.local[1] + "')," : ""}}
+       url('{{variant.eot}}?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('{{variant.woff2}}') format('woff2'), /* Super Modern Browsers */
+       url('{{variant.woff}}') format('woff'), /* Modern Browsers */
+       url('{{variant.ttf}}')  format('truetype'), /* Safari, Android, iOS */
+       url('{{variant.svg}}') format('svg'); /* Legacy iOS */
+}
+</style>

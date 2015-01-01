@@ -18,8 +18,16 @@ angular.module('googleWebfontsHelperApp')
         // hljs is available in script
 
         $timeout(function() {
-          var tmp = $interpolate(element.find('code').text())(scope);
-          element.find('code').html(hljs.highlightAuto(tmp).value);
+          var codeElement = element.find('code');
+          var tmp;
+
+          // only highlight if code element found
+          if (codeElement.length > 0) {
+            // console.log(codeElement); 
+            tmp = $interpolate(codeElement.text())(scope);
+            codeElement.html(hljs.highlightAuto(tmp).value);
+          }
+
         }, 0);
 
       }

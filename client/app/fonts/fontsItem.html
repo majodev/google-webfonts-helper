@@ -1,23 +1,7 @@
 <!-- Inject all styles to use them directly -->
-<style type="text/css" ng-repeat="variant in fontItem.variants">
+<div ng-repeat="variant in fontItem.variants" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{styleTag:true}"></div>
 
-@font-face {
-  font-family: {{variant.fontFamily}};
-  font-style: {{variant.fontStyle}};
-  font-weight: {{variant.fontWeight}};
-  src: url('{{variant.eot}}'); /* IE9 Compat Modes */
-  src: local('{{variant.local[0]}}'),{{variant.local[1].length > 0 ? " local('" + variant.local[1] + "')," : ""}}
-       url('{{variant.eot}}?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('{{variant.woff2}}') format('woff2'), /* Super Modern Browsers */
-       url('{{variant.woff}}') format('woff'), /* Modern Browsers */
-       url('{{variant.ttf}}')  format('truetype'), /* Safari, Android, iOS */
-       url('{{variant.svg}}') format('svg'); /* Legacy iOS */
-}
-
-</style>
-
-
-<div cg-busy="{promise: fullLoadingPromise, message: 'Loading {{fontID}}...'}">
+<div cg-busy="{promise: loadingPromise, message: loadingMessage}">
   <div class="row" ng-hide="busy">
     <div class="col-sm-6 column">
       <h3>{{fontItem.family}} <small>{{fontItem.category}}</small></h3>
@@ -54,7 +38,7 @@
       
 
     </div>
-    <div cg-busy="{promise: partialLoadingPromise, message: 'Packaging...'}" class="col-sm-6 column">
+    <div class="col-sm-6 column">
 
       <h4 class="download-block"><strong>2.</strong> Download font files for self-hosting:<br/><small>Archives are auto-generated and only include your selected character sets (but all font styles).</small></h4>
 
@@ -87,7 +71,7 @@
 
     <!-- <hr> -->
 
-    <div class="fontItemCSSWrap" cg-busy="{promise: partialLoadingPromise, message: 'Inventing CSS...'}">
+    <div class="fontItemCSSWrap">
 
       <h4><strong>3.</strong> Copy these CSS snippets for your desired styles:<br/><small>Select <code>Best Support</code> if old browsers need to be supported. Customize the folder prefix so that it matches your folder structure.</small></h4>
 
