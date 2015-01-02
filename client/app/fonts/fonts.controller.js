@@ -11,6 +11,7 @@ function apiError($scope, status, headers, config) {
 
 var previousFontItem = false;
 var checkboxTimeoutPromise = null;
+var checkboxReloadInterval = null;
 
 
 angular.module('googleWebfontsHelperApp')
@@ -37,12 +38,13 @@ angular.module('googleWebfontsHelperApp')
 
   })
 
-.controller('FontsItemCtrl', function($scope, $stateParams, $http, $state, $timeout) {
+.controller('FontsItemCtrl', function($scope, $stateParams, $http, $state, $timeout, $interval) {
 
   var subSetString = $stateParams.subsets || '';
 
   if (checkboxTimeoutPromise) {
     $timeout.cancel(checkboxTimeoutPromise);
+    $interval.cancel(checkboxReloadInterval);
   }
 
   $scope.fontID = $stateParams.id;
@@ -102,7 +104,7 @@ angular.module('googleWebfontsHelperApp')
 
     if (checkboxTimeoutPromise) {
       $timeout.cancel(checkboxTimeoutPromise);
-
+      $interval.cancel(checkboxReloadInterval);
     }
 
     checkboxTimeoutPromise = $timeout(function() {
@@ -133,7 +135,7 @@ angular.module('googleWebfontsHelperApp')
 
       previousFontItem = $scope.fontItem;
 
-      // wait until doing the request...
+      // wait until doing the request (overrides previous promise!)...
       checkboxTimeoutPromise = $timeout(function() {
         $state.go('fonts.item', {
           id: $scope.fontID,
@@ -141,9 +143,27 @@ angular.module('googleWebfontsHelperApp')
         });
       }, 3000);
 
+      var timeUntil = 3;
+
+      function setCustomizationReloadMessage(time) {
+        $scope.customizationReloadMessage = 'Customization will be requested in ' + time + ' sec...';
+      }
+
+      setCustomizationReloadMessage(timeUntil);
+
+      checkboxReloadInterval = $interval(function () {
+        timeUntil -= 1;
+        setCustomizationReloadMessage(timeUntil);
+      }, 1000, 3);
+
+
+
+      // make available for cgBusy
       $scope.checkboxTimeoutPromise = checkboxTimeoutPromise;
 
     });
+
+    // make available for cgBusy
     $scope.checkboxTimeoutPromise = checkboxTimeoutPromise;
 
   };
