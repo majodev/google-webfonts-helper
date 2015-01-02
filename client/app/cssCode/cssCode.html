@@ -1,4 +1,4 @@
-<pre ng-if="type.bestSupport"><code class="css" highlightjs>/* {{fontItem.id}}-{{variant.id}} - {{fontItem.storeID}} */
+<pre ng-if="type.bestSupport"><code data-hljs="css" highlightjs>/* {{fontItem.id}}-{{variant.id}} - {{fontItem.storeID}} */
 @font-face {
   font-family: {{variant.fontFamily}};
   font-style: {{variant.fontStyle}};
@@ -12,7 +12,7 @@
        url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.storeID}}-{{variant.id}}.svg#{{variant.svg.substring(variant.svg.indexOf('#')+1);}}') format('svg'); /* Legacy iOS */
 }
 </code></pre>
-<pre ng-if="type.modernBrowsers"><code class="css" highlightjs>/* {{fontItem.id}}-{{variant.id}} - {{fontItem.storeID}} */
+<pre ng-if="type.modernBrowsers"><code data-hljs="css" highlightjs>/* {{fontItem.id}}-{{variant.id}} - {{fontItem.storeID}} */
 @font-face {
   font-family: {{variant.fontFamily}};
   font-style: {{variant.fontStyle}};
