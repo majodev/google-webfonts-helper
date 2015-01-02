@@ -16,8 +16,9 @@
             <ul class="dropdown-menu" role="menu">
               <li role="presentation" class="dropdown-header">Order by</li>
               <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="'popularity'"><a href="#">Popularity</a></li>
-              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="'family'"><a href="#">Family name</a></li>
-              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="['category','family']"><a href="#">Category name</a></li>
+              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="'family'"><a href="#">Family</a></li>
+              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="['category','family']"><a href="#">Category</a></li>
+              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="['-lastModified','family']"><a href="#">Last modified</a></li>
               <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="['-variants.length','family']"><a href="#">Number of styles</a></li>
               <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="['-subsets.length','family']"><a href="#">Number of charsets</a></li>
               <li class="divider"></li>
@@ -44,13 +45,13 @@
         <div class="list-group">
           <a href="/fonts/{{font.id}}?subsets={{font.defSubset}}" class="list-group-item" ng-repeat="font in fonts | filter:query | orderBy:predicate:reverse">
             <h5 class="list-group-item-heading">{{font.family}} <small>{{font.category}}</small></h5>
-            <p class="list-group-item-text mini text-muted"><ng-pluralize count="font.variants.length"
+            <p class="list-group-item-text mini text-muted">{{font.lastModified}}&nbsp;·&nbsp;<ng-pluralize count="font.variants.length"
                   when="{'0': 'no style',
                          'one': '{} style',
                          'other': '{} styles'}"></ng-pluralize>&nbsp;·&nbsp;<ng-pluralize count="font.subsets.length"
                   when="{'0': 'no charsets',
                          'one': '{} charset',
-                         'other': '{} charsets'}"></ng-pluralize><!-- &nbsp;·&nbsp;Popularity {{font.popularity}} --></p>
+                         'other': '{} charsets'}"></ng-pluralize></p>
           </a>
         </div>
       </div>
