@@ -3,7 +3,11 @@
 
 <div cg-busy="{promise: loadingPromise, message: loadingMessage}">
   <div ng-hide="busy">
-    <h3>{{fontItem.family}}<br/><small>{{fontItem.category}}</small></h3>
+    <div class="row">
+      <div class="col-sm-12">
+        <h3>{{fontItem.family}}<br/><small>{{fontItem.category}}</small></h3>
+      </div>
+    </div>
     <div class="row">
       <div class="col-sm-6">
         <h5><ng-pluralize count="fontItem.variants.length"
@@ -32,12 +36,17 @@
       <h4>1. Choose the character sets you want:<br/><small>Select at least one character set (default is <code>{{fontItem.defSubset}}</code>). </small></h4>
       <div class="subsetGroup">
         <label class="checkbox-inline" ng-repeat="(key,value) in fontItem.subsetMap">
-          <input type="checkbox" ng-model="fontItem.subsetMap[key]" name="key" ng-click="subsetSelect()" data-ng-disabled="checkSubsetMinimalSelection(key)">{{key}}
+          <input type="checkbox" ng-model="fontItem.subsetMap[key]" name="key" ng-click="subsetSelect(); requiresReload=true;" data-ng-disabled="checkSubsetMinimalSelection(key)">{{key}}
         </label>
       </div>
 
 
     </div>
+
+  </div>
+  
+
+  <div class="fontVariant" ng-hide="busy" cg-busy="{promise: checkboxTimeoutPromise, message: 'Customization will be requested in 3 seconds...'}"> <!-- FONT VARIANT BEGINS -->
 
     <div>
 
@@ -52,12 +61,8 @@
       <!-- </div> -->
     </div>
 
-  </div>
-  
 
-  <div class="fontVariant" ng-hide="busy"> <!-- FONT VARIANT BEGINS -->
-
-    <button class="btn btn-default btn-sm btn-block" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true" style="font-family:{{fontItem.variants[0].fontFamily}}; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">Show preview: The quick brown fox jumps over the lazy dog.</button>
+    <button class="btn btn-default btn-md btn-block" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true" style="font-family:{{fontItem.variants[0].fontFamily}}; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">Show preview: The quick brown fox jumps over the lazy dog.</button>
 
     <div collapse="isCollapsed">
       <!-- <hr>     -->
@@ -66,7 +71,7 @@
       <div class="row" >
         <div class="preview col-md-3 col-sm-4 col-xs-4" ng-repeat="variant in fontItem.variants" style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}};">
           <h4>{{variant.id}}</h4>
-          <textarea class="form-control" rows="3">The quick brown fox jumps over the lazy dog.</textarea>
+          <textarea class="form-control" rows="4" style="font-size:120%;">The quick brown fox jumps over the lazy dog.</textarea>
         </div>
       </div>
 

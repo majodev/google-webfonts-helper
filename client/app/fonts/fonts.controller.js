@@ -10,7 +10,7 @@ function apiError($scope, status, headers, config) {
 }
 
 var previousFontItem = false;
-var checkboxTimeout = null;
+var checkboxTimeoutPromise = null;
 
 
 angular.module('googleWebfontsHelperApp')
@@ -37,12 +37,12 @@ angular.module('googleWebfontsHelperApp')
 
   })
 
-.controller('FontsItemCtrl', function($scope, $stateParams, $http, $state) {
+.controller('FontsItemCtrl', function($scope, $stateParams, $http, $state, $timeout) {
 
   var subSetString = $stateParams.subsets || '';
 
-  if (checkboxTimeout) {
-    clearTimeout(checkboxTimeout);
+  if (checkboxTimeoutPromise) {
+    $timeout.cancel(checkboxTimeoutPromise);
   }
 
   $scope.fontID = $stateParams.id;
@@ -90,17 +90,6 @@ angular.module('googleWebfontsHelperApp')
   }
 
   $scope.checkSubsetMinimalSelection = function(key) {
-    // console.log(key);
-
-    // var anySelection = '';
-
-    // $.each($scope.fontItem.subsetMap, function(item) {
-    //   if ($scope.fontItem.subsetMap[item] === true) {
-    //     $scope.subSetsSelected += 1;
-    //     anySelection = item;
-    //   }
-    // });
-
     if ($scope.subSetsSelected === 1 && $scope.fontItem.subsetMap[key] === true) {
       // console.log(key);
       return true;
@@ -111,11 +100,12 @@ angular.module('googleWebfontsHelperApp')
 
   $scope.subsetSelect = function() {
 
-    if (checkboxTimeout) {
-      clearTimeout(checkboxTimeout);
+    if (checkboxTimeoutPromise) {
+      $timeout.cancel(checkboxTimeoutPromise);
+
     }
 
-    setTimeout(function() {
+    checkboxTimeoutPromise = $timeout(function() {
       var queryParams = '';
       var lenChecked = 0;
       var map = $scope.fontItem.subsetMap;
@@ -129,6 +119,7 @@ angular.module('googleWebfontsHelperApp')
       });
 
       $scope.subSetsSelected = lenChecked;
+  
 
       if (lenChecked === 0) {
         // you will get the defaultset
@@ -142,17 +133,18 @@ angular.module('googleWebfontsHelperApp')
 
       previousFontItem = $scope.fontItem;
 
-      // wait 500ms until dong the request...
-      checkboxTimeout = setTimeout(function() {
+      // wait until doing the request...
+      checkboxTimeoutPromise = $timeout(function() {
         $state.go('fonts.item', {
           id: $scope.fontID,
           subsets: queryParams
         });
-      }, 500);
+      }, 3000);
 
+      $scope.checkboxTimeoutPromise = checkboxTimeoutPromise;
 
-
-    }, 0);
+    });
+    $scope.checkboxTimeoutPromise = checkboxTimeoutPromise;
 
   };
 

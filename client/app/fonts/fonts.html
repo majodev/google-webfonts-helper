@@ -45,13 +45,13 @@
         <div class="list-group">
           <a href="/fonts/{{font.id}}?subsets={{font.defSubset}}" class="list-group-item" ng-repeat="font in fonts | filter:query | orderBy:predicate:reverse">
             <h5 class="list-group-item-heading">{{font.family}} <small>{{font.category}}</small></h5>
-            <p class="list-group-item-text mini text-muted">{{font.lastModified}}&nbsp;·&nbsp;<ng-pluralize count="font.variants.length"
+            <!-- <p class="list-group-item-text mini text-muted">{{font.lastModified}}&nbsp;·&nbsp;<ng-pluralize count="font.variants.length"
                   when="{'0': 'no style',
                          'one': '{} style',
                          'other': '{} styles'}"></ng-pluralize>&nbsp;·&nbsp;<ng-pluralize count="font.subsets.length"
                   when="{'0': 'no charsets',
                          'one': '{} charset',
-                         'other': '{} charsets'}"></ng-pluralize></p>
+                         'other': '{} charsets'}"></ng-pluralize></p> -->
           </a>
         </div>
       </div>
