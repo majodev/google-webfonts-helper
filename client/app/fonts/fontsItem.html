@@ -32,6 +32,25 @@
     </div>
 
     <div>
+
+      <button class="btn btn-default btn-lg btn-block" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true" style="font-family:{{fontItem.variants[0].fontFamily}}; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">The quick brown fox jumps over the lazy dog.</button>
+
+      <div collapse="isCollapsed">
+        <!-- <hr>     -->
+
+        <!-- Show a preview of all fonts -->
+        <div class="row" >
+          <div class="preview col-md-3 col-sm-4 col-xs-4" ng-repeat="variant in fontItem.variants" style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}};">
+            <h4>{{variant.id}}</h4>
+            <textarea class="form-control" rows="4" style="font-size:120%;">The quick brown fox jumps over the lazy dog.</textarea>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div>
       <hr>
       <h4>1. Choose the character sets you want:<br/><small>Select at least one character set (default is <code>{{fontItem.defSubset}}</code>). </small></h4>
       <div class="subsetGroup">
@@ -56,25 +75,9 @@
 
       <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.storeID}}.zip<!-- <br/><small>.eot, .ttf, .svg, .woff and .woff2 files included</small> --></a>
       <!-- <p><small><strong>{{fontItem.id}}-{{fontItem.storeID}}.zip</strong></small></p> -->
-      <p><small>Archive includes .eot, .ttf, .svg, .woff and .woff2 files.<br/>Fonts are copyright of their respective authors.</small></p>
+      <p><small>Archive includes .eot, .ttf, .svg, .woff and .woff2 files.<br/><strong>Fonts are copyright of their respective authors.</strong></small></p>
       
       <!-- </div> -->
-    </div>
-
-
-    <button class="btn btn-default btn-md btn-block" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true" style="font-family:{{fontItem.variants[0].fontFamily}}; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">Show preview: The quick brown fox jumps over the lazy dog.</button>
-
-    <div collapse="isCollapsed">
-      <!-- <hr>     -->
-
-      <!-- Show a preview of all fonts -->
-      <div class="row" >
-        <div class="preview col-md-3 col-sm-4 col-xs-4" ng-repeat="variant in fontItem.variants" style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}};">
-          <h4>{{variant.id}}</h4>
-          <textarea class="form-control" rows="4" style="font-size:120%;">The quick brown fox jumps over the lazy dog.</textarea>
-        </div>
-      </div>
-
     </div>
 
     <!-- <hr> -->
