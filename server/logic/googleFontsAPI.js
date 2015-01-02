@@ -33,7 +33,7 @@ var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts, cb) {
 
         // console.log(index + " - " + item.family);
 
-        // property order is guranteed --> popularity. 
+        // property order is guranteed --> popularity via index attr. 
         cachedFonts.push({
           id: getSlug(item.family),
           family: item.family,
@@ -43,14 +43,9 @@ var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts, cb) {
           version: item.version,
           lastModified: item.lastModified,
           popularity: index + 1,
-          defSubset: _.contains(item.subsets, 'latin') ? 'latin' : item.subsets[0] // use latin per default, else first found font
+          // use latin per default, else first found font
+          defSubset: _.contains(item.subsets, 'latin') ? 'latin' : item.subsets[0]
         });
-
-        // if(_.contains(item.subsets, 'latin') === false) {
-        //   console.log(item.subsets[0] + " - " + item.family);
-        // }
-
-        
 
       });
 

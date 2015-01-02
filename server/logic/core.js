@@ -19,14 +19,12 @@ var emitter = new EventEmitter();
 var googleAPIFontItems = []; // holds originally fetched items from the Google Fonts API
 var cachedFonts = []; // holds actual item list that can get requested - houses a "font" Object
 
-
-
 // The subsetStore is utilzing the subsetTuples generator and identified by the font.id!
 var subsetStore = {}; // every item in here holds a urlStore Object + a unique subset combo.
 // urlStore holds fetched urls to all conf.USER_AGENTS font formats
 // gets merged with an item from cachedFonts to form a so called "fontItem" Object
 
-// zipStore holds path (prop = font.id) to locally cached zip (with all fonts in it)
+// zipStore holds path (prop = font.id + fontItem.storeID) to locally cached zip (with all fonts in it)
 // the socalled "zipItem" Object
 var zipStore = {};
 
@@ -92,7 +90,7 @@ function getFontItem(font, subsetArr, callback) {
       // console.log("already cached!");
       callback(_.merge(_.cloneDeep(font), urlStore));
     } else {
-      // process has already begun, wait until it has finished...
+      // process to cache has already begun, wait until it has finished...
       // console.log("waiting until cache...");
       emitter.once(font.id + "-pathFetched-" + urlStore.storeID, function(fontItem) {
         callback(fontItem);

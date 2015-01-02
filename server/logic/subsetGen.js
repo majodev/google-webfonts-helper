@@ -2,7 +2,6 @@ var _ = require('lodash');
 
 var MINIMAL_SUBSET_SIZE = 1;
 
-
 // get all possible unique subset combinations of a font, based on its subset array
 // adapted from http://stackoverflow.com/questions/5752002/find-all-possible-subset-combos-in-an-array
 function getSubsets(input) {
@@ -24,13 +23,7 @@ function getSubsets(input) {
       }
     } while (i--);
     if (result.length >= MINIMAL_SUBSET_SIZE) {
-
-      // save in a object with unique id not array - as not as easily manipulateable
-      // if (_.isUndefined(results[getUniqueStoreID(result)]) === true) {
       results[getUniqueStoreID(result)] = getDefaultSubsetObj(result, uniqueInput);
-      // }
-
-      //results.push(getDefaultSubsetObj(result, uniqueInput));
     }
   }
 
@@ -44,7 +37,6 @@ function getUniqueStoreID(uniqueCombArr) {
   _.each(uniqueCombArr, function(uniqueItem, index) {
     if (index < lastItemIndex) {
       storeID += uniqueItem + "_";
-      // e.g. IDpart_IDpart_IDpart
     } else {
       storeID += uniqueItem;
     }
@@ -52,8 +44,6 @@ function getUniqueStoreID(uniqueCombArr) {
 
   return storeID;
 }
-
-
 
 // represent the data with a set of booleans, which is duplicate free 
 // and easy to filter
@@ -67,9 +57,7 @@ function getDefaultSubsetObj(uniqueCombArr, inputArr) {
     urlStore.subsetMap[inputItem] = _.contains(uniqueCombArr, inputItem);
   });
 
-
   return urlStore;
 }
-
 
 module.exports = getSubsets;
