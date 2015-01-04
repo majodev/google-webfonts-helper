@@ -6,7 +6,7 @@
       <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4">
         <div class="input-group">
           <div id="searchwrap" class="btn-group">
-            <input id="searchinput" class="form-control" ng-model="query" type="search" placeholder="Search fonts..." autofocus>
+            <input id="searchinput" class="form-control" ng-model="query" type="search" placeholder="Search {{fonts.length}} fonts..." autofocus>
             <span id="searchclear" class="glyphicon glyphicon-remove-circle" ng-class="{'show': query.length > 0}" ng-click="query = ''"></span>
           </div>
           <div class="input-group-btn" dropdown is-open="status.isopen">
@@ -31,7 +31,7 @@
       <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8">
         
         <!-- <h4 class="page-header">google-webfonts-helper</h4> -->
-        <h4 class="page-header">google-webfonts-helper by <a href="http://ranf.tl/2014/12/23/self-hosting-google-web-fonts/" target="_blank">majodev</a><br/><small>Get <code>eot</code>, <code>ttf</code>, <code>svg</code>, <code>woff</code> and <code>woff2</code> files + CSS snippets&nbsp;·&nbsp;<a href="https://github.com/majodev/google-webfonts-helper#rest-api" target="_blank">API</a></small></h4>
+        <h4 class="page-header"><a href="/">google-webfonts-helper</a><!-- &nbsp;<small>by <a href="http://ranf.tl/2014/12/23/self-hosting-google-web-fonts/" target="_blank">majodev</a></small> --><br/><small>Get eot, ttf, svg, woff and woff2 files + CSS snippets<!-- &nbsp;·&nbsp;<a href="https://github.com/majodev/google-webfonts-helper#rest-api" target="_blank">API</a> --></small></h4>
         <iframe id="githubCount" src="https://mdo.github.io/github-buttons/github-btn.html?user=majodev&amp;repo=google-webfonts-helper&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="130px" height="30px"></iframe>
       </div>
     </div>
@@ -55,16 +55,62 @@
           </a>
         </div>
       </div>
-      <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 scrollerRight column" ng-hide="busy">
+      <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8 scrollerRight column" >
         <div ui-view> <!-- fontItem details template gets appended here -->
           <!-- Placeholder no item selected -->
-          <div id="noItemSelectedPlaceholder">
-            <h2><ng-pluralize count="fonts.length"
+          <div>
+            <header class="jumbotron masthead" >
+              <div class="inner">
+                <h1>google-webfonts-helper</h1>
+                <h2>A Hazzle-Free Service to Self-Host Google Fonts</h2>
+                <!-- <p class="small">Get eot, ttf, svg, woff and woff2 files<br/>Copy bulletproof CSS snippets.</p> -->
+                <hr>
+
+                <p class="download-info">
+                  <a href="http://ranf.tl/2014/12/23/self-hosting-google-web-fonts/" class="btn btn-default btn-large" target="_blank">Read the author's note</a>
+                  <a href="https://github.com/majodev/google-webfonts-helper" class="btn btn-default btn-large" target="_blank">View project on GitHub</a>
+                  <a href="https://github.com/majodev/google-webfonts-helper#rest-api" class="btn btn-default btn-large" target="_blank">API</a>
+                </p>                
+
+                <h3><small><i class="fa fa-arrow-circle-o-left pulse"></i>&nbsp;Select a font to continue...</small></h3>
+
+              </div>
+
+
+
+            </header>
+
+            
+            <!-- <ol>
+              <li>Search and select your font</li>
+              <li>Customize supported character sets</li>
+              <li>Download .zip archive <small>(includes all eot, ttf, svg, woff and woff2 files)</small></li>
+              <li>Customize and copy desired CSS snippets <small>(for all font styles to support)</small></li>
+              <li>You should now have everything you need to self-host your selected font</li>
+            </ol> -->
+
+            <h3>Useful resources</h3>
+            <ul>
+              <li><a href="http://ranf.tl/2014/12/23/self-hosting-google-web-fonts/">Self-Hosting Google Web Fonts: Introducing google-webfonts-helper</a></li>
+              <li><a href="https://gist.github.com/sergejmueller/cf6b4f2133bcb3e2f64a">WOFF 2.0 – Learn more about the next generation Web Font Format</a></li>
+              <li><a href="https://gist.github.com/lindsayevans/794800">Sample MIME server config (Apache, Nginx, IIS)</a></li>
+            </ul>
+            <!-- <accordion> -->
+              <!-- <accordion-group heading="Sample configuration for font MIME mapping"> -->
+                <!-- <gist id="794800"></gist> -->
+              <!-- </accordion-group> -->
+              <!-- <accordion-group heading="What's woff2?"> -->
+                <!-- <gist id="cf6b4f2133bcb3e2f64a"></gist> -->
+              <!-- </accordion-group> -->
+            <!-- </accordion> -->
+
+            <!-- <h2><ng-pluralize count="fonts.length"
                   when="{'0': '... fonts',
                          'one': '{} font',
                          'other': '{} fonts'}"></ng-pluralize>&nbsp;available.<small><br/><i class="fa fa-angle-double-left"></i> Please select a font!</small></h2>
+            <hr> -->
+            
           </div>
-
           <div class="apiError" ng-class="{'show': error === true}">
             <h2>API Error ({{errorStatus}})</h2>
             <pre>REQUEST CONFIG: {{errorConfig}}

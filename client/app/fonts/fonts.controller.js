@@ -15,7 +15,7 @@ var checkboxReloadInterval = null;
 
 
 angular.module('googleWebfontsHelperApp')
-  .controller('FontsCtrl', function($scope, $http) {
+  .controller('FontsCtrl', function($scope, $http, $stateParams) {
 
     $scope.fonts = [];
     $scope.busy = true;
