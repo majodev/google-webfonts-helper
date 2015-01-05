@@ -10,8 +10,8 @@ function apiError($scope, status, headers, config) {
 }
 
 var previousFontItem = false;
-var checkboxTimeoutPromise = null;
-var checkboxReloadInterval = null;
+var checkboxTimeoutPromise = null; // promise for cgBusy 3000ms timeout
+var checkboxReloadInterval = null; // promise for cgBusy (waiting till customization) 1000ms interval
 
 
 angular.module('googleWebfontsHelperApp')
@@ -20,7 +20,7 @@ angular.module('googleWebfontsHelperApp')
     $scope.fonts = [];
     $scope.busy = true;
 
-    $scope.predicate = 'popularity'; // default ordering predicate
+    $scope.predicate = {name: 'popularity', filter: 'popularity'}; // default ordering predicate
     $scope.reverse = false;
 
     $scope.fontsPromise = $http.get('/api/fonts')
@@ -85,15 +85,11 @@ angular.module('googleWebfontsHelperApp')
 
 
   if (previousFontItem === false) {
-    // $scope.fullLoadingPromise = promise;
     $scope.busy = true;
-  } else {
-    // $scope.partialLoadingPromise = promise;
   }
 
   $scope.checkSubsetMinimalSelection = function(key) {
     if ($scope.subSetsSelected === 1 && $scope.fontItem.subsetMap[key] === true) {
-      // console.log(key);
       return true;
     } else {
       return false;
@@ -125,7 +121,6 @@ angular.module('googleWebfontsHelperApp')
 
       if (lenChecked === 0) {
         // you will get the defaultset
-        // queryParams = $scope.fontItem.defSubset;
         map[defaultSet] = true;
         queryParams = defaultSet;
       } else {

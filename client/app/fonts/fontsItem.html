@@ -9,6 +9,7 @@
       </div>
     </div>
     <div class="row">
+
       <div class="col-sm-6">
         <h5><ng-pluralize count="fontItem.variants.length"
                     when="{'0': 'no style',
@@ -20,24 +21,21 @@
                            'one': '{} charset',
                            'other': '{} charsets'}">
         </ng-pluralize>&nbsp;<small><span ng-repeat="subset in fontItem.subsets">{{subset}}{{$last ? "" : ", "}}</span></small></h5>
-        
       </div>
+
       <div class="col-sm-6">
         <h5>Rank {{fontItem.popularity}}&nbsp;<small>in popularity of {{fonts.length}} fonts in total</small></h5>
-        <h5>Last modified {{fontItem.lastModified}}&nbsp;<small>({{fontItem.version}})</small></h5>
-        <!-- <p><small>Ranks {{fontItem.popularity}}. popular font of {{fonts.length}} fonts in total<br/>Last modified on {{fontItem.lastModified}} ({{fontItem.version}})</small></p> -->
-        
+        <h5>Last modified {{fontItem.lastModified}}&nbsp;<small>({{fontItem.version}})</small></h5>        
       </div>
 
     </div>
 
-    <div>
+    <!-- Font preview -->
+    <div> 
 
       <button class="btn btn-default btn-lg btn-block" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true" style="font-family:{{fontItem.variants[0].fontFamily}}; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">The quick brown fox jumps over the lazy dog.</button>
 
       <div collapse="isCollapsed">
-        <!-- <hr>     -->
-
         <!-- Show a preview of all fonts -->
         <div class="row" >
           <div class="preview col-md-3 col-sm-4 col-xs-4" ng-repeat="variant in fontItem.variants" style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}};">
@@ -50,6 +48,7 @@
 
     </div>
 
+    <!-- character set customization -->
     <div>
       <hr>
       <h4>1. Choose the character sets you want:<br/><small>Select at least one character set (default is <code>{{fontItem.defSubset}}</code>). </small></h4>
@@ -67,26 +66,20 @@
 
   <div class="fontVariant" ng-hide="busy" cg-busy="{promise: checkboxTimeoutPromise, message: customizationReloadMessage}"> <!-- FONT VARIANT BEGINS -->
 
+
+  <!-- download button -->
     <div>
-
       <hr>
-
       <h4>2. Download font files for self-hosting:<br/><small>Archives are auto-generated and only include your selected character sets (but all font styles).</small></h4>
-
-      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.storeID}}.zip<!-- <br/><small>.eot, .ttf, .svg, .woff and .woff2 files included</small> --></a>
-      <!-- <p><small><strong>{{fontItem.id}}-{{fontItem.storeID}}.zip</strong></small></p> -->
+      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.storeID}}.zip</a>
       <p><small>Archive includes .eot, .ttf, .svg, .woff and .woff2 files.<br/><strong>Fonts are copyright of their respective authors.</strong></small></p>
-      
-      <!-- </div> -->
     </div>
 
-    <!-- <hr> -->
 
+    <!-- css snippets -->
     <div class="fontItemCSSWrap">
 
       <h4>3. Use these CSS snippets for your desired styles:<br/><small>Select <code>Best Support</code> if old browsers need to be supported. Customize the folder prefix so that it matches your folder structure.</small></h4>
-
-
 
       <div class="form-inline folderPrefixBar">Folder prefix:&nbsp;<div class="form-group">
         <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
