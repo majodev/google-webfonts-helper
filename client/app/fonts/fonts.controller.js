@@ -20,7 +20,12 @@ angular.module('googleWebfontsHelperApp')
     $scope.fonts = [];
     $scope.busy = true;
 
-    $scope.predicate = {name: 'by popularity', filter: 'popularity', pre: 'Rank '}; // default ordering predicate
+    $scope.predicate = {
+      name: 'by popularity',
+      filter: 'popularity',
+      pre: 'Rank '
+    }; // default ordering predicate
+
     $scope.reverse = false;
 
     $scope.fontsPromise = $http.get('/api/fonts')
@@ -117,7 +122,7 @@ angular.module('googleWebfontsHelperApp')
       });
 
       $scope.subSetsSelected = lenChecked;
-  
+
 
       if (lenChecked === 0) {
         // you will get the defaultset
@@ -146,7 +151,7 @@ angular.module('googleWebfontsHelperApp')
 
       setCustomizationReloadMessage(timeUntil);
 
-      checkboxReloadInterval = $interval(function () {
+      checkboxReloadInterval = $interval(function() {
         timeUntil -= 1;
         setCustomizationReloadMessage(timeUntil);
       }, 1000, 3);
@@ -161,6 +166,28 @@ angular.module('googleWebfontsHelperApp')
     // make available for cgBusy
     $scope.checkboxTimeoutPromise = checkboxTimeoutPromise;
 
+  };
+
+  $scope.selectText = function(evt) {
+
+    var element = evt.currentTarget;
+
+    // console.log(element);
+
+    var doc = document,
+      text = element,
+      range, selection;
+    if (doc.body.createTextRange) {
+      range = document.body.createTextRange();
+      range.moveToElementText(text);
+      range.select();
+    } else if (window.getSelection) {
+      selection = window.getSelection();
+      range = document.createRange();
+      range.selectNodeContents(text);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
   };
 
 });

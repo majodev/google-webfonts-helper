@@ -11,6 +11,7 @@ angular.module('googleWebfontsHelperApp')
         fontItem: '=',
         folderPrefix: '='
       },
-      link: function(scope, element) {}
+      link: function(scope, element) {
+      }
     };
   }]);

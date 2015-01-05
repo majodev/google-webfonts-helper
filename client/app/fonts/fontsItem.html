@@ -87,15 +87,15 @@
 
       <tabset>
         <tab heading="Best Support">
-          <div ng-repeat="variant in fontItem.variants" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{bestSupport:true}"></div>
+          <div ng-repeat="variant in fontItem.variants" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{bestSupport:true}" ng-click="selectText($event)"></div>
         </tab>
 
         <tab heading="Modern Browsers">
           <p>css-tricks.com: <a href="http://css-tricks.com/snippets/css/using-font-face/" target="blank">Things are shifting heavily toward WOFF</a><br/>caniuse.com: <a href="http://caniuse.com/#feat=woff" target="blank">Can I use woff? (compatibility information)</a></p>
-          <div ng-repeat="variant in fontItem.variants" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{modernBrowsers:true}"></div>
+          <div ng-repeat="variant in fontItem.variants" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{modernBrowsers:true}" ng-click="selectText($event)"></div>
         </tab>
 
-        <tab heading="Files served by Google">
+        <tab heading="Original links served by Google" class="pull-right">
           <div ng-repeat="variant in fontItem.variants">
             <h5>{{fontItem.id}}-{{variant.id}} <small>{{fontItem.storeID}}</small></h5>
             <ul>
