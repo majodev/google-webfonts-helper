@@ -5,7 +5,7 @@
   <div ng-hide="busy">
     <div class="row">
       <div class="col-sm-12">
-        <h3>{{fontItem.family}}<br/><small>{{fontItem.category}}</small></h3>
+        <h1 style="font-family:{{fontItem.variants[0].fontFamily}},'Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">{{fontItem.family}}<br/><small>{{fontItem.category}}</small></h1>
       </div>
     </div>
     <div class="row">
@@ -33,16 +33,39 @@
     <!-- Font preview -->
     <div> 
 
-      <button class="btn btn-default btn-lg btn-block" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true" style="font-family:{{fontItem.variants[0].fontFamily}}; font-weight:400; font-style:{{fontItem.variants[0].fontStyle}};">The quick brown fox jumps over the lazy dog.</button>
+      <button id="fontPreviewToggle" class="btn btn-default btn-info btn-sm" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true">{{isCollapsed === true ? "Show" : "Hide"}} style preview</button>
 
       <div collapse="isCollapsed">
+
+        <hr>
+
+        <div class="form-inline folderPrefixBar">Font Size:&nbsp;<div class="form-group">
+          <input id="previewFontSizeInput" class="form-control input-sm" type="number" ng-model="fontSize" placeholder="16" ng-init="fontSize=16">&nbsp;px&nbsp;
+        </div>
+          <button class="btn btn-default btn-sm" ng-click="fontSize = fontSize - 1">-</button>
+          <button class="btn btn-default btn-sm" ng-click="fontSize = fontSize + 1">+</button>
+          <span class="text-muted small">Hint: sample text is editable.</span>
+        </div>
+
+        <div ng-repeat="variant in fontItem.variants">
+          <span class="text-muted small">{{variant.id}}</span>
+          <p style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}}; font-size:{{fontSize > 0 ? fontSize : 16}}px;" contenteditable>The quick brown fox jumps over the lazy dog.</p>
+        </div>
+
+        <!-- <form>
+          <div class="form-group" ng-repeat="variant in fontItem.variants">
+            <label for="exampleInputEmail1">Email address</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+          </div>
+        </form> -->
+
         <!-- Show a preview of all fonts -->
-        <div class="row" >
+        <!-- <div class="row">
           <div class="preview col-md-3 col-sm-4 col-xs-4" ng-repeat="variant in fontItem.variants" style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}};">
             <h4>{{variant.id}}</h4>
             <textarea class="form-control" rows="4" style="font-size:120%;">The quick brown fox jumps over the lazy dog.</textarea>
           </div>
-        </div>
+        </div> -->
 
       </div>
 

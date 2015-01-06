@@ -1,7 +1,9 @@
 # google-webfonts-helper
-Ever wanted to know where Google hosts their webfonts? This service might be handy if you want to download all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` files of a font variant directly from google (normally your `User-Agent` would determine the best format).
+> A Hazzle-Free Way to Self-Host Google Fonts
 
-## [google-webfonts-helper hosted on Heroku](https://google-webfonts-helper.herokuapp.com)
+This service might be handy if you want to directly download all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` files of a Google font (normally your `User-Agent` would determine the best format at Google's CSS API). Furthermore it provides charset customization and CSS snippets, hence getting your fonts ready for local hosting should be *finally* a breeze.
+
+## [Give it a try: google-webfonts-helper hosted on Heroku](https://google-webfonts-helper.herokuapp.com)
 
 ![pic running](http://ranf.tl/static/apps/google-webfonts-helper/full_view.png)
 
@@ -69,7 +71,8 @@ This was originally a prototype, that I've started to get familiar with Angular 
 ### Contributing
 
 Everything is welcome, **especially tests**! Fork, change and send me a pull request. However, please add a description to your changes, not only code!
-**Attention designers:**: Searching for a logo and proper styling (I'm more a usability / backends guy).
+
+**Attention designers:** Searching for a logo and proper styling (I'm more a usability / backends guy).
 
 ## License
 (c) Mario Ranftl - majodev
