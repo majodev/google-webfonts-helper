@@ -30,6 +30,7 @@
         </div>
 
       </div>
+
       <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8">
         <!-- App name -->
         <h4 class="page-header"><a href="/">google-webfonts-helper</a><br/><small>Get eot, ttf, svg, woff and woff2 files + CSS snippets</small></h4>
@@ -45,7 +46,7 @@
     <div class="row-fluid">
       <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scrollerLeft column" cg-busy="{promise: fontsPromise, message: 'Listing fonts...'}">
         <div class="list-group">
-          <a href="/fonts/{{font.id}}?subsets={{font.defSubset}}" class="list-group-item" ng-repeat="font in fonts | filter:query | orderBy:predicate.filter:reverse">
+          <a href="/fonts/{{font.id}}?subsets={{font.defSubset}}" class="list-group-item {{selectedItemID === font.id ? 'active' : ''}}" ng-repeat="font in fonts | filter:query | orderBy:predicate.filter:reverse">
             <h5 class="list-group-item-heading">{{font.family}} <small>{{predicate.pre}}{{predicate.bindArg ? (predicate.len ? font[predicate.bindArg].length : font[predicate.bindArg]) : font[predicate.filter]}}{{predicate.post}}</small></h5>
           </a>
         </div>
@@ -60,8 +61,8 @@
                 <hr>
 
                 <p class="download-info">
-                  <a href="http://ranf.tl/2014/12/23/self-hosting-google-web-fonts/" class="btn btn-default btn-large" target="_blank">Read the author's note</a>
                   <a href="https://github.com/majodev/google-webfonts-helper" class="btn btn-default btn-large" target="_blank">View project on GitHub</a>
+                  <a href="http://ranf.tl/2014/12/23/self-hosting-google-web-fonts/" class="btn btn-default btn-large" target="_blank">Read the author's note</a>
                   <a href="https://github.com/majodev/google-webfonts-helper#rest-api" class="btn btn-default btn-large" target="_blank">API</a>
                 </p>                
 
@@ -73,10 +74,12 @@
 
             <h3>Useful resources</h3>
             <ul>
-              <li><a href="http://ranf.tl/2014/12/23/self-hosting-google-web-fonts/" target="_blank">Self-Hosting Google Web Fonts: Introducing google-webfonts-helper</a></li>
-              <li><a href="http://hellohappy.org/beautiful-web-type/" target="_blank">Beautiful Web Type - A showcase of the best typefaces from the Google web fonts directory</a></li>
-              <li><a href="https://gist.github.com/sergejmueller/cf6b4f2133bcb3e2f64a" target="_blank">WOFF 2.0 – Learn more about the next generation Web Font Format</a></li>
-              <li><a href="https://gist.github.com/lindsayevans/794800" target="_blank">Sample MIME server config (Apache, Nginx, IIS)</a></li>
+              <li>css-tricks.com: <a href="http://css-tricks.com/snippets/css/using-font-face/" target="_blank">Using @font-face</a></li>
+              <li>ranf.tl: <a href="http://ranf.tl/2014/12/23/self-hosting-google-web-fonts/" target="_blank">Self-Hosting Google Web Fonts: Introducing google-webfonts-helper</a></li>
+              <li>hellohappy.org: <a href="http://hellohappy.org/beautiful-web-type/" target="_blank">Beautiful Web Type - A showcase of the best typefaces from the Google web fonts directory</a></li>
+              <li>caniuse.com: <a href="http://caniuse.com/#feat=woff" target="_blank">Can I use woff? (compatibility information)</a></li>
+              <li>gist: <a href="https://gist.github.com/sergejmueller/cf6b4f2133bcb3e2f64a" target="_blank">WOFF 2.0 – Learn more about the next generation Web Font Format</a></li>
+              <li>gist: <a href="https://gist.github.com/lindsayevans/794800" target="_blank">Sample MIME server config (Apache, Nginx, IIS)</a></li>
             </ul>
             
           </div>

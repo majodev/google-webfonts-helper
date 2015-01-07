@@ -33,7 +33,7 @@
     <!-- Font preview -->
     <div> 
 
-      <button id="fontPreviewToggle" class="btn btn-default btn-info btn-sm" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true">{{isCollapsed === true ? "Show" : "Hide"}} style preview</button>
+      <button id="fontPreviewToggle" class="btn btn-default btn-sm" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true">{{isCollapsed === true ? "Show" : "Hide"}} style preview</button>
 
       <div collapse="isCollapsed">
 
@@ -111,7 +111,6 @@
         </tab>
 
         <tab heading="Modern Browsers" select="modernOnlyActive();" deselect="modernOnlyDeactive();">
-          <p>css-tricks.com: <a href="http://css-tricks.com/snippets/css/using-font-face/" target="blank">Things are shifting heavily toward WOFF</a><br/>caniuse.com: <a href="http://caniuse.com/#feat=woff" target="blank">Can I use woff? (compatibility information)</a></p>
           <div ng-click="selectText($event)">
             <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{modernBrowsers:true}"></div>
           </div>

@@ -14,13 +14,14 @@ var previousFontItem = false; // holds reference to previous font item, for part
 var subsetsChkbTimeoutP = null; // timeout - promise for cgBusy 3000ms until request for customization is made
 var subsetsChkbReload = null; // interval - promise for cgBusy loading text rewrite (waiting till customization) 1000ms
 
-var variantsMap = {};
+var variantsMap = {}; // map holds currently checked variants of a fontItem
 
 angular.module('googleWebfontsHelperApp')
   .controller('FontsCtrl', function($scope, $http, $stateParams) {
 
     $scope.fonts = [];
     $scope.busy = true;
+    $scope.selectedItemID = '';
 
     $scope.predicate = {
       name: 'by popularity',
@@ -55,6 +56,7 @@ angular.module('googleWebfontsHelperApp')
   }
 
   $scope.fontID = $stateParams.id;
+  $scope.$parent.selectedItemID = $scope.fontID;
 
   if (previousFontItem && previousFontItem.id === $stateParams.id) {
     // former item is a candiate for instant population until load is complete.
@@ -96,7 +98,7 @@ angular.module('googleWebfontsHelperApp')
           variantsMap[variantItem.id] = variantItem.id === fontItem.defVariant;
         });
 
-        console.log(variantsMap);
+        // console.log(variantsMap);
 
         $scope.variantsMap = variantsMap;
       }
