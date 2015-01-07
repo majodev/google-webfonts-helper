@@ -30,48 +30,10 @@
 
     </div>
 
-    <!-- Font preview -->
-    <div> 
-
-      <button id="fontPreviewToggle" class="btn btn-default btn-sm" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed=true">{{isCollapsed === true ? "Show" : "Hide"}} style preview</button>
-
-      <div collapse="isCollapsed">
-
-        <hr>
-
-        <div class="form-inline folderPrefixBar">Font Size:&nbsp;<div class="form-group">
-          <input id="previewFontSizeInput" class="form-control input-sm" type="number" ng-model="fontSize" placeholder="16" ng-init="fontSize=16">&nbsp;px&nbsp;
-        </div>
-          <button class="btn btn-default btn-sm" ng-click="fontSize = fontSize - 1">-</button>
-          <button class="btn btn-default btn-sm" ng-click="fontSize = fontSize + 1">+</button>
-          <span class="text-muted small">Hint: sample text is editable.</span>
-        </div>
-
-        <div ng-repeat="variant in fontItem.variants">
-          <span class="text-muted small">{{variant.id}}</span>
-          <p style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}}; font-size:{{fontSize > 0 ? fontSize : 16}}px;" contenteditable>The quick brown fox jumps over the lazy dog.</p>
-        </div>
-
-      </div>
-
-    </div>
-
-    <!-- styles set customization -->
-    <div>
-      <hr>
-      <h4>1. Choose the styles you want:<br/><small>Select at least one style (default is <code>{{fontItem.defVariant}}</code>). </small></h4>
-      <div class="variantsGroup">
-        <label class="checkbox-inline" ng-repeat="(key,value) in variantsMap">
-          <input type="checkbox" ng-model="variantsMap[key]" name="key" data-ng-disabled="checkVariantMinimalSelection(key)">{{key}}
-        </label>
-      </div>
-
-    </div>
-
     <!-- character set customization -->
     <div>
       <hr>
-      <h4>2. Choose the character sets you want:<br/><small>Select at least one character set (default is <code>{{fontItem.defSubset}}</code>). </small></h4>
+      <h4>1. Select charsets:&nbsp;<small>(default is <code>{{fontItem.defSubset}}</code>)</small></h4>
       <div class="subsetGroup">
         <label class="checkbox-inline" ng-repeat="(key,value) in fontItem.subsetMap">
           <input type="checkbox" ng-model="fontItem.subsetMap[key]" name="key" ng-click="subsetSelect(); requiresReload=true;" data-ng-disabled="checkSubsetMinimalSelection(key)">{{key}}
@@ -84,20 +46,52 @@
 
   <div class="fontVariant" ng-hide="busy" cg-busy="{promise: subsetsChkbTimeoutP, message: customizationReloadMessage}"> <!-- FONT VARIANT BEGINS -->
 
-
-  <!-- download button -->
-    <div>
+      <!-- styles set customization -->
+      <div>
       <hr>
-      <h4>3. Download font files for self-hosting:<br/><small>Archives are auto-generated and only include your selected character sets (but all styles and file formats).</small></h4>
-      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.storeID}}.zip</a>
-      <p><small>Archive includes .eot, .ttf, .svg, .woff and .woff2 files.<br/><strong>Fonts are copyright of their respective authors.</strong></small></p>
-    </div>
 
+      <h4>2. Select styles:&nbsp;<small>(default is <code>{{fontItem.defVariant}}</code>)</small></h4>
+
+      <div id="fontStylePreviewChooser">
+        <div ng-repeat="variant in fontItem.variants">
+          <dl class="dl-horizontal variantList">
+            <dt>
+              <label class="checkbox-inline">
+                <input class="bigCheckbox" type="checkbox" ng-model="variantsMap[variant.id]" name="variant.id" data-ng-disabled="checkVariantMinimalSelection(variant.id)"><span class="">{{variant.id}}</span>
+              </label>
+            </dt>
+            <dd>
+              <p style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}}; font-size:{{fontSize > 0 ? fontSize : 16}}px;" contenteditable>The quick brown fox jumps over the lazy dog.</p>
+            </dd>
+          </dl>
+        </div>
+      </div>
+
+      <div id="fontStyleControl" class="form-inline folderPrefixBar">
+        <div class="row">
+          <div class="col-xs-5 col-xs-offset-1">
+            <div id="previewFontSizeInput" class="input-group">
+              <span class="input-group-addon">Preview size</span>
+              <input class="form-control input-sm" type="number" ng-model="fontSize" placeholder="16" ng-init="fontSize=16" aria-describedby="px-addon">
+              <span class="input-group-addon" id="px-addon">px</span>
+            </div>
+          </div>
+          <div class="col-xs-5">
+            <div class="btn-group" role="group">
+              <button class="btn btn-default btn-sm" ng-click="fontSize = fontSize - 1">-</button>
+              <button class="btn btn-default btn-sm" ng-click="fontSize = fontSize + 1">+</button>
+            </div>
+            <span class="text-muted">Sample text editable.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
 
     <!-- css snippets -->
     <div class="fontItemCSSWrap">
 
-      <h4>4. Use this CSS snippet:<br/><small>Select <code>Best Support</code> if old browsers need to be supported. Customize the folder prefix so that it matches your folder structure.</small></h4>
+      <h4>3. Copy CSS:<br/><small>Select <code>Best Support</code> if old browsers need to be supported. Customize the folder prefix so that it matches your folder structure.</small></h4>
 
       <div class="form-inline folderPrefixBar">Folder prefix:&nbsp;<div class="form-group">
         <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
@@ -131,8 +125,18 @@
 
       </tabset>
     </div>
+
+
+    <!-- download button -->
+    <div>
+      <hr>
+      <h4>4. Download files:<br/><small>Archives are auto-generated and only include your selected character sets (but all styles and file formats).</small></h4>
+      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.storeID}}.zip</a>
+      <p><small>Archive includes .eot, .ttf, .svg, .woff and .woff2 files.<br/><strong>Fonts are copyright of their respective authors.</strong></small></p>
+    </div>
+
     <hr>
-    <h4>5. Delete unused files (optional)<br/><small>Based on your selected styles and CSS snippet, some files <span ng-if="modernFontsOnly">(and formats as you are using the <code>Modern Browsers</code> CSS snippet)</span> in your downloaded archive are not required! You can savely delete them with this <code>bash</code> command after unzipping.</small></h4>
+    <h4>5. Delete unused files (optional):<br/><small>Based on your selected styles and CSS snippet, some files <span ng-if="modernFontsOnly">(and formats as you are using the <code>Modern Browsers</code> CSS snippet)</span> in your downloaded archive are not required! You can savely delete them with this <code>bash</code> command after unzipping.</small></h4>
     <pre ng-click="selectText($event)">rm <code ng-repeat="variant in fontItem.variants | filter:unusedFiles">{{fontItem.id}}-{{fontItem.storeID}}-{{variant.id}}.eot {{fontItem.id}}-{{fontItem.storeID}}-{{variant.id}}.woff {{fontItem.id}}-{{fontItem.storeID}}-{{variant.id}}.woff2 {{fontItem.id}}-{{fontItem.storeID}}-{{variant.id}}.ttf {{fontItem.id}}-{{fontItem.storeID}}-{{variant.id}}.svg </code><code ng-repeat="variant in fontItem.variants | filter:variantFilter" ng-if="modernFontsOnly">{{fontItem.id}}-{{fontItem.storeID}}-{{variant.id}}.eot {{fontItem.id}}-{{fontItem.storeID}}-{{variant.id}}.ttf {{fontItem.id}}-{{fontItem.storeID}}-{{variant.id}}.svg </code></pre>
     <hr>
     <h4>6. You are now ready to self-host {{fontItem.family}}.<br/><small>If this service has actually been helpful for you, please <a href="https://github.com/majodev/google-webfonts-helper/" target="_blank">star it on GitHub</a>. If you've encountered serious problems file an issue <a href="https://github.com/majodev/google-webfonts-helper/issues">here</a>.</small></h4>
