@@ -9,10 +9,12 @@ function apiError($scope, status, headers, config) {
   $scope.errorConfig = JSON.stringify(config, null, 2);
 }
 
-var previousFontItem = false;
-var checkboxTimeoutPromise = null; // promise for cgBusy 3000ms timeout
-var checkboxReloadInterval = null; // promise for cgBusy (waiting till customization) 1000ms interval
+var previousFontItem = false; // holds reference to previous font item, for partial refreshs, will be nulled if fontID changes
 
+var subsetsChkbTimeoutP = null; // timeout - promise for cgBusy 3000ms until request for customization is made
+var subsetsChkbReload = null; // interval - promise for cgBusy loading text rewrite (waiting till customization) 1000ms
+
+var variantsMap = {};
 
 angular.module('googleWebfontsHelperApp')
   .controller('FontsCtrl', function($scope, $http, $stateParams) {
@@ -47,9 +49,9 @@ angular.module('googleWebfontsHelperApp')
 
   var subSetString = $stateParams.subsets || '';
 
-  if (checkboxTimeoutPromise) {
-    $timeout.cancel(checkboxTimeoutPromise);
-    $interval.cancel(checkboxReloadInterval);
+  if (subsetsChkbTimeoutP) {
+    $timeout.cancel(subsetsChkbTimeoutP);
+    $interval.cancel(subsetsChkbReload);
   }
 
   $scope.fontID = $stateParams.id;
@@ -58,6 +60,10 @@ angular.module('googleWebfontsHelperApp')
     // former item is a candiate for instant population until load is complete.
     $scope.fontItem = previousFontItem;
     $scope.loadingMessage = 'Customizing ' + $stateParams.id + '...';
+
+    // reuse current variantMap
+    $scope.variantsMap = variantsMap;
+
   } else {
     // clear it
     previousFontItem = false;
@@ -65,6 +71,7 @@ angular.module('googleWebfontsHelperApp')
   }
 
   $scope.error = false;
+  $scope.modernFontsOnly = false;
 
   $scope.downloadSubSetID = '';
   $scope.subSetsSelected = 0;
@@ -81,13 +88,24 @@ angular.module('googleWebfontsHelperApp')
         }
       });
 
+      if (!previousFontItem) {
+        // first load of fontItem - reload variants Map and set the default font style
+        variantsMap = {};
+        $.each(fontItem.variants, function(index, variantItem) {
+          // console.log(variantItem);
+          variantsMap[variantItem.id] = variantItem.id === fontItem.defVariant;
+        });
+
+        console.log(variantsMap);
+
+        $scope.variantsMap = variantsMap;
+      }
+
       $scope.busy = false;
     })
     .error(function(data, status, headers, config) {
       apiError($scope, status, headers, config);
     });
-
-
 
   if (previousFontItem === false) {
     $scope.busy = true;
@@ -103,12 +121,12 @@ angular.module('googleWebfontsHelperApp')
 
   $scope.subsetSelect = function() {
 
-    if (checkboxTimeoutPromise) {
-      $timeout.cancel(checkboxTimeoutPromise);
-      $interval.cancel(checkboxReloadInterval);
+    if (subsetsChkbTimeoutP) {
+      $timeout.cancel(subsetsChkbTimeoutP);
+      $interval.cancel(subsetsChkbReload);
     }
 
-    checkboxTimeoutPromise = $timeout(function() {
+    subsetsChkbTimeoutP = $timeout(function() {
       var queryParams = '';
       var lenChecked = 0;
       var map = $scope.fontItem.subsetMap;
@@ -123,7 +141,6 @@ angular.module('googleWebfontsHelperApp')
 
       $scope.subSetsSelected = lenChecked;
 
-
       if (lenChecked === 0) {
         // you will get the defaultset
         map[defaultSet] = true;
@@ -136,7 +153,7 @@ angular.module('googleWebfontsHelperApp')
       previousFontItem = $scope.fontItem;
 
       // wait until doing the request (overrides previous promise!)...
-      checkboxTimeoutPromise = $timeout(function() {
+      subsetsChkbTimeoutP = $timeout(function() {
         $state.go('fonts.item', {
           id: $scope.fontID,
           subsets: queryParams
@@ -151,7 +168,7 @@ angular.module('googleWebfontsHelperApp')
 
       setCustomizationReloadMessage(timeUntil);
 
-      checkboxReloadInterval = $interval(function() {
+      subsetsChkbReload = $interval(function() {
         timeUntil -= 1;
         setCustomizationReloadMessage(timeUntil);
       }, 1000, 3);
@@ -159,13 +176,47 @@ angular.module('googleWebfontsHelperApp')
 
 
       // make available for cgBusy
-      $scope.checkboxTimeoutPromise = checkboxTimeoutPromise;
+      $scope.subsetsChkbTimeoutP = subsetsChkbTimeoutP;
 
     });
 
     // make available for cgBusy
-    $scope.checkboxTimeoutPromise = checkboxTimeoutPromise;
+    $scope.subsetsChkbTimeoutP = subsetsChkbTimeoutP;
 
+  };
+
+  // selected variants filter
+  $scope.variantFilter = function(variant) {
+    if ($scope.variantsMap[variant.id] === false) {
+      return;
+    }
+
+    return variant;
+  }
+
+  $scope.unusedFiles = function(variant) {
+    if ($scope.variantsMap[variant.id] === true) {
+      return;
+    }
+
+    return variant;
+  }
+
+  $scope.checkVariantMinimalSelection = function(key) {
+
+    var countSelected = 0;
+
+    $.each(variantsMap, function(checkKey) {
+      if (variantsMap[checkKey] === true) {
+        countSelected += 1;
+      }
+    });
+
+    if (countSelected === 1 && variantsMap[key] === true) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   $scope.selectText = function(evt) {
@@ -189,5 +240,13 @@ angular.module('googleWebfontsHelperApp')
       selection.addRange(range);
     }
   };
+
+  $scope.modernOnlyActive = function () {
+    $scope.modernFontsOnly = true;
+  }
+
+  $scope.modernOnlyDeactive = function() {
+    $scope.modernFontsOnly = false;
+  }
 
 });
