@@ -22,7 +22,8 @@ Returns a list of all fonts, sorted by popularity. E.g. `curl https://google-web
   "version": "v10",
   "lastModified": "2014-10-17",
   "popularity": 1,
-  "defSubset": "latin"
+  "defSubset": "latin",
+  "defVariant": "regular"
 } [...]
 ]
 ```
@@ -52,6 +53,7 @@ Returns a font with urls to the actual font files google's servers. `subsets` is
   "lastModified": "2014-08-28",
   "popularity": 522,
   "defSubset": "latin",
+  "defVariant": "regular",
   "subsetMap": {
     "latin": true,
     "latin-ext": true
