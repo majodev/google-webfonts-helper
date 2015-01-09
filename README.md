@@ -29,7 +29,7 @@ Returns a list of all fonts, sorted by popularity. E.g. `curl https://google-web
 ```
 
 #### GET `/api/fonts/[id]?subsets=latin,latin-ext`
-Returns a font with urls to the actual font files google's servers. `subsets` is optional (will serve the `defSubset` if unspecified).  E.g. `curl https://google-webfonts-helper.herokuapp.com/api/fonts/modern-antiqua?subsets=latin,latin-ext`:
+Returns a font with urls to the actual font files google's servers. `subsets` is optional (will serve the `defSubset` if unspecified).  E.g. `curl https://google-webfonts-helper.herokuapp.com/api/fonts/modern-antiqua?subsets=latin,latin-ext` (the double quotes are important as query parameters may else be stripped!):
 
 ```json
 {
@@ -64,7 +64,7 @@ Returns a font with urls to the actual font files google's servers. `subsets` is
 
 #### GET `/api/fonts/[id]?download=zip&subsets=latin`
 
-Download a zipped archive with all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` files of a specified font. E.g. `curl -o fontfiles.zip https://google-webfonts-helper.herokuapp.com/api/fonts/lato?download=zip&subsets=latin,latin-ext`
+Download a zipped archive with all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` files of a specified font. E.g. `curl -o fontfiles.zip "https://google-webfonts-helper.herokuapp.com/api/fonts/lato?download=zip&subsets=latin,latin-ext"` (the double quotes are important as query parameters may else be stripped!)
 
 ### History
 

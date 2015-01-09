@@ -174,9 +174,9 @@ function getFontFiles(fontItem, cb) {
   downloader(fontItem, function(localPaths) {
 
     fileStore[fontItem.id + "-" + fontItem.storeID].files = localPaths;
-    fileStore[fontItem.id + "-" + fontItem.storeID].filename = fontItem.id + "-" + fontItem.version + "-" + fontItem.storeID + '.zip'
+    fileStore[fontItem.id + "-" + fontItem.storeID].zippedFilename = fontItem.id + "-" + fontItem.version + "-" + fontItem.storeID + '.zip'
 
-    // zip is ready, no longer dirty
+    // fileStore for item is ready, no longer dirty
     // remove dirty flag from store...
     delete fileStore[fontItem.id + "-" + fontItem.storeID].isDirty;
 
@@ -192,29 +192,6 @@ function getFontFiles(fontItem, cb) {
     // fullfill still pending requests awaiting process completion
     emitter.emit(fontItem.id + "-filesFetched-" + fontItem.storeID, fileStore[fontItem.id + "-" + fontItem.storeID]);
 
-
-    // zipper(fontItem, localPaths, function(zipItemPath) {
-
-    //   // save path to zip with all fonts in store
-    //   fileStore[fontItem.id + "-" + fontItem.storeID].files = zipItemPath;
-
-    //   // zip is ready, no longer dirty
-    //   // remove dirty flag from store...
-    //   delete fileStore[fontItem.id + "-" + fontItem.storeID].isDirty;
-
-    //   // callback (if null, it's only obviating)
-    //   if (_.isFunction(cb) === true) {
-    //     // fullfill the original request
-    //     // console.log("Download: fulfill original request...");
-    //     cb(fileStore[fontItem.id + "-" + fontItem.storeID]);
-    //   } else {
-    //     // console.log("obsiation, no callback!");
-    //   }
-
-    //   // fullfill still pending requests awaiting process completion
-    //   emitter.emit(fontItem.id + "-filesFetched-" + fontItem.storeID, fileStore[fontItem.id + "-" + fontItem.storeID]);
-
-    // });
   });
 }
 
@@ -250,6 +227,20 @@ function getFontFiles(fontItem, cb) {
   // }, 10000);
 }());
 
+
+// -----------------------------------------------------------------------------
+// Lodash Utility filters
+// -----------------------------------------------------------------------------
+
+// http://stackoverflow.com/questions/17251764/lodash-filter-collection-using-array-of-values
+_.mixin({
+  'findByValues': function(collection, property, values) {
+    return _.filter(collection, function(item) {
+      return _.contains(values, item[property]);
+    });
+  }
+});
+
 // -----------------------------------------------------------------------------
 // Exports for REST API
 // -----------------------------------------------------------------------------
@@ -282,7 +273,7 @@ module.exports.get = function get(id, subsetArr, callback) {
 
 };
 
-module.exports.getDownload = function getDownload(id, subsetArr, callback) {
+module.exports.getDownload = function getDownload(id, subsetArr, variantsArr, formatsArr, callback) {
 
   var font = _.find(cachedFonts, {
     id: id
@@ -292,7 +283,27 @@ module.exports.getDownload = function getDownload(id, subsetArr, callback) {
     getFontItem(font, subsetArr, function(fontItem) {
       getFontFiles(fontItem, function(fileStoreItem) {
 
-        callback(zipper(fileStoreItem.files), fileStoreItem.filename);
+        var filteredFiles = fileStoreItem.files;
+
+        // filter away unwanted variants...
+        if (variantsArr !== null) {
+          filteredFiles = _.findByValues(filteredFiles, "variant", variantsArr);
+        }
+
+        // filter away unwanted formats...
+        if (formatsArr !== null) {
+          filteredFiles = _.findByValues(filteredFiles, "format", formatsArr);
+        }
+
+
+        if (filteredFiles.length > 0) {
+          // callback and return archiveStream + zipped filename
+          callback(zipper(filteredFiles), fileStoreItem.zippedFilename);
+        } else {
+          // no files left, return all nulled.
+          callback(null, null);
+        }
+
       });
     });
   } else {

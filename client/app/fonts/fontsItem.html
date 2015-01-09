@@ -57,7 +57,7 @@
           <dl class="dl-horizontal variantList">
             <dt>
               <label class="checkbox-inline">
-                <input class="bigCheckbox" type="checkbox" ng-model="variantsMap[variant.id]" name="variant.id" data-ng-disabled="checkVariantMinimalSelection(variant.id)"><span class="">{{variant.id}}</span>
+                <input type="checkbox" ng-model="variantsMap[variant.id]" name="variant.id" data-ng-disabled="checkVariantMinimalSelection(variant.id)" ng-click="variantSelect();"><span class="">{{variant.id}}</span>
               </label>
             </dt>
             <dd>
@@ -81,7 +81,7 @@
               <button class="btn btn-default btn-sm" ng-click="fontSize = fontSize - 1">-</button>
               <button class="btn btn-default btn-sm" ng-click="fontSize = fontSize + 1">+</button>
             </div>
-            <span class="text-muted">Sample text editable.</span>
+            <span class="text-muted">&nbsp;Sample text editable.</span>
           </div>
         </div>
       </div>
@@ -130,17 +130,19 @@
     <!-- download button -->
     <div>
       <hr>
-      <h4>4. Download files:<br/><small>Archives are auto-generated and only include your selected character sets (but all styles and file formats).</small></h4>
-      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}.zip</a>
-      <p><small>Archive includes .eot, .ttf, .svg, .woff and .woff2 files.<br/><strong>Fonts are copyright of their respective authors.</strong></small></p>
+      <h4>4. Download files:<br/><small>Archives are auto-generated and only include your selected character sets, styles and formats!</small></h4>
+      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}&amp;variants={{variantDownloadQueryString}}{{modernFontsOnly === true ? '&formats=woff,woff2' : ''}}" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}.zip</a>
+      <p><small>This generated archive for {{fontItem.family}} includes the styles <code>[{{variantDownloadQueryString}}]</code> in the formats <code>[{{modernFontsOnly === true ? '.woff,.woff2' : '.eot,.ttf,.svg, woff,.woff2'}}]</code> for the charsets <code>[{{downloadSubSetID}}]</code><br/><strong>Fonts are copyright of their respective authors.</strong></small></p>
     </div>
 
-    <hr>
-    <h4>5. Delete unused files (optional):<br/><small>Based on your selected styles and CSS snippet, some files <span ng-if="modernFontsOnly">(and formats as you are using the <code>Modern Browsers</code> CSS snippet)</span> in your downloaded archive are not required! You can savely delete them with this <code>bash</code> command after unzipping.</small></h4>
-    <pre ng-click="selectText($event)">rm <code ng-repeat="variant in fontItem.variants | filter:unusedFiles">{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.eot {{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.woff {{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.woff2 {{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.ttf {{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.svg </code><code ng-repeat="variant in fontItem.variants | filter:variantFilter" ng-if="modernFontsOnly">{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.eot {{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.ttf {{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.svg </code></pre>
-    <hr>
-    <h4>6. You are now ready to self-host {{fontItem.family}}.<br/><small>If this service has actually been helpful for you, please <a href="https://github.com/majodev/google-webfonts-helper/" target="_blank">star it on GitHub</a>. If you've encountered serious problems file an issue <a href="https://github.com/majodev/google-webfonts-helper/issues">here</a>.</small></h4>
-    <hr>
+    <!-- final instructions -->
+    <div>
+      <hr>
+      <h4>5. You are now ready to self-host {{fontItem.family}}.<br/><small>If this service has actually been helpful for you, please <a href="https://github.com/majodev/google-webfonts-helper/" target="_blank">star it on GitHub</a>. If you've encountered serious problems file an issue <a href="https://github.com/majodev/google-webfonts-helper/issues">here</a>.</small></h4>
+      <hr>
+    </div>
+
+
   </div> <!-- FONT VARIANT ENDS -->
 
   

@@ -11,9 +11,9 @@ function zip(filePaths) {
     throw err;
   });
 
-  _.each(filePaths, function(path) {
-    archive.append(fs.createReadStream(path), {
-      name: path.replace(conf.CACHE_DIR, '')
+  _.each(filePaths, function(fileItem) {
+    archive.append(fs.createReadStream(fileItem.path), {
+      name: fileItem.path.replace(conf.CACHE_DIR, '')
     })
   });
 

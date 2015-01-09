@@ -17,7 +17,7 @@ var subsetsChkbReload = null; // interval - promise for cgBusy loading text rewr
 var variantsMap = {}; // map holds currently checked variants of a fontItem
 
 angular.module('googleWebfontsHelperApp')
-  .controller('FontsCtrl', function($scope, $http, $stateParams) {
+  .controller('FontsCtrl', function($scope, $http) {
 
     $scope.fonts = [];
     $scope.busy = true;
@@ -101,6 +101,8 @@ angular.module('googleWebfontsHelperApp')
         // console.log(variantsMap);
 
         $scope.variantsMap = variantsMap;
+        $scope.variantDownloadQueryString = $scope.fontItem.defVariant;
+
       }
 
       $scope.busy = false;
@@ -119,6 +121,27 @@ angular.module('googleWebfontsHelperApp')
     } else {
       return false;
     }
+  };
+
+  $scope.variantSelect = function() {
+    var variantDownloadQueryString = '';
+
+    $.each(variantsMap, function(checkKey) {
+      if (variantsMap[checkKey] === true) {
+        variantDownloadQueryString += checkKey + ',';
+      }
+    });
+
+    if (variantDownloadQueryString.length === 0) {
+      // you will only get the defaultvariant!
+      variantDownloadQueryString = $scope.fontItem.defVariant;
+    } else {
+      // remove last comma from string
+      variantDownloadQueryString = variantDownloadQueryString.substring(0, variantDownloadQueryString.length - 1);
+    }
+
+    $scope.variantDownloadQueryString = variantDownloadQueryString;
+
   };
 
   $scope.subsetSelect = function() {
@@ -194,15 +217,7 @@ angular.module('googleWebfontsHelperApp')
     }
 
     return variant;
-  }
-
-  $scope.unusedFiles = function(variant) {
-    if ($scope.variantsMap[variant.id] === true) {
-      return;
-    }
-
-    return variant;
-  }
+  };
 
   $scope.checkVariantMinimalSelection = function(key) {
 
@@ -243,12 +258,12 @@ angular.module('googleWebfontsHelperApp')
     }
   };
 
-  $scope.modernOnlyActive = function () {
+  $scope.modernOnlyActive = function() {
     $scope.modernFontsOnly = true;
-  }
+  };
 
   $scope.modernOnlyDeactive = function() {
     $scope.modernFontsOnly = false;
-  }
+  };
 
 });

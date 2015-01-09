@@ -22,7 +22,11 @@ function downloadFontFiles(fontItem, cb) {
 
           // download the file for type (filename now known)
           downloadFile(variantItem[formatKey], filename, function() {
-            filePaths.push(filename);
+            filePaths.push({
+              variant: variantItem.id, // variants and format are used to filter them out later!
+              format: formatKey,
+              path: filename
+            });
             typeCB();
           });
 

@@ -29,22 +29,28 @@ exports.show = function(req, res) {
   // get the subset string if it was supplied... 
   // e.g. "subset=latin,latin-ext," will be transformed into ["latin","latin-ext"] (non whitespace arrays)
   var subsetsArr = _.isUndefined(req.query.subsets) ? null : _.without(req.query.subsets.split(/[,]+/), '');
-
-  // console.log(subsets);
+  var variantsArr = _.isUndefined(req.query.variants) ? null : _.without(req.query.variants.split(/[,]+/), '');
+  var formatsArr = _.isUndefined(req.query.formats) ? null : _.without(req.query.formats.split(/[,]+/), '');
 
   if (req.query.download === "zip") {
     // don't return a json, return a zipped download...
 
-    core.getDownload(req.params.id, subsetsArr, function(archiveStream, filename) {
+    core.getDownload(req.params.id, subsetsArr, variantsArr, formatsArr, function(archiveStream, filename) {
 
-      // Tell the browser that this is a zip file.
-      res.writeHead(200, {
+      if (archiveStream !== null) {
+        // Tell the browser that this is a zip file.
+        res.writeHead(200, {
           'Content-Type': 'application/zip',
           'Content-disposition': 'attachment; filename=' + filename
-      });
+        });
 
-      // pipe the stream from the zipper to res...
-      archiveStream.pipe(res);
+        // pipe the stream from the zipper to res...
+        archiveStream.pipe(res);
+      } else {
+        // not found files - nothing is generated.
+        res.status(404) // HTTP status 404: NotFound
+          .send('Not found');
+      }
 
     });
 
