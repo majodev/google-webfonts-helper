@@ -93,33 +93,35 @@
 
       <h4>3. Copy CSS:&nbsp;<small>(default is <code>Best Support</code>)</small></h4>
 
-      <div class="form-inline folderPrefixBar">Folder prefix:&nbsp;<div class="form-group">
-        <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
-      </div></div>
-
-      <tabset>
+      <tabset type="pills">
         <tab heading="Best Support">
-          <p class="text-muted small">Choose this snippet if old browsers need to be supported. Formats in this snippet: <code>[eot,woff,woff2,ttf,svg]</code></p>
+          <p class="small">Choose <code>Best Support</code> if old browsers still need to be supported. Formats in this snippet: <code>[eot,woff,woff2,ttf,svg]</code></p>
           
           <div ng-click="selectText($event)" class="cssCodeStyle">
             <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{bestSupport:true}"></div>
           </div>
 
           <p class="small">Click on code to select all statements, then copy/paste it into your own CSS file.</p>
+          <div class="form-inline folderPrefixBar small">Optional: Customize folder prefix:&nbsp;<div class="form-group">
+            <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
+          </div></div>
         </tab>
 
         <tab heading="Modern Browsers" select="modernOnlyActive();" deselect="modernOnlyDeactive();">
-          <p class="text-muted small">Choose this snippet if you only want to support modern browsers. Formats in this snippet: <code>[woff,woff2]</code></p>
+          <p class="small">Choose <code>Modern Browsers</code> if supporting old browsers is not relevant. Formats in this snippet: <code>[woff,woff2]</code></p>
           
           <div ng-click="selectText($event)" class="cssCodeStyle">
             <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{modernBrowsers:true}"></div>
           </div>
 
           <p class="small">Click on code to select all statements, then copy/paste it into your own CSS file.</p>
+          <div class="form-inline folderPrefixBar small">Optional: Customize folder prefix:&nbsp;<div class="form-group">
+            <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
+          </div></div>
         </tab>
 
-        <tab heading="Original links served by Google" class="pull-right">
-          <p class="text-muted small">This tab provides a list of all fetched font files from Google, ordered by their style. These are the same files that get packed into the archive in the next step (but they have no meaningful name).</p>
+        <!-- <tab heading="Plain links" class="pull-right">
+          <p class="small"><code>Plain links</code> provides a list of all font file urls from Google, ordered by their style. These are the same files that get packed into the archive in the next step (but they do not have meaningful filenames).</p>
           <div ng-repeat="variant in fontItem.variants | filter:variantFilter">
             <h5>{{fontItem.id}}-{{variant.id}} <small>{{fontItem.storeID}}</small></h5>
             <ul>
@@ -130,7 +132,7 @@
               <li>svg: <a href="{{variant.svg}}">{{variant.svg}}</a></li>
             </ul>
           </div>
-        </tab>
+        </tab> -->
 
       </tabset>
     </div>
@@ -140,9 +142,24 @@
     <div>
       <hr>
       <h4>4. Download files:</h4>
-      <p>Your generated archive for <strong>{{fontItem.family}}</strong> with charsets <strong><code>[{{downloadSubSetID}}]</code></strong> includes the styles <strong><code>[{{variantDownloadQueryString}}]</code></strong> in the formats <strong><code>[{{modernFontsOnly === true ? 'woff,woff2' : 'eot,ttf,svg,woff,woff2'}}]</code></strong>.</p>
-      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}&amp;variants={{variantDownloadQueryString}}{{modernFontsOnly === true ? '&formats=woff,woff2' : ''}}" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}.zip</a>
+      <p>Your generated archive for <strong>{{fontItem.family}}</strong> with charsets <strong><code>[{{downloadSubSetID}}]</code></strong> and styles <strong><code>[{{variantDownloadQueryString}}]</code></strong> includes the formats <strong><code>[{{modernFontsOnly === true ? 'woff,woff2' : 'eot,ttf,svg,woff,woff2'}}]</code></strong>.</p>
+      
+      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}&amp;variants={{variantDownloadQueryString}}{{modernFontsOnly === true ? '&formats=woff,woff2' : ''}}" target="_blank" role="button" class="btn btn-primary download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}.zip</a>
       <p><small>Fonts are copyright of their respective authors.</small></p>
+
+      <!-- <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+          
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+          
+        </div>
+      </div> -->
+      
+
+      
     </div>
 
     <!-- final instructions -->
