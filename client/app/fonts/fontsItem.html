@@ -99,17 +99,23 @@
 
       <tabset>
         <tab heading="Best Support">
-          <p class="text-muted small">Choose this snippet if old browsers need to be supported. Formats in this snippet: <code>[eot,woff,woff2,ttf,svg]</code><br/>Click on code to select all statements, then copy/paste it.</p>
-          <div ng-click="selectText($event)">
+          <p class="text-muted small">Choose this snippet if old browsers need to be supported. Formats in this snippet: <code>[eot,woff,woff2,ttf,svg]</code></p>
+          
+          <div ng-click="selectText($event)" class="cssCodeStyle">
             <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{bestSupport:true}"></div>
           </div>
+
+          <p class="small">Click on code to select all statements, then copy/paste it into your own CSS file.</p>
         </tab>
 
         <tab heading="Modern Browsers" select="modernOnlyActive();" deselect="modernOnlyDeactive();">
-          <p class="text-muted small">Choose this snippet if you only want to support modern browsers. Formats in this snippet: <code>[woff,woff2]</code><br/>Click on code to select all statements, then copy/paste it.</p>
-          <div ng-click="selectText($event)">
+          <p class="text-muted small">Choose this snippet if you only want to support modern browsers. Formats in this snippet: <code>[woff,woff2]</code></p>
+          
+          <div ng-click="selectText($event)" class="cssCodeStyle">
             <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{modernBrowsers:true}"></div>
           </div>
+
+          <p class="small">Click on code to select all statements, then copy/paste it into your own CSS file.</p>
         </tab>
 
         <tab heading="Original links served by Google" class="pull-right">
