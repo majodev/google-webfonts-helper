@@ -101,10 +101,10 @@
             <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{bestSupport:true}"></div>
           </div>
 
-          <p class="small">Click on code to select all statements, then copy/paste it into your own CSS file.</p>
-          <div class="form-inline folderPrefixBar small">Optional: Customize folder prefix:&nbsp;<div class="form-group">
+          <div class="form-inline folderPrefixBar small">Customize folder prefix (optional):&nbsp;<div class="form-group">
             <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
           </div></div>
+          <p class="small">Click on code to select all statements, then copy/paste it into your own CSS file.</p>
         </tab>
 
         <tab heading="Modern Browsers" select="modernOnlyActive();" deselect="modernOnlyDeactive();">
@@ -114,10 +114,10 @@
             <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{modernBrowsers:true}"></div>
           </div>
 
-          <p class="small">Click on code to select all statements, then copy/paste it into your own CSS file.</p>
-          <div class="form-inline folderPrefixBar small">Optional: Customize folder prefix:&nbsp;<div class="form-group">
+          <div class="form-inline folderPrefixBar small">Customize folder prefix (optional):&nbsp;<div class="form-group">
             <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
           </div></div>
+          <p class="small">Click on code to select all statements, then copy/paste it into your own CSS file.</p>
         </tab>
 
         <!-- <tab heading="Plain links" class="pull-right">
