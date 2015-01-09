@@ -91,7 +91,7 @@
     <!-- css snippets -->
     <div class="fontItemCSSWrap">
 
-      <h4>3. Copy CSS:<br/><small>Select <code>Best Support</code> if old browsers need to be supported. Customize the folder prefix so that it matches your folder structure.</small></h4>
+      <h4>3. Copy CSS:&nbsp;<small>(select <code>Best Support</code> if old browsers need to be supported)</small></h4>
 
       <div class="form-inline folderPrefixBar">Folder prefix:&nbsp;<div class="form-group">
         <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
@@ -130,9 +130,9 @@
     <!-- download button -->
     <div>
       <hr>
-      <h4>4. Download files:<br/><small>Archives are auto-generated and only include your selected character sets, styles and formats!</small></h4>
+      <h4>4. Download files:&nbsp;<small>(auto-generated, files are matched against your previous selections)</small></h4>
       <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}&amp;variants={{variantDownloadQueryString}}{{modernFontsOnly === true ? '&formats=woff,woff2' : ''}}" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}.zip</a>
-      <p><small>This generated archive for {{fontItem.family}} includes the styles <code>[{{variantDownloadQueryString}}]</code> in the formats <code>[{{modernFontsOnly === true ? '.woff,.woff2' : '.eot,.ttf,.svg, woff,.woff2'}}]</code> for the charsets <code>[{{downloadSubSetID}}]</code><br/><strong>Fonts are copyright of their respective authors.</strong></small></p>
+      <p><small>Your archive for {{fontItem.family}} includes styles <strong><code>[{{variantDownloadQueryString}}]</code></strong> in formats <strong><code>[{{modernFontsOnly === true ? '.woff,.woff2' : '.eot,.ttf,.svg, woff,.woff2'}}]</code></strong> for charsets <strong><code>[{{downloadSubSetID}}]</code></strong><br/><strong>Fonts are copyright of their respective authors.</strong></small></p>
     </div>
 
     <!-- final instructions -->

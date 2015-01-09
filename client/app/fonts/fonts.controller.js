@@ -103,6 +103,9 @@ angular.module('googleWebfontsHelperApp')
         $scope.variantsMap = variantsMap;
         $scope.variantDownloadQueryString = $scope.fontItem.defVariant;
 
+      } else {
+        // trigger variant select so variant query string matches again
+        $scope.variantSelect();
       }
 
       $scope.busy = false;
