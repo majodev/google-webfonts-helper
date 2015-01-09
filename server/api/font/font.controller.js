@@ -35,14 +35,16 @@ exports.show = function(req, res) {
   if (req.query.download === "zip") {
     // don't return a json, return a zipped download...
 
-    core.getDownload(req.params.id, subsetsArr, function(localZipPath) {
+    core.getDownload(req.params.id, subsetsArr, function(archiveStream, filename) {
 
-      if (localZipPath === null) {
-        res.status(404) // HTTP status 404: NotFound
-          .send('Not found');
-      } else {
-        res.download(localZipPath);
-      }
+      // Tell the browser that this is a zip file.
+      res.writeHead(200, {
+          'Content-Type': 'application/zip',
+          'Content-disposition': 'attachment; filename=' + filename
+      });
+
+      // pipe the stream from the zipper to res...
+      archiveStream.pipe(res);
 
     });
 

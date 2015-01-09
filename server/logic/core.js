@@ -24,9 +24,8 @@ var subsetStore = {}; // every item in here holds a urlStore Object + a unique s
 // urlStore holds fetched urls to all conf.USER_AGENTS font formats
 // gets merged with an item from cachedFonts to form a so called "fontItem" Object
 
-// zipStore holds path (prop = font.id + fontItem.storeID) to locally cached zip (with all fonts in it)
-// the socalled "zipItem" Object
-var zipStore = {};
+// fileStore holds arrays of local paths to font files, id = font.id + "-" + subsetStoreID
+var fileStore = {};
 
 
 // -----------------------------------------------------------------------------
@@ -139,24 +138,24 @@ function getFontItem(font, subsetArr, callback) {
 
 function getFontFiles(fontItem, cb) {
 
-  if (_.isUndefined(zipStore[fontItem.id + "-" + fontItem.storeID]) === false) {
-    if (zipStore[fontItem.id + "-" + fontItem.storeID].isDirty !== true) {
+  if (_.isUndefined(fileStore[fontItem.id + "-" + fontItem.storeID]) === false) {
+    if (fileStore[fontItem.id + "-" + fontItem.storeID].isDirty !== true) {
       // already cached, return instantly
       // callback (if null, it's only obviating)
       if (_.isFunction(cb) === true) {
         // fullfill the original request
-        cb(zipStore[fontItem.id + "-" + fontItem.storeID]);
+        cb(fileStore[fontItem.id + "-" + fontItem.storeID]);
       } else {
         // nothing needs to be done, no callback (obviating)!
       }
     } else {
       // process has already begun, wait until it has finished...
-      emitter.once(fontItem.id + "-filesFetched-" + fontItem.storeID, function(zipItem) {
+      emitter.once(fontItem.id + "-filesFetched-" + fontItem.storeID, function(fileStoreItem) {
         // console.log("Download: fulfilling pending download request...");
         // callback (if null, it's only obviating)
         if (_.isFunction(cb) === true) {
           // fullfill the original request
-          cb(zipItem);
+          cb(fileStoreItem);
         } else {
           // console.log("fulfill fail no callback!");
           // nothing needs to be done, no callback (obviating)!
@@ -167,34 +166,55 @@ function getFontFiles(fontItem, cb) {
     return;
   }
 
-  zipStore[fontItem.id + "-" + fontItem.storeID] = {};
-  zipStore[fontItem.id + "-" + fontItem.storeID].isDirty = true;
+  fileStore[fontItem.id + "-" + fontItem.storeID] = {};
+  fileStore[fontItem.id + "-" + fontItem.storeID].isDirty = true;
 
 
   // trigger downloading of font files...
   downloader(fontItem, function(localPaths) {
-    zipper(fontItem, localPaths, function(zipItemPath) {
 
-      // save path to zip with all fonts in store
-      zipStore[fontItem.id + "-" + fontItem.storeID].zip = zipItemPath;
+    fileStore[fontItem.id + "-" + fontItem.storeID].files = localPaths;
+    fileStore[fontItem.id + "-" + fontItem.storeID].filename = fontItem.id + "-" + fontItem.version + "-" + fontItem.storeID + '.zip'
 
-      // zip is ready, no longer dirty
-      // remove dirty flag from store...
-      delete zipStore[fontItem.id + "-" + fontItem.storeID].isDirty;
+    // zip is ready, no longer dirty
+    // remove dirty flag from store...
+    delete fileStore[fontItem.id + "-" + fontItem.storeID].isDirty;
 
-      // callback (if null, it's only obviating)
-      if (_.isFunction(cb) === true) {
-        // fullfill the original request
-        // console.log("Download: fulfill original request...");
-        cb(zipStore[fontItem.id + "-" + fontItem.storeID]);
-      } else {
-        // console.log("obsiation, no callback!");
-      }
+    // callback (if null, it's only obviating)
+    if (_.isFunction(cb) === true) {
+      // fullfill the original request
+      // console.log("Download: fulfill original request...");
+      cb(fileStore[fontItem.id + "-" + fontItem.storeID]);
+    } else {
+      // console.log("obsiation, no callback!");
+    }
 
-      // fullfill still pending requests awaiting process completion
-      emitter.emit(fontItem.id + "-filesFetched-" + fontItem.storeID, zipStore[fontItem.id + "-" + fontItem.storeID]);
+    // fullfill still pending requests awaiting process completion
+    emitter.emit(fontItem.id + "-filesFetched-" + fontItem.storeID, fileStore[fontItem.id + "-" + fontItem.storeID]);
 
-    });
+
+    // zipper(fontItem, localPaths, function(zipItemPath) {
+
+    //   // save path to zip with all fonts in store
+    //   fileStore[fontItem.id + "-" + fontItem.storeID].files = zipItemPath;
+
+    //   // zip is ready, no longer dirty
+    //   // remove dirty flag from store...
+    //   delete fileStore[fontItem.id + "-" + fontItem.storeID].isDirty;
+
+    //   // callback (if null, it's only obviating)
+    //   if (_.isFunction(cb) === true) {
+    //     // fullfill the original request
+    //     // console.log("Download: fulfill original request...");
+    //     cb(fileStore[fontItem.id + "-" + fontItem.storeID]);
+    //   } else {
+    //     // console.log("obsiation, no callback!");
+    //   }
+
+    //   // fullfill still pending requests awaiting process completion
+    //   emitter.emit(fontItem.id + "-filesFetched-" + fontItem.storeID, fileStore[fontItem.id + "-" + fontItem.storeID]);
+
+    // });
   });
 }
 
@@ -270,8 +290,9 @@ module.exports.getDownload = function getDownload(id, subsetArr, callback) {
 
   if (_.isUndefined(font) === false) {
     getFontItem(font, subsetArr, function(fontItem) {
-      getFontFiles(fontItem, function(zipItem) {
-        callback(zipItem.zip);
+      getFontFiles(fontItem, function(fileStoreItem) {
+
+        callback(zipper(fileStoreItem.files), fileStoreItem.filename);
       });
     });
   } else {
