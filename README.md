@@ -62,9 +62,9 @@ Returns a font with urls to the actual font files google's servers. `subsets` is
 }
 ```
 
-#### GET `/api/fonts/[id]?download=zip&subsets=latin`
+#### GET `/api/fonts/[id]?download=zip&subsets=latin&formats=woff,woff2&variants=regular`
 
-Download a zipped archive with all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` files of a specified font. E.g. `curl -o fontfiles.zip "https://google-webfonts-helper.herokuapp.com/api/fonts/lato?download=zip&subsets=latin,latin-ext"` (the double quotes are important as query parameters may else be stripped!)
+Download a zipped archive with all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` files of a specified font. The query parameters `formats` and `variants` are optional (includes everything if no filtering is applied). is E.g. `curl -o fontfiles.zip "https://google-webfonts-helper.herokuapp.com/api/fonts/lato?download=zip&subsets=latin,latin-ext&variants=regular,700&formats=woff"` (the double quotes are important as query parameters may else be stripped!)
 
 ### History
 
