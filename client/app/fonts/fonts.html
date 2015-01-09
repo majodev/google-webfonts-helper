@@ -17,9 +17,9 @@
             </button>
             <ul class="dropdown-menu" role="menu">
               <li role="presentation" class="dropdown-header">Order by</li>
+              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="{name: 'by family', filter: 'family', bindArg: 'category'}"><a href="#">Family</a></li>
+              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="{name: 'by category', filter: ['category','family'], bindArg: 'category'}"><a href="#">Category</a></li>
               <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="{name: 'by popularity', filter: 'popularity', pre: 'Rank '}"><a href="#">Popularity</a></li>
-              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="{name: 'by family', filter: 'family', bindArg: 'category'}"><a href="#">Family name</a></li>
-              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="{name: 'by category', filter: ['category','family'], bindArg: 'category'}"><a href="#">Category name</a></li>
               <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="{name: 'by last modified', filter: ['-lastModified','family'], bindArg: 'lastModified'}"><a href="#">Last modified</a></li>
               <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="{name: 'by # styles', filter: ['-variants.length','family'], bindArg: 'variants', len: true, post: ' styles'}"><a href="#">Number of styles</a></li>
               <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="{name: 'by # charsets', filter: ['-subsets.length','family'], bindArg: 'subsets', len: true, post: ' charsets'}"><a href="#">Number of charsets</a></li>
@@ -33,7 +33,7 @@
 
       <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8">
         <!-- App name -->
-        <h4 class="page-header"><a href="/">google-webfonts-helper</a><br/><small>Get eot, ttf, svg, woff and woff2 files + CSS snippets</small></h4>
+        <h4 class="page-header"><a href="/" ng-click="selectedItemID=''">google-webfonts-helper</a><br/><small>Get eot, ttf, svg, woff and woff2 files + CSS snippets</small></h4>
         <!-- GH Stars -->
         <iframe id="githubCount" src="https://mdo.github.io/github-buttons/github-btn.html?user=majodev&amp;repo=google-webfonts-helper&amp;type=watch&amp;count=true&amp;size=large" allowtransparency="true" frameborder="0" scrolling="0" width="130px" height="30px"></iframe>
       </div>

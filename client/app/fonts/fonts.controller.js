@@ -24,9 +24,9 @@ angular.module('googleWebfontsHelperApp')
     $scope.selectedItemID = '';
 
     $scope.predicate = {
-      name: 'by popularity',
-      filter: 'popularity',
-      pre: 'Rank '
+      name: 'by family',
+      filter: 'family',
+      bindArg: 'category'
     }; // default ordering predicate
 
     $scope.reverse = false;

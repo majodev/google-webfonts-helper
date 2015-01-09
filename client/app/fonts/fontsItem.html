@@ -91,7 +91,7 @@
     <!-- css snippets -->
     <div class="fontItemCSSWrap">
 
-      <h4>3. Copy CSS:&nbsp;<small>(select <code>Best Support</code> if old browsers need to be supported)</small></h4>
+      <h4>3. Copy CSS:&nbsp;<small>(default is <code>Best Support</code>)</small></h4>
 
       <div class="form-inline folderPrefixBar">Folder prefix:&nbsp;<div class="form-group">
         <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
@@ -99,18 +99,21 @@
 
       <tabset>
         <tab heading="Best Support">
+          <p class="text-muted small">Choose this snippet if old browsers need to be supported. Formats in this snippet: <code>[eot,woff,woff2,ttf,svg]</code><br/>Click on code to select all statements, then copy/paste it.</p>
           <div ng-click="selectText($event)">
             <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{bestSupport:true}"></div>
           </div>
         </tab>
 
         <tab heading="Modern Browsers" select="modernOnlyActive();" deselect="modernOnlyDeactive();">
+          <p class="text-muted small">Choose this snippet if you only want to support modern browsers. Formats in this snippet: <code>[woff,woff2]</code><br/>Click on code to select all statements, then copy/paste it.</p>
           <div ng-click="selectText($event)">
             <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{modernBrowsers:true}"></div>
           </div>
         </tab>
 
         <tab heading="Original links served by Google" class="pull-right">
+          <p class="text-muted small">This tab provides a list of all fetched font files from Google, ordered by their style. These are the same files that get packed into the archive in the next step (but they have no meaningful name).</p>
           <div ng-repeat="variant in fontItem.variants | filter:variantFilter">
             <h5>{{fontItem.id}}-{{variant.id}} <small>{{fontItem.storeID}}</small></h5>
             <ul>
@@ -130,15 +133,16 @@
     <!-- download button -->
     <div>
       <hr>
-      <h4>4. Download files:&nbsp;<small>(auto-generated, files are matched against your previous selections)</small></h4>
+      <h4>4. Download files:</h4>
+      <p>Your generated archive for <strong>{{fontItem.family}}</strong> with charsets <strong><code>[{{downloadSubSetID}}]</code></strong> includes the styles <strong><code>[{{variantDownloadQueryString}}]</code></strong> in the formats <strong><code>[{{modernFontsOnly === true ? 'woff,woff2' : 'eot,ttf,svg,woff,woff2'}}]</code></strong>.</p>
       <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}&amp;variants={{variantDownloadQueryString}}{{modernFontsOnly === true ? '&formats=woff,woff2' : ''}}" target="_blank" role="button" class="btn btn-primary btn-lg btn-block download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}.zip</a>
-      <p><small>Your archive for {{fontItem.family}} includes styles <strong><code>[{{variantDownloadQueryString}}]</code></strong> in formats <strong><code>[{{modernFontsOnly === true ? '.woff,.woff2' : '.eot,.ttf,.svg, woff,.woff2'}}]</code></strong> for charsets <strong><code>[{{downloadSubSetID}}]</code></strong><br/><strong>Fonts are copyright of their respective authors.</strong></small></p>
+      <p><small>Fonts are copyright of their respective authors.</small></p>
     </div>
 
     <!-- final instructions -->
     <div>
       <hr>
-      <h4>5. You are now ready to self-host {{fontItem.family}}.<br/><small>If this service has actually been helpful for you, please <a href="https://github.com/majodev/google-webfonts-helper/" target="_blank">star it on GitHub</a>. If you've encountered serious problems file an issue <a href="https://github.com/majodev/google-webfonts-helper/issues">here</a>.</small></h4>
+      <h4>You are now ready to self-host {{fontItem.family}}.<br/><small>If this service has actually been helpful for you, please <a href="https://github.com/majodev/google-webfonts-helper/" target="_blank">star it on GitHub</a>. If you've encountered serious problems file an issue <a href="https://github.com/majodev/google-webfonts-helper/issues">here</a>.</small></h4>
       <hr>
     </div>
 
