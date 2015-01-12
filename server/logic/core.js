@@ -24,7 +24,7 @@ var subsetStore = {}; // every item in here holds a urlStore Object + a unique s
 // urlStore holds fetched urls to all conf.USER_AGENTS font formats
 // gets merged with an item from cachedFonts to form a so called "fontItem" Object
 
-// fileStore holds arrays of local paths to font files, id = font.id + "-" + subsetStoreID
+// fileStore holds arrays of local paths to font files, id = fontItem.id + "-" + fontItem.storeID
 var fileStore = {};
 
 
@@ -138,13 +138,15 @@ function getFontItem(font, subsetArr, callback) {
 
 function getFontFiles(fontItem, cb) {
 
-  if (_.isUndefined(fileStore[fontItem.id + "-" + fontItem.storeID]) === false) {
-    if (fileStore[fontItem.id + "-" + fontItem.storeID].isDirty !== true) {
+  var fileStoreID = fontItem.id + "-" + fontItem.storeID; // unique identifier in filestore.
+
+  if (_.isUndefined(fileStore[fileStoreID]) === false) {
+    if (fileStore[fileStoreID].isDirty !== true) {
       // already cached, return instantly
       // callback (if null, it's only obviating)
       if (_.isFunction(cb) === true) {
         // fullfill the original request
-        cb(fileStore[fontItem.id + "-" + fontItem.storeID]);
+        cb(fileStore[fileStoreID]);
       } else {
         // nothing needs to be done, no callback (obviating)!
       }
@@ -166,31 +168,31 @@ function getFontFiles(fontItem, cb) {
     return;
   }
 
-  fileStore[fontItem.id + "-" + fontItem.storeID] = {};
-  fileStore[fontItem.id + "-" + fontItem.storeID].isDirty = true;
+  fileStore[fileStoreID] = {};
+  fileStore[fileStoreID].isDirty = true;
 
 
   // trigger downloading of font files...
   downloader(fontItem, function(localPaths) {
 
-    fileStore[fontItem.id + "-" + fontItem.storeID].files = localPaths;
-    fileStore[fontItem.id + "-" + fontItem.storeID].zippedFilename = fontItem.id + "-" + fontItem.version + "-" + fontItem.storeID + '.zip'
+    fileStore[fileStoreID].files = localPaths;
+    fileStore[fileStoreID].zippedFilename = fontItem.id + "-" + fontItem.version + "-" + fontItem.storeID + '.zip'
 
     // fileStore for item is ready, no longer dirty
     // remove dirty flag from store...
-    delete fileStore[fontItem.id + "-" + fontItem.storeID].isDirty;
+    delete fileStore[fileStoreID].isDirty;
 
     // callback (if null, it's only obviating)
     if (_.isFunction(cb) === true) {
       // fullfill the original request
       // console.log("Download: fulfill original request...");
-      cb(fileStore[fontItem.id + "-" + fontItem.storeID]);
+      cb(fileStore[fileStoreID]);
     } else {
       // console.log("obsiation, no callback!");
     }
 
     // fullfill still pending requests awaiting process completion
-    emitter.emit(fontItem.id + "-filesFetched-" + fontItem.storeID, fileStore[fontItem.id + "-" + fontItem.storeID]);
+    emitter.emit(fontItem.id + "-filesFetched-" + fontItem.storeID, fileStore[fileStoreID]);
 
   });
 }
@@ -300,8 +302,8 @@ module.exports.getDownload = function getDownload(id, subsetArr, variantsArr, fo
           // callback and return archiveStream + zipped filename
           callback(zipper(filteredFiles), fileStoreItem.zippedFilename);
         } else {
-          // no files left, return all nulled.
-          callback(null, null);
+          // no files left, return null
+          callback(null);
         }
 
       });
