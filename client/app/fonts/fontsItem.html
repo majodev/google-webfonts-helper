@@ -52,24 +52,9 @@
 
       <h4>2. Select styles:&nbsp;<small>(default is <code>{{fontItem.defVariant}}</code>)</small></h4>
 
-      <div id="fontStylePreviewChooser">
-        <div ng-repeat="variant in fontItem.variants">
-          <dl class="dl-horizontal variantList">
-            <dt>
-              <label class="checkbox-inline">
-                <input type="checkbox" ng-model="variantsMap[variant.id]" name="variant.id" data-ng-disabled="checkVariantMinimalSelection(variant.id)" ng-click="variantSelect();"><span class="">{{variant.id}}</span>
-              </label>
-            </dt>
-            <dd>
-              <p style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}}; font-size:{{fontSize > 0 ? fontSize : 16}}px;" contenteditable>The quick brown fox jumps over the lazy dog.</p>
-            </dd>
-          </dl>
-        </div>
-      </div>
-
       <div id="fontStyleControl" class="form-inline folderPrefixBar">
         <div class="row">
-          <div class="col-xs-5 col-xs-offset-1">
+          <div class="col-xs-5">
             <div id="previewFontSizeInput" class="input-group">
               <span class="input-group-addon">Preview size</span>
               <input class="form-control input-sm" type="number" ng-model="fontSize" placeholder="16" ng-init="fontSize=16" aria-describedby="px-addon">
@@ -83,6 +68,21 @@
             </div>
             <span class="text-muted">&nbsp;Sample text editable.</span>
           </div>
+        </div>
+      </div>
+
+      <div id="fontStylePreviewChooser">
+        <div ng-repeat="variant in fontItem.variants">
+          <dl class="dl-horizontal variantList">
+            <dt>
+              <label class="checkbox-inline">
+                <input type="checkbox" ng-model="variantsMap[variant.id]" name="variant.id" data-ng-disabled="checkVariantMinimalSelection(variant.id)" ng-click="variantSelect();"><span class="">{{variant.id}}</span>
+              </label>
+            </dt>
+            <dd>
+              <p style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}}; font-size:{{fontSize > 0 ? fontSize : 16}}px;" contenteditable>The quick brown fox jumps over the lazy dog.</p>
+            </dd>
+          </dl>
         </div>
       </div>
 
