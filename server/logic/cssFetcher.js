@@ -20,6 +20,7 @@ function parseRemoteCSS(remoteCSS, type, callback) {
   _.each(parsedCSS.stylesheet.rules, function(rule) {
 
     var resource = {};
+    var localNames;
 
     // only font-face rules are relevant...
     if (rule.type !== "font-face") {
@@ -34,24 +35,36 @@ function parseRemoteCSS(remoteCSS, type, callback) {
     // parse the resource (_extracted is hopefully not used as CSS property very often!)
     resource._extracted = {};
 
-    if (type === "svg") {
-      resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+")[0];
-    } else {
-      resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+\\." + type)[0];
-    }
+    // console.log(type);
+    // console.log(resource);
 
-    // get both local names via regex
-    var localNames = resource.src.split(/local\(\'(.*?)\'\)/g);
-    if (localNames.length >= 3) {
-      resource.localName = [];
-      resource.localName.push(localNames[1]);
-      if (localNames.length >= 5) {
-        resource.localName.push(localNames[3]);
+    try {
+
+      // extract the url
+      if (type === "svg") {
+        resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+")[0];
+      } else {
+        resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+\\." + type)[0];
       }
-    }
 
-    // push the current rule (= resource) to the resources array
-    resources.push(resource);
+      // console.log(resource._extracted.url);
+
+      // get both local names via regex
+      localNames = resource.src.split(/local\(\'(.*?)\'\)/g);
+      if (localNames.length >= 3) {
+        resource.localName = [];
+        resource.localName.push(localNames[1]);
+        if (localNames.length >= 5) {
+          resource.localName.push(localNames[3]);
+        }
+      }
+
+      // push the current rule (= resource) to the resources array
+      resources.push(resource);
+
+    } catch (e) {
+      console.error("cannot load resource of type " + type);
+    }
 
   });
 
