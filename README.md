@@ -1,5 +1,5 @@
 # google-webfonts-helper
-> A Hazzle-Free Way to Self-Host Google Fonts
+> A Hassle-Free Way to Self-Host Google Fonts
 
 This service might be handy if you want to directly download all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` files of a Google font (normally your `User-Agent` would determine the best format at Google's CSS API). Furthermore it provides charset customization and CSS snippets, hence getting your fonts ready for local hosting should be *finally* a breeze.
 
