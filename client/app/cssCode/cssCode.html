@@ -18,7 +18,7 @@
   font-style: {{variant.fontStyle}};
   font-weight: {{variant.fontWeight}};
   src: local('{{variant.local[0]}}'),{{variant.local[1] ? " local('" + variant.local[1] + "')," : ""}}
-       url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.woff2') format('woff2'), /* Chrome 26+, Opera 23+ */
+       url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
        url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 </code></pre>
