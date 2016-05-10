@@ -8,6 +8,8 @@ var subsetGen = require('./subsetGen');
 
 var EventEmitter = require('events').EventEmitter;
 
+var debug = require('debug')('gwfh:core');
+
 
 // -----------------------------------------------------------------------------
 // Variables
@@ -47,7 +49,7 @@ function getFilterObject(font, subsetArr) {
   }
 
 
-  // console.log(filterObj);
+  debug(filterObj);
   return filterObj;
 }
 
@@ -56,13 +58,13 @@ function getUrlStoreKey(font, subsetArr) {
   var fontSubsetStore = subsetStore[font.id];
   var fontSubsetKey;
 
-  // console.log(fontSubsetStore);
+  debug(fontSubsetStore);
 
   if (_.isUndefined(fontSubsetStore) === false) {
     fontSubsetKey = _.findKey(fontSubsetStore, {
       subsetMap: getFilterObject(font, subsetArr)
     });
-    // console.log(fontSubsetKey);
+    debug(fontSubsetKey);
     if (_.isUndefined(fontSubsetKey) === false) {
       return fontSubsetKey;
     } else {
@@ -80,17 +82,17 @@ function getFontItem(font, subsetArr, callback) {
   var subsetStoreKey = getUrlStoreKey(font, subsetArr);
   var urlStore = subsetStore[font.id][subsetStoreKey];
 
-  // console.log(urlStore);
+  debug(urlStore);
 
   if (_.isUndefined(urlStore.variants) === false) {
-    // console.log(urlStore);
+    debug(urlStore);
     if (urlStore.isDirty !== true) {
       // already cached, return instantly
-      // console.log("already cached!");
+      debug("already cached!");
       callback(_.merge(_.cloneDeep(font), urlStore));
     } else {
       // process to cache has already begun, wait until it has finished...
-      // console.log("waiting until cache...");
+      debug("waiting until cache...");
       emitter.once(font.id + "-pathFetched-" + urlStore.storeID, function(fontItem) {
         callback(fontItem);
       });
@@ -104,10 +106,12 @@ function getFontItem(font, subsetArr, callback) {
   urlStore.variants = [];
   urlStore.isDirty = true;
 
-  // console.log(subsetStore);
+  debug(subsetStore);
 
   // Fetch fontItem for the first time...
   urlFetcher(font, subsetStoreKey, function(urlStoreObject) {
+
+    debug("fetched fontItem", urlStoreObject);
 
     var fontItem;
 
@@ -118,9 +122,10 @@ function getFontItem(font, subsetArr, callback) {
     // remove dirty flag from store...
     delete subsetStore[font.id][subsetStoreKey].isDirty;
 
-
     // set and build up a proper fontItem
-    fontItem = _.merge(_.cloneDeep(font), subsetStore[font.id][subsetStoreKey])
+    fontItem = _.merge(_.cloneDeep(font), subsetStore[font.id][subsetStoreKey]);
+
+    debug("saveable fontimte processed", fontItem);
 
     // fullfill the original request
     callback(fontItem);
@@ -131,7 +136,7 @@ function getFontItem(font, subsetArr, callback) {
     // trigger obviating downloading of font files (even tough it's might not needed!)
     getFontFiles(fontItem, null);
 
-    // console.log(urlStore);
+    debug(urlStore);
 
   });
 }
@@ -153,13 +158,13 @@ function getFontFiles(fontItem, cb) {
     } else {
       // process has already begun, wait until it has finished...
       emitter.once(fontItem.id + "-filesFetched-" + fontItem.storeID, function(fileStoreItem) {
-        // console.log("Download: fulfilling pending download request...");
+        debug("Download: fulfilling pending download request...");
         // callback (if null, it's only obviating)
         if (_.isFunction(cb) === true) {
           // fullfill the original request
           cb(fileStoreItem);
         } else {
-          // console.log("fulfill fail no callback!");
+          debug("fulfill fail no callback!");
           // nothing needs to be done, no callback (obviating)!
         }
       });
@@ -185,10 +190,10 @@ function getFontFiles(fontItem, cb) {
     // callback (if null, it's only obviating)
     if (_.isFunction(cb) === true) {
       // fullfill the original request
-      // console.log("Download: fulfill original request...");
+      debug("Download: fulfill original request...");
       cb(fileStore[fileStoreID]);
     } else {
-      // console.log("obsiation, no callback!");
+      debug("obsiation, no callback!");
     }
 
     // fullfill still pending requests awaiting process completion
@@ -221,7 +226,7 @@ function getFontFiles(fontItem, cb) {
 
     emitter.emit("initialized");
 
-    console.log("fonts cached and initialized. num fonts: " + items.length +
+    debug("fonts cached and initialized. num fonts: " + items.length +
       " num unique subset combos: " + subsetStoreUniqueCombos);
 
   });

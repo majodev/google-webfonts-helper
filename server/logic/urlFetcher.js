@@ -4,6 +4,8 @@ var async = require('async');
 var conf = require('./conf');
 var cssFetcher = require('./cssFetcher');
 
+var debug = require('debug')('gwfh:urlFetcher');
+
 function fetchUrls(font, storeID, callback) {
 
   var tmpUrlStoreObject = {
@@ -12,7 +14,7 @@ function fetchUrls(font, storeID, callback) {
   };
 
   var cssSubsetString = _.clone(storeID).replace(/_/g, ","); // make the variant string google API compatible...
-  // console.log(cssSubsetString);
+  debug(cssSubsetString);
 
   async.each(font.variants, function(variant, variantCB) {
 
@@ -30,6 +32,15 @@ function fetchUrls(font, storeID, callback) {
 
         // save the type (woff, eot, svg, ttf, usw...)
         var type = typeAgentPair[0];
+        debug(resources);
+
+        if (resources.length === 0) {
+
+          // console.error("no url for type available", type, variantItem);
+          requestCB(null);
+          return;
+        }
+
         var url = resources[0]._extracted.url;
 
         // safe the url directly
@@ -73,9 +84,9 @@ function fetchUrls(font, storeID, callback) {
 
   }, function(err) {
     if (err) {
-      console.log(err);
+      console.error(err);
     } else {
-      // console.log("All variants processed.");
+      debug("All variants processed.");
       // return the processed urlStoreObject...
       callback(tmpUrlStoreObject);
     }

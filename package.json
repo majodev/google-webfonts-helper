@@ -31,6 +31,7 @@
     "connect-mongo": "^0.4.1",
     "cookie-parser": "~1.0.1",
     "css": "^2.1.0",
+    "debug": "^2.2.0",
     "ejs": "~0.8.4",
     "errorhandler": "~1.0.0",
     "express": "~4.0.0",
@@ -99,7 +100,7 @@
   },
   "engines": {
     "node": "~0.10.29",
-    "npm" : "~1.4.16"
+    "npm": "~1.4.16"
   },
   "scripts": {
     "start": "node server/app.js",

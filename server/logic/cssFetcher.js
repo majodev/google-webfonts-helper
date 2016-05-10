@@ -2,6 +2,8 @@ var css = require('css');
 var _ = require('lodash');
 var http = require('http');
 
+var debug = require('debug')('gwfh:cssFetcher');
+
 function parseRemoteCSS(remoteCSS, type, callback) {
   var parsedCSS;
 
@@ -35,8 +37,8 @@ function parseRemoteCSS(remoteCSS, type, callback) {
     // parse the resource (_extracted is hopefully not used as CSS property very often!)
     resource._extracted = {};
 
-    // console.log(type);
-    // console.log(resource);
+    debug(type);
+    debug(resource);
 
     try {
 
@@ -47,7 +49,7 @@ function parseRemoteCSS(remoteCSS, type, callback) {
         resource._extracted.url = resource.src.match("http:\\/\\/[^\\)]+\\." + type)[0];
       }
 
-      // console.log(resource._extracted.url);
+      debug(resource._extracted.url);
 
       // get both local names via regex
       localNames = resource.src.split(/local\(\'(.*?)\'\)/g);
@@ -73,7 +75,7 @@ function parseRemoteCSS(remoteCSS, type, callback) {
 
 function fetchCSS(family, cssSubsetString, type, userAgent, callback) {
 
-  // console.log("fonts.googleapis.com" + '/css?family=' + encodeURIComponent(family) + '&subset=' + cssSubsetString);
+  debug("fonts.googleapis.com" + '/css?family=' + encodeURIComponent(family) + '&subset=' + cssSubsetString);
 
   var req = http.request({
     hostname: "fonts.googleapis.com",

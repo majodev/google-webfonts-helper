@@ -5,6 +5,7 @@ var https = require('https');
 var mkdirp = require('mkdirp');
 
 var conf = require('./conf');
+var debug = require('debug')('gwfh:downloader');
 
 function downloadFontFiles(fontItem, cb) {
 
@@ -15,10 +16,17 @@ function downloadFontFiles(fontItem, cb) {
       throw new Error("unable to create CACHE directory!" + err);
     } else {
       async.each(fontItem.variants, function(variantItem, variantCB) {
-        // console.log(_.keys(conf.USER_AGENTS));
+        debug(_.keys(conf.USER_AGENTS));
         async.each(_.keys(conf.USER_AGENTS), function(formatKey, typeCB) {
 
           var filename = conf.CACHE_DIR + fontItem.id + "-" + fontItem.version + "-" + fontItem.storeID + "-" + variantItem.id + "." + formatKey;
+
+          if (!variantItem[formatKey]) {
+            // font format is not available for download...
+            console.warn(filename, "format not available for download", formatKey);
+            typeCB();
+            return;
+          }
 
           // download the file for type (filename now known)
           downloadFile(variantItem[formatKey], filename, function() {
@@ -42,7 +50,7 @@ function downloadFontFiles(fontItem, cb) {
           console.error("family failed: " + fontItem.id + " err: " + err);
           throw new Error("family failed: " + fontItem.id + " err: " + err);
         } else {
-          // console.log("family downloaded");
+          debug("family downloaded");
           cb(filePaths);
         }
       });
@@ -52,6 +60,7 @@ function downloadFontFiles(fontItem, cb) {
 }
 
 function downloadFile(url, dest, cb) {
+  debug("downloadFile", url, dest);
   var file = fs.createWriteStream(dest);
   var req = https.get(url, function(response) {
     response.pipe(file);
@@ -61,7 +70,7 @@ function downloadFile(url, dest, cb) {
   });
 
   req.on('error', function(e) {
-    console.log('problem with request: ' + e.message + " for url: " + url);
+    debug('problem with request: ' + e.message + " for url: " + url);
   });
 
   req.end();

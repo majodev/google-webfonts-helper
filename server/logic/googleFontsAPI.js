@@ -4,6 +4,8 @@ var getSlug = require('speakingurl');
 
 var conf = require('./conf');
 
+var debug = require('debug')('gwfh:googleFontsAPI');
+
 // build up fonts cache via google API...
 var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts, cb) {
   var req = https.request({
@@ -31,9 +33,9 @@ var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts, cb) {
       // populate our items
       _.each(googleAPIFontItems, function(item, index) {
 
-        // console.log(index + " - " + item.family);
+        debug(index + " - " + item.family);
 
-        // property order is guranteed --> popularity via index attr. 
+        // property order is guranteed --> popularity via index attr.
         cachedFonts.push({
           id: getSlug(item.family),
           family: item.family,

@@ -26,7 +26,6 @@ describe('GET /api/fonts', function() {
       .end(function(err, res) {
         if (err) return done(err);
         res.body.should.be.instanceof(Object);
-        // console.log(res.body);
         // res.body.should.be.instanceof(Array);
         done();
       });
