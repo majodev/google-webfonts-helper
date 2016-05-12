@@ -2,7 +2,12 @@ module.exports = {
   USER_AGENTS: {
     eot: 'Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)',
     woff: 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0',
-    woff2: 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36', // complete woff2 file for one variant
+    // must serve complete woff2 file for one variant (no unicode range support yet!)
+    // see http://www.useragentstring.com/pages/Firefox/
+    // see http://caniuse.com/#search=woff2
+    // see http://caniuse.com/#feat=font-unicode-range
+    // see https://developers.googleblog.com/2015/02/smaller-fonts-with-woff-20-and-unicode.html
+    woff2: 'Mozilla/5.0 (Windows NT 6.3; rv:39.0) Gecko/20100101 Firefox/39.0',
     svg: 'Mozilla/4.0 (iPad; CPU OS 4_0_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/4.1 Mobile/9A405 Safari/7534.48.3',
     ttf: 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/534.54.16 (KHTML, like Gecko) Version/5.1.4 Safari/534.54.16'
   },

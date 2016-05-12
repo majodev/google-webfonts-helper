@@ -19,6 +19,8 @@ function parseRemoteCSS(remoteCSS, type, callback) {
 
   var resources = [];
 
+  // console.log(remoteCSS);
+
   _.each(parsedCSS.stylesheet.rules, function(rule) {
 
     var resource = {};
