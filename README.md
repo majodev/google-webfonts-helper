@@ -5,7 +5,7 @@ This service might be handy if you want to directly download all `.eot`, `.woff`
 
 ## [Give it a try: google-webfonts-helper hosted on Heroku](https://google-webfonts-helper.herokuapp.com)
 
-![pic running](http://ranf.tl/static/apps/google-webfonts-helper/full_view.png)
+![pic running](http://mranftl.com/static/apps/google-webfonts-helper/full_view.png)
 
 ### REST API
 The API is public, feel free to use it directly.
@@ -68,7 +68,7 @@ Download a zipped archive with all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` fil
 
 ### History
 
-This service was originally a prototype I've created to get familiar with Angular and Express. All magic by [generator-angular-fullstack](https://github.com/DaftMonk/generator-angular-fullstack). See [my note here](http://ranf.tl/2014/12/23/self-hosting-google-web-fonts/).
+This service was originally a prototype I've created to get familiar with Angular and Express. All magic by [generator-angular-fullstack](https://github.com/DaftMonk/generator-angular-fullstack). See [my note here](http://mranftl.com/2014/12/23/self-hosting-google-web-fonts/).
 
 Idea originally by Clemens Lang who created an [awesome bash script](https://neverpanic.de/blog/2014/03/19/downloading-google-web-fonts-for-local-hosting/) to download Google fonts in all formats.
 
@@ -79,5 +79,5 @@ Everything is welcome, **especially tests**! Fork, change and send me a pull req
 **Attention designers:** Searching for a logo and proper styling (I'm more a usability / backends guy).
 
 ## License
-(c) Mario Ranftl - majodev
+(c) Mario Ranftl
 [MIT License](http://majodev.mit-license.org/)
