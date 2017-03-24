@@ -1,5 +1,6 @@
 <!-- Inject all styles to use them directly -->
-<div ng-repeat="variant in fontItem.variants" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{styleTag:true}"></div>
+<div ng-repeat="variant in fontItem.variants" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix"
+  type="{styleTag:true}"></div>
 
 <div cg-busy="{promise: loadingPromise, message: loadingMessage}">
   <div ng-hide="busy">
@@ -11,21 +12,21 @@
     <div class="row">
 
       <div class="col-sm-6">
-        <h5><ng-pluralize count="fontItem.variants.length"
-                    when="{'0': 'no style',
+        <h5>
+          <ng-pluralize count="fontItem.variants.length" when="{'0': 'no style',
                            'one': '{} style',
                            'other': '{} styles'}">
-        </ng-pluralize>&nbsp;<small><span ng-repeat="variant in fontItem.variants">{{variant.id}}{{$last ? "" : ", "}}</span></small></h5>
-        <h5><ng-pluralize count="fontItem.subsets.length"
-                    when="{'0': 'no charsets',
+          </ng-pluralize>&nbsp;<small><span ng-repeat="variant in fontItem.variants">{{variant.id}}{{$last ? "" : ", "}}</span></small></h5>
+        <h5>
+          <ng-pluralize count="fontItem.subsets.length" when="{'0': 'no charsets',
                            'one': '{} charset',
                            'other': '{} charsets'}">
-        </ng-pluralize>&nbsp;<small><span ng-repeat="subset in fontItem.subsets">{{subset}}{{$last ? "" : ", "}}</span></small></h5>
+          </ng-pluralize>&nbsp;<small><span ng-repeat="subset in fontItem.subsets">{{subset}}{{$last ? "" : ", "}}</span></small></h5>
       </div>
 
       <div class="col-sm-6">
         <h5>Rank {{fontItem.popularity}}&nbsp;<small>in popularity of {{fonts.length}} fonts in total</small></h5>
-        <h5>Last modified {{fontItem.lastModified}}&nbsp;<small>({{fontItem.version}})</small></h5>        
+        <h5>Last modified {{fontItem.lastModified}}&nbsp;<small>({{fontItem.version}})</small></h5>
       </div>
 
     </div>
@@ -42,12 +43,13 @@
     </div>
 
   </div>
-  
 
-  <div class="fontVariant" ng-hide="busy" cg-busy="{promise: subsetsChkbTimeoutP, message: customizationReloadMessage}"> <!-- FONT VARIANT BEGINS -->
 
-      <!-- styles set customization -->
-      <div>
+  <div class="fontVariant" ng-hide="busy" cg-busy="{promise: subsetsChkbTimeoutP, message: customizationReloadMessage}">
+    <!-- FONT VARIANT BEGINS -->
+
+    <!-- styles set customization -->
+    <div>
       <hr>
 
       <h4>2. Select styles:&nbsp;<small>(default is <code>{{fontItem.defVariant}}</code>)</small></h4>
@@ -80,7 +82,8 @@
               </label>
             </dt>
             <dd>
-              <p style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}}; font-size:{{fontSize > 0 ? fontSize : 16}}px;" contenteditable>The quick brown fox jumps over the lazy dog.</p>
+              <p style="font-family:{{variant.fontFamily}}; font-weight:{{variant.fontWeight}}; font-style:{{variant.fontStyle}}; font-size:{{fontSize > 0 ? fontSize : 16}}px;"
+                contenteditable>The quick brown fox jumps over the lazy dog.</p>
             </dd>
           </dl>
         </div>
@@ -96,27 +99,35 @@
       <tabset type="pills">
         <tab heading="Best Support">
           <p class="small">Choose <code>Best Support</code> if old browsers still need to be supported. Formats in this snippet: <code>[eot,woff,woff2,ttf,svg]</code></p>
-          
+
           <div ng-click="selectText($event)" class="cssCodeStyle">
-            <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{bestSupport:true}"></div>
+            <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix"
+              type="{bestSupport:true}"></div>
           </div>
 
-          <div class="form-inline folderPrefixBar small">Customize folder prefix (optional):&nbsp;<div class="form-group">
-            <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
-          </div></div>
+          <div class="form-inline folderPrefixBar small">Customize folder prefix (optional):&nbsp;
+            <div class="form-group">
+              <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'"
+                value="../fonts/">
+            </div>
+          </div>
           <p class="small">Click on code to select all statements, then copy/paste it into your own CSS file.</p>
         </tab>
 
         <tab heading="Modern Browsers" select="modernOnlyActive();" deselect="modernOnlyDeactive();">
           <p class="small">Choose <code>Modern Browsers</code> if supporting old browsers is not relevant. Formats in this snippet: <code>[woff,woff2]</code></p>
-          
+
           <div ng-click="selectText($event)" class="cssCodeStyle">
-            <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix" type="{modernBrowsers:true}"></div>
+            <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix"
+              type="{modernBrowsers:true}"></div>
           </div>
 
-          <div class="form-inline folderPrefixBar small">Customize folder prefix (optional):&nbsp;<div class="form-group">
-            <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'" value="../fonts/">
-          </div></div>
+          <div class="form-inline folderPrefixBar small">Customize folder prefix (optional):&nbsp;
+            <div class="form-group">
+              <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'"
+                value="../fonts/">
+            </div>
+          </div>
           <p class="small">Click on code to select all statements, then copy/paste it into your own CSS file.</p>
         </tab>
 
@@ -142,10 +153,11 @@
     <div>
       <hr>
       <h4>4. Download files:</h4>
-      <p>Your generated archive for <strong>{{fontItem.family}}</strong> with charsets <strong><code>[{{downloadSubSetID}}]</code></strong> and styles <strong><code>[{{variantDownloadQueryString}}]</code></strong> includes the formats <strong><code>[{{modernFontsOnly === true ? 'woff,woff2' : 'eot,ttf,svg,woff,woff2'}}]</code></strong>.</p>
-      
-      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}&amp;variants={{variantDownloadQueryString}}{{modernFontsOnly === true ? '&formats=woff,woff2' : ''}}" target="_blank" role="button" class="btn btn-primary download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}.zip</a>
-      <p><small>Fonts are copyright of their respective authors.</small></p>
+      <p>Your generated archive for <strong>{{fontItem.family}}</strong> with charsets <strong><code>[{{downloadSubSetID}}]</code></strong>        and styles <strong><code>[{{variantDownloadQueryString}}]</code></strong> includes the formats <strong><code>[{{modernFontsOnly === true ? 'woff,woff2' : 'eot,ttf,svg,woff,woff2'}}]</code></strong>.</p>
+
+      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}&amp;variants={{variantDownloadQueryString}}{{modernFontsOnly === true ? '&formats=woff,woff2' : ''}}"
+        target="_blank" role="button" class="btn btn-primary download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}.zip</a>
+      <p><small>Fonts are copyright of their respective authors.<br><b>See <a target="_blank" href="https://fonts.google.com/attribution">Google Fonts Open Source Font Attribution</a> to find out the specific license that this font uses.</b></small></p>
 
       <!-- <div class="row">
         <div class="col-sm-10 col-sm-offset-1">
@@ -157,9 +169,9 @@
           
         </div>
       </div> -->
-      
 
-      
+
+
     </div>
 
     <!-- final instructions -->
@@ -170,9 +182,10 @@
     </div>
 
 
-  </div> <!-- FONT VARIANT ENDS -->
+  </div>
+  <!-- FONT VARIANT ENDS -->
 
-  
+
 
 </div>
 

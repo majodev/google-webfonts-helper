@@ -81,3 +81,5 @@ Everything is welcome, **especially tests**! Fork, change and send me a pull req
 ## License
 (c) Mario Ranftl
 [MIT License](http://majodev.mit-license.org/)
+
+[Google Fonts Open Source Font Attribution](https://fonts.google.com/attribution)
