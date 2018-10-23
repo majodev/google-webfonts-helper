@@ -101,6 +101,7 @@
           <p class="small">Choose <code>Best Support</code> if old browsers still need to be supported. Formats in this snippet: <code>[eot,woff,woff2,ttf,svg]</code></p>
 
           <div ng-click="selectText($event)" class="cssCodeStyle">
+            <i class="copy-code fa fa-copy"></i>
             <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix"
               type="{bestSupport:true}"></div>
           </div>
