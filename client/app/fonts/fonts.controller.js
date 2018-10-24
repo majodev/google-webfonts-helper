@@ -239,25 +239,33 @@ angular.module('googleWebfontsHelperApp')
     }
   };
 
-  $scope.selectText = function(evt) {
+  $scope.selectText = function(event) {
+    _selectText(event.currentTarget);
+  };
 
-    var element = evt.currentTarget;
+  $scope.copyText = function(event) {
+    var textNode = event.currentTarget.parentElement;
+    event.stopImmediatePropagation();
+    _selectText(textNode);
 
-    // console.log(element);
+    if (!navigator.clipboard) {
+      try {
+        var wasSuccessfullyCopied = document.execCommand('copy');
 
-    var doc = document,
-      text = element,
-      range, selection;
-    if (doc.body.createTextRange) {
-      range = document.body.createTextRange();
-      range.moveToElementText(text);
-      range.select();
-    } else if (window.getSelection) {
-      selection = window.getSelection();
-      range = document.createRange();
-      range.selectNodeContents(text);
-      selection.removeAllRanges();
-      selection.addRange(range);
+        if (wasSuccessfullyCopied) {
+          console.log('success');
+        }
+        else {
+          console.log('error');
+        }
+      }
+      catch (err) {
+        console.log('error');
+      }
+    } else {
+      navigator.clipboard.writeText(textNode.innerText).then(function () {
+        console.log('coppied');
+      });
     }
   };
 
@@ -269,4 +277,19 @@ angular.module('googleWebfontsHelperApp')
     $scope.modernFontsOnly = false;
   };
 
+  function _selectText(textNode) {
+    var doc = document,
+      range, selection;
+    if (doc.body.createTextRange) {
+      range = document.body.createTextRange();
+      range.moveToElementText(textNode);
+      range.select();
+    } else if (window.getSelection) {
+      selection = window.getSelection();
+      range = document.createRange();
+      range.selectNodeContents(textNode);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  }
 });
