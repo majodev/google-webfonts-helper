@@ -26,7 +26,7 @@ exports.index = function(req, res) {
 // Get specific fonts including links
 exports.show = function(req, res) {
 
-  // get the subset string if it was supplied... 
+  // get the subset string if it was supplied...
   // e.g. "subset=latin,latin-ext," will be transformed into ["latin","latin-ext"] (non whitespace arrays)
   var subsetsArr = _.isUndefined(req.query.subsets) ? null : _.without(req.query.subsets.split(/[,]+/), '');
   var variantsArr = _.isUndefined(req.query.variants) ? null : _.without(req.query.variants.split(/[,]+/), '');

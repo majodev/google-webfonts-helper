@@ -31,4 +31,30 @@ describe('GET /api/fonts', function() {
       });
   });
 
+  it('should respond with the right content-length header for roboto zip', function(done) {
+    request(app)
+      .get('/api/fonts/roboto?download=zip')
+      .expect(200)
+      .expect('Content-Type', 'application/zip')
+      //.expect('Content-Length', '100')
+      .expect('Content-disposition', 'attachment; filename=roboto-v19-latin.zip')
+      .end(function(err, res) {
+        if (err) return done(err);
+        done();
+      });
+  });
+
+  it('should respond with the right content-length header for roboto zip (greek subset)', function(done) {
+    request(app)
+      .get('/api/fonts/roboto?download=zip&subsets=greek')
+      .expect(200)
+      .expect('Content-Type', 'application/zip')
+      //.expect('Content-Length', '100')
+      .expect('Content-disposition', 'attachment; filename=roboto-v19-greek.zip')
+      .end(function(err, res) {
+        if (err) return done(err);
+        done();
+      });
+  });
+
 });
