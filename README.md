@@ -79,7 +79,7 @@ Everything is welcome, **especially tests**! Fork, change and send me a pull req
 **Attention designers:** Searching for a logo and proper styling (I'm more a usability / backends guy).
 
 ## License
-(c) Mario Ranftl
+&copy; Mario Ranftl
 [MIT License](http://majodev.mit-license.org/)
 
 [Google Fonts Open Source Font Attribution](https://fonts.google.com/attribution)
