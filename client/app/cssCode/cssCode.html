@@ -1,5 +1,6 @@
 <pre ng-if="type.bestSupport"><code data-hljs="css" highlightjs>/* {{fontItem.id}}-{{variant.id}} - {{fontItem.storeID}} */
 @font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
   font-family: {{variant.fontFamily}};
   font-style: {{variant.fontStyle}};
   font-weight: {{variant.fontWeight}};
@@ -14,6 +15,7 @@
 </code></pre>
 <pre ng-if="type.modernBrowsers"><code data-hljs="css" highlightjs>/* {{fontItem.id}}-{{variant.id}} - {{fontItem.storeID}} */
 @font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
   font-family: {{variant.fontFamily}};
   font-style: {{variant.fontStyle}};
   font-weight: {{variant.fontWeight}};
@@ -24,6 +26,7 @@
 </code></pre>
 <style ng-if="type.styleTag" type="text/css">
 @font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
   font-family: {{variant.fontFamily}};
   font-style: {{variant.fontStyle}};
   font-weight: {{variant.fontWeight}};
