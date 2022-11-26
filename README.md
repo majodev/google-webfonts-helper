@@ -1,8 +1,11 @@
 # google-webfonts-helper
 > A Hassle-Free Way to Self-Host Google Fonts
 
+> ✅ **[https://gwfh.mranftl.com](https://gwfh.mranftl.com)** is the new base url!   
+> ❌ ~~https://google-webfonts-helper.herokuapp.com~~ (shut down 2022-11-27)
+
 - [google-webfonts-helper](#google-webfonts-helper)
-  - [Give it a try: gwfh.mranftl.com](#give-it-a-try-gwfhmranftlcom)
+  - [Give it a try: https://gwfh.mranftl.com](#give-it-a-try-httpsgwfhmranftlcom)
   - [Development](#development)
     - [Quickstart](#quickstart)
     - [Production build](#production-build)
@@ -20,7 +23,7 @@ This service might be handy if you want to host a specific [Google font](https:/
 * CSS snippets
 * `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` font file formats download (zipped).
 
-## [Give it a try: gwfh.mranftl.com](https://gwfh.mranftl.com)
+## Give it a try: [https://gwfh.mranftl.com](https://gwfh.mranftl.com)
 
 ![pic running](https://mranftl.com/static/apps/google-webfonts-helper/full_view.png)
 
