@@ -70,7 +70,7 @@ function downloadFile(url, dest, cb) {
   });
 
   req.on('error', function(e) {
-    debug('problem with request: ' + e.message + " for url: " + url);
+    console.error('problem with request: ' + e.message + " for url: " + url + " dest: " + dest);
   });
 
   req.end();

@@ -7,12 +7,16 @@ var conf = require('./conf');
 var debug = require('debug')('gwfh:googleFontsAPI');
 
 // build up fonts cache via google API...
-var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts, cb) {
+var getFontsToDownload = _.once(function (googleAPIFontItems, cachedFonts, cb) {
+  
+  var hostname = "www.googleapis.com";
+  var reqPath = '/webfonts/v1/webfonts?sort=popularity&key=';
+
   var req = https.request({
-    hostname: "www.googleapis.com",
+    hostname: hostname,
     method: 'GET',
     port: 443,
-    path: '/webfonts/v1/webfonts?sort=popularity&key=' + conf.GOOGLE_FONTS_API_KEY,
+    path: reqPath + conf.GOOGLE_FONTS_API_KEY,
     headers: {
       'Accept': 'application/json',
     }
@@ -59,8 +63,12 @@ var getFontsToDownload = _.once(function(googleAPIFontItems, cachedFonts, cb) {
   });
 
   req.on('error', function(e) {
-    console.error('problem with request: ' + e.message);
-    throw (e);
+    console.error('Failed to load base google fonts list! Problem with request: ' + e.message + ' tried: ' + hostname + reqPath);
+    console.error(e);
+
+    // service would be deadlocked, we can't continue. error exit now.
+    console.error("Error: Exit 1")
+    process.exit(1);
   });
 
   req.end();

@@ -1,0 +1,6 @@
+.tmp
+dist
+.env
+client/bower_components
+node_modules
+server/logic/cachedFonts

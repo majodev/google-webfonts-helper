@@ -6,3 +6,5 @@ client/bower_components
 dist
 /server/config/local.env.js
 /server/logic/cachedFonts
+.env
+npm-debug.log

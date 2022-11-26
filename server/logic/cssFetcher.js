@@ -79,11 +79,13 @@ function fetchCSS(family, cssSubsetString, type, userAgent, callback) {
 
   debug("fonts.googleapis.com" + '/css?family=' + encodeURIComponent(family) + '&subset=' + cssSubsetString);
 
+  var reqPath = '/css?family=' + encodeURIComponent(family) + '&subset=' + cssSubsetString;
+
   var req = http.request({
     hostname: "fonts.googleapis.com",
     method: 'GET',
     port: 80,
-    path: '/css?family=' + encodeURIComponent(family) + '&subset=' + cssSubsetString,
+    path: reqPath,
     headers: {
       'accept': 'text/css,*/*;q=0.1',
       'User-Agent': userAgent
@@ -104,9 +106,9 @@ function fetchCSS(family, cssSubsetString, type, userAgent, callback) {
   });
 
   req.on('error', function(e) {
-    console.error('problem with request: ' + e.message);
+    console.error('problem with request: ' + e.message + ' reqPath=' + reqPath);
 
-    callback('problem with request: ' + e.message);
+    callback('problem with request: ' + e.message + ' reqPath=' + reqPath);
   });
 
   req.end();

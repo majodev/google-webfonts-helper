@@ -1,3 +1,13 @@
+var _ = require('lodash');
+
+var GOOGLE_FONTS_API_KEY = process.env.GOOGLE_FONTS_API_KEY;
+
+if (!_.isString(GOOGLE_FONTS_API_KEY) || _.isEmpty(GOOGLE_FONTS_API_KEY)) {
+  console.error('Error: ENV var "GOOGLE_FONTS_API_KEY" must be set!');
+  console.error('See https://developers.google.com/fonts/docs/developer_api')
+  process.exit(1);
+}
+
 module.exports = {
   USER_AGENTS: {
     // see http://www.dvdprojekt.de/category.php?name=Safari for a list of sample user handlers
@@ -13,6 +23,6 @@ module.exports = {
     svg: 'Mozilla/4.0 (iPad; CPU OS 4_0_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/4.1 Mobile/9A405 Safari/7534.48.3',
     ttf: 'Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) Safari/538.1 Daum/4.1'
   },
-  GOOGLE_FONTS_API_KEY: 'AIzaSyDY-C-Lt9uyPP5fSTjMCR4bB944SlI4spw',
+  GOOGLE_FONTS_API_KEY: GOOGLE_FONTS_API_KEY,
   CACHE_DIR: __dirname + "/cachedFonts/",
 }

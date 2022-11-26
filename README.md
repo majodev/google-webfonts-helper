@@ -1,17 +1,95 @@
 # google-webfonts-helper
 > A Hassle-Free Way to Self-Host Google Fonts
 
-This service might be handy if you want to directly download all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` files of a Google font (normally your `User-Agent` would determine the best format at Google's CSS API). Furthermore it provides charset customization and CSS snippets, hence getting your fonts ready for local hosting should be *finally* a breeze.
+- [google-webfonts-helper](#google-webfonts-helper)
+  - [Give it a try: gwfh.mranftl.com](#give-it-a-try-gwfhmranftlcom)
+  - [Development](#development)
+    - [Quickstart](#quickstart)
+    - [Production build](#production-build)
+    - [Updating dependencies](#updating-dependencies)
+  - [JSON API](#json-api)
+    - [GET `/api/fonts`](#get-apifonts)
+    - [GET `/api/fonts/[id]?subsets=latin,latin-ext`](#get-apifontsidsubsetslatinlatin-ext)
+    - [GET `/api/fonts/[id]?download=zip&subsets=latin&formats=woff,woff2&variants=regular`](#get-apifontsiddownloadzipsubsetslatinformatswoffwoff2variantsregular)
+  - [History](#history)
+  - [License](#license)
 
-## [Give it a try: google-webfonts-helper hosted on Heroku](https://google-webfonts-helper.herokuapp.com)
 
-![pic running](http://mranftl.com/static/apps/google-webfonts-helper/full_view.png)
+This service might be handy if you want to host a specific [Google font](https://fonts.google.com/) on your **own** server:
+* font style and charset customization
+* CSS snippets
+* `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` font file formats download (zipped).
 
-### REST API
-The API is public, feel free to use it directly.
+## [Give it a try: gwfh.mranftl.com](https://gwfh.mranftl.com)
 
-#### GET `/api/fonts`
-Returns a list of all fonts, sorted by popularity. E.g. `curl https://google-webfonts-helper.herokuapp.com/api/fonts`:
+![pic running](https://mranftl.com/static/apps/google-webfonts-helper/full_view.png)
+
+## Development
+
+### Quickstart
+
+Do this to setup a development environment:
+```bash
+# Ensure to set the GOOGLE_FONTS_API_KEY env var inside your own gitignored .env file
+# See https://developers.google.com/fonts/docs/developer_api for creating your own API-Key.
+echo "GOOGLE_FONTS_API_KEY=<YOUR-API-KEY>" > .env
+
+# Start up the development docker container (multistage Dockerfile, stage 1 only)
+./docker-helper.sh --up
+# [+] Running 1/0
+#  ⠿ Container gwfh-service-1  Running
+# node@3b506a285f7f:/app$
+
+# within this development container:
+node$ npm install -d
+node$ ./node_modules/.bin/bower install
+
+# start development server
+node$ grunt serve
+
+# start development server with debug statements enabled:
+node$ DEBUG="gwfh*" grunt serve
+# [...]
+# Express server listening on 9000, in development mode
+
+# The application is now available at http://127.0.0.1:9000 (watching for code changes)
+
+# start production server (same command as within the final docker multistage build)
+node$ grunt build
+node$ NODE_ENV=production node dist/server/app.js
+# Express server listening on 8080, in production mode
+```
+
+### Production build
+
+If you simply want to build and run the **production** container locally:
+```bash
+# Build the production docker container (final stage)
+docker build . -t <your-image-tag>
+
+# Run it (if you have previously started the development container, halt it!)
+./docker-helper.sh --halt
+docker run -e GOOGLE_FONTS_API_KEY=<YOUR-API-KEY> -p 8080:8080 <your-image-tag>
+# Express server listening on 8080, in production mode
+```
+
+To mitigate security issues especially with the projects' deprecated dependencies, the final image is based on a minimal container image ([distroless](https://github.com/GoogleContainerTools/distroless)). It runs rootless, has no shell available and no development dependencies. 
+
+### Updating dependencies
+
+> Note these old `npm` clients produce non-deterministic installs (no support for proper lockfiles or `npm ci`).
+
+If you try to upgrade any dependencies within `package.json`, ensure that `npm-shrinkwrap.json` stays stable by trying out:
+```bash
+# after npm install <package> --save or npm install <package> --save-dev do:
+npm shrinkwrap --dev
+```
+
+## JSON API
+The API is public, feel free to use it directly (rate-limits may apply).
+
+### GET `/api/fonts`
+Returns a list of all fonts, sorted by popularity. E.g. `curl https://gwfh.mranftl.com/api/fonts`:
 ```json
 [{
   "id": "open-sans",
@@ -28,8 +106,8 @@ Returns a list of all fonts, sorted by popularity. E.g. `curl https://google-web
 ]
 ```
 
-#### GET `/api/fonts/[id]?subsets=latin,latin-ext`
-Returns a font with urls to the actual font files google's servers. `subsets` is optional (will serve the `defSubset` if unspecified).  E.g. `curl "https://google-webfonts-helper.herokuapp.com/api/fonts/modern-antiqua?subsets=latin,latin-ext"` (the double quotes are important as query parameters may else be stripped!):
+### GET `/api/fonts/[id]?subsets=latin,latin-ext`
+Returns a font with urls to the actual font files google's servers. `subsets` is optional (will serve the `defSubset` if unspecified).  E.g. `curl "https://gwfh.mranftl.com/api/fonts/modern-antiqua?subsets=latin,latin-ext"` (the double quotes are important as query parameters may else be stripped!):
 
 ```json
 {
@@ -62,21 +140,21 @@ Returns a font with urls to the actual font files google's servers. `subsets` is
 }
 ```
 
-#### GET `/api/fonts/[id]?download=zip&subsets=latin&formats=woff,woff2&variants=regular`
+### GET `/api/fonts/[id]?download=zip&subsets=latin&formats=woff,woff2&variants=regular`
 
-Download a zipped archive with all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` files of a specified font. The query parameters `formats` and `variants` are optional (includes everything if no filtering is applied). is E.g. `curl -o fontfiles.zip "https://google-webfonts-helper.herokuapp.com/api/fonts/lato?download=zip&subsets=latin,latin-ext&variants=regular,700&formats=woff"` (the double quotes are important as query parameters may else be stripped!)
+Download a zipped archive with all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` files of a specified font. The query parameters `formats` and `variants` are optional (includes everything if no filtering is applied). is E.g. `curl -o fontfiles.zip "https://gwfh.mranftl.com/api/fonts/lato?download=zip&subsets=latin,latin-ext&variants=regular,700&formats=woff"` (the double quotes are important as query parameters may else be stripped!)
 
-### History
+## History
+
+> 2022:
+
+This service is mostly on life-support, most of its code and dependencies can be considered deprecated. The current docker image wrapping `node@v0.10.44` runs rootless and is hopefully enough to keep the bandits out. API attack surface should be minimal anyways.
+
+> 2014:
 
 This service was originally a prototype I've created to get familiar with Angular and Express. All magic by [generator-angular-fullstack](https://github.com/DaftMonk/generator-angular-fullstack). See [my note here](http://mranftl.com/2014/12/23/self-hosting-google-web-fonts/).
 
 Idea originally by Clemens Lang who created an [awesome bash script](https://neverpanic.de/blog/2014/03/19/downloading-google-web-fonts-for-local-hosting/) to download Google fonts in all formats.
-
-### Contributing
-
-Everything is welcome, **especially tests**! Fork, change and send me a pull request. However, please add a description to your changes, not only code!
-
-**Attention designers:** Searching for a logo and proper styling (I'm more a usability / backends guy).
 
 ## License
 (c) Mario Ranftl

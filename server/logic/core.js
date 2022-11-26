@@ -38,12 +38,12 @@ function getFilterObject(font, subsetArr) {
   var filterObj = {};
 
   if (_.isArray(subsetArr) === false || subsetArr.length === 0) {
-    _.each(font.subsets, function(subsetItem) {
+    _.each(font.subsets, function (subsetItem) {
       // supply filter with the default subset as defined in googleFontsAPI fetcher (latin or if no found other)
       filterObj[subsetItem] = (subsetItem === font.defSubset) ? true : false;
     });
   } else {
-    _.each(font.subsets, function(subsetItem) {
+    _.each(font.subsets, function (subsetItem) {
       filterObj[subsetItem] = _.contains(subsetArr, subsetItem);
     });
   }
@@ -93,7 +93,7 @@ function getFontItem(font, subsetArr, callback) {
     } else {
       // process to cache has already begun, wait until it has finished...
       debug("waiting until cache...");
-      emitter.once(font.id + "-pathFetched-" + urlStore.storeID, function(fontItem) {
+      emitter.once(font.id + "-pathFetched-" + urlStore.storeID, function (fontItem) {
         callback(fontItem);
       });
     }
@@ -109,7 +109,15 @@ function getFontItem(font, subsetArr, callback) {
   debug(subsetStore);
 
   // Fetch fontItem for the first time...
-  urlFetcher(font, subsetStoreKey, function(urlStoreObject) {
+  urlFetcher(font, subsetStoreKey, function (urlStoreObject) {
+
+    if (urlStoreObject === null) {
+      console.error('urlStoreObject resolved null for font ' + font.id + ' subset ' + subsetStoreKey);
+      urlStore.variants = undefined;
+      callback(null);
+      emitter.emit(font.id + "-pathFetched-" + urlStore.storeID, null);
+      return;
+    }
 
     debug("fetched fontItem", urlStoreObject);
 
@@ -157,7 +165,7 @@ function getFontFiles(fontItem, cb) {
       }
     } else {
       // process has already begun, wait until it has finished...
-      emitter.once(fontItem.id + "-filesFetched-" + fontItem.storeID, function(fileStoreItem) {
+      emitter.once(fontItem.id + "-filesFetched-" + fontItem.storeID, function (fileStoreItem) {
         debug("Download: fulfilling pending download request...");
         // callback (if null, it's only obviating)
         if (_.isFunction(cb) === true) {
@@ -178,7 +186,7 @@ function getFontFiles(fontItem, cb) {
 
 
   // trigger downloading of font files...
-  downloader(fontItem, function(localPaths) {
+  downloader(fontItem, function (localPaths) {
 
     fileStore[fileStoreID].files = localPaths;
     fileStore[fileStoreID].zippedFilename = fontItem.id + "-" + fontItem.version + "-" + fontItem.storeID + '.zip'
@@ -209,12 +217,12 @@ function getFontFiles(fontItem, cb) {
 (function init() {
   // setTimeout(function() {
 
-  googleFontsAPI(googleAPIFontItems, cachedFonts, function(items) {
+  googleFontsAPI(googleAPIFontItems, cachedFonts, function (items) {
 
     // items are cached, build up the subsetStore...
     var subsetStoreUniqueCombos = 0;
 
-    _.each(items, function(item) {
+    _.each(items, function (item) {
       var uniqueSubsetCombos = subsetGen(item.subsets);
 
       // Create subsetStore for item
@@ -241,8 +249,8 @@ function getFontFiles(fontItem, cb) {
 
 // http://stackoverflow.com/questions/17251764/lodash-filter-collection-using-array-of-values
 _.mixin({
-  'findByValues': function(collection, property, values) {
-    return _.filter(collection, function(item) {
+  'findByValues': function (collection, property, values) {
+    return _.filter(collection, function (item) {
       return _.contains(values, item[property]);
     });
   }
@@ -256,7 +264,7 @@ module.exports.getAll = function getAll(callback) {
   if (cachedFonts.length > 0) {
     callback(cachedFonts);
   } else {
-    emitter.once("initialized", function() {
+    emitter.once("initialized", function () {
       callback(cachedFonts);
     });
   }
@@ -269,7 +277,14 @@ module.exports.get = function get(id, subsetArr, callback) {
   });
 
   if (_.isUndefined(font) === false) {
-    getFontItem(font, subsetArr, function(fontItem) {
+    getFontItem(font, subsetArr, function (fontItem) {
+
+      if (fontItem === null) {
+        console.error("font loading failed for id: " + id + " subsetArr: " + subsetArr);
+        callback(null);
+        return;
+      }
+
       callback(fontItem);
     });
   } else {
@@ -287,8 +302,15 @@ module.exports.getDownload = function getDownload(id, subsetArr, variantsArr, fo
   });
 
   if (_.isUndefined(font) === false) {
-    getFontItem(font, subsetArr, function(fontItem) {
-      getFontFiles(fontItem, function(fileStoreItem) {
+    getFontItem(font, subsetArr, function (fontItem) {
+
+      if (fontItem === null) {
+        console.error("font loading failed for id: " + id + " subsetArr: " + subsetArr + " variantsArr " + variantsArr + " formatsArr" + formatsArr);
+        callback(null);
+        return;
+      }
+
+      getFontFiles(fontItem, function (fileStoreItem) {
 
         var filteredFiles = fileStoreItem.files;
 

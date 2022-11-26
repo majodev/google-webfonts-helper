@@ -84,7 +84,9 @@ function fetchUrls(font, storeID, callback) {
 
   }, function(err) {
     if (err) {
-      console.error(err);
+      console.error('fetchUrls bubbled err ' + err + ' for font ' + font + ' storeID ' + storeID);
+      callback(null)
+
     } else {
       debug("All variants processed.");
       // return the processed urlStoreObject...
