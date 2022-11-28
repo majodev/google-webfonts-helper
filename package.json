@@ -1,6 +1,6 @@
 {
   "name": "google-webfonts-helper",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "homepage": "https://gwfh.mranftl.com",
   "main": "server/app.js",
   "author": "majodev",

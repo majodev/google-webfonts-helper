@@ -1,15 +1,15 @@
 {
   "name": "google-webfonts-helper",
-  "version": "0.0.0",
+  "version": "1.0.1",
   "dependencies": {
-    "angular-animate": "1.2.32",
+    "angular-animate": "1.3.8",
     "angular-bootstrap": "0.11.2",
-    "angular-busy": "4.0.3",
-    "angular-cookies": "1.2.32",
-    "angular-resource": "1.2.32",
-    "angular-sanitize": "1.2.32",
+    "angular-busy": "4.1.2",
+    "angular-cookies": "1.3.8",
+    "angular-resource": "1.3.8",
+    "angular-sanitize": "1.3.8",
     "angular-ui-router": "0.2.18",
-    "angular": "1.2.32",
+    "angular": "1.3.8",
     "bootstrap": "3.1.1",
     "es5-shim": "3.0.2",
     "font-awesome": "4.1.0",
@@ -19,7 +19,7 @@
     "lodash": "2.4.2"
   },
   "devDependencies": {
-    "angular-mocks": "1.2.32",
-    "angular-scenario": "1.2.32"
+    "angular-mocks": "1.3.8",
+    "angular-scenario": "1.3.8"
   }
 }
