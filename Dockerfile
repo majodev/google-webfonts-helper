@@ -63,7 +63,7 @@ RUN yarn install --production --ignore-scripts --prefer-offline
 ### -----------------------
 
 # nonroot or debug-nonroot (unsafe with shell)
-FROM gcr.io/distroless/nodejs18-debian11:debug-nonroot AS production
+FROM gcr.io/distroless/nodejs18-debian11:nonroot AS production
 
 USER nonroot
 WORKDIR /app
