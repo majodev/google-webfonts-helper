@@ -9,6 +9,7 @@ describe('GET /api/fonts', function() {
   it('should respond with JSON array with all fonts', function(done) {
     request(app)
       .get('/api/fonts')
+      .timeout(10000)
       .expect(200)
       .expect('Content-Type', /json/)
       .end(function(err, res) {
@@ -21,6 +22,7 @@ describe('GET /api/fonts', function() {
   it('should respond with font files for arvo', function(done) {
     request(app)
       .get('/api/fonts/arvo')
+      .timeout(10000)
       .expect(200)
       .expect('Content-Type', /json/)
       .end(function(err, res) {
