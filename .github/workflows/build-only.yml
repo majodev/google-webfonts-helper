@@ -1,0 +1,24 @@
+name: Build gwfh
+
+on:
+  push:
+    branches: "**"
+
+jobs:
+  build-only:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: docker build
+        run: docker build --file Dockerfile --tag ${{ github.repository }}:${{ github.sha }} .
+      - name: trivy scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ github.repository }}:${{ github.sha }}'
+          format: 'template'
+          template: '@/contrib/sarif.tpl'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+          ignore-unfixed: true
