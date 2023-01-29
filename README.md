@@ -9,7 +9,6 @@
   - [Development](#development)
     - [Quickstart](#quickstart)
     - [Production build](#production-build)
-    - [Updating dependencies](#updating-dependencies)
   - [JSON API](#json-api)
     - [GET `/api/fonts`](#get-apifonts)
     - [GET `/api/fonts/[id]?subsets=latin,latin-ext`](#get-apifontsidsubsetslatinlatin-ext)
@@ -44,7 +43,7 @@ echo "GOOGLE_FONTS_API_KEY=<YOUR-API-KEY>" > .env
 # node@3b506a285f7f:/app$
 
 # within this development container:
-node$ npm install -d
+node$ yarn --pure-lockfile
 node$ ./node_modules/.bin/bower install
 
 # start development server
@@ -77,16 +76,6 @@ docker run -e GOOGLE_FONTS_API_KEY=<YOUR-API-KEY> -p 8080:8080 <your-image-tag>
 ```
 
 To mitigate security issues especially with the projects' deprecated dependencies, the final image is based on a minimal container image ([distroless](https://github.com/GoogleContainerTools/distroless)). It runs rootless, has no shell available and no development dependencies. 
-
-### Updating dependencies
-
-> Note these old `npm` clients produce non-deterministic installs (no support for proper lockfiles or `npm ci`).
-
-If you try to upgrade any dependencies within `package.json`, ensure that `npm-shrinkwrap.json` stays stable by trying out:
-```bash
-# after npm install <package> --save or npm install <package> --save-dev do:
-npm shrinkwrap --dev
-```
 
 ## JSON API
 The API is public, feel free to use it directly (rate-limits may apply).
@@ -148,6 +137,10 @@ Returns a font with urls to the actual font files google's servers. `subsets` is
 Download a zipped archive with all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` files of a specified font. The query parameters `formats` and `variants` are optional (includes everything if no filtering is applied). is E.g. `curl -o fontfiles.zip "https://gwfh.mranftl.com/api/fonts/lato?download=zip&subsets=latin,latin-ext&variants=regular,700&formats=woff"` (the double quotes are important as query parameters may else be stripped!)
 
 ## History
+
+> 2023:
+
+Lock dependencies via yarn. Project upgraded to be compatible with Node.js v18+ and [gcr.io/distroless/nodejs18-debian11:nonroot](https://github.com/GoogleContainerTools/distroless).
 
 > 2022:
 

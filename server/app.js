@@ -26,5 +26,15 @@ server.listen(config.port, config.ip, function () {
   debug("debug enabled.");
 });
 
+process.once('SIGINT', function () {
+  console.log('SIGINT received, closing server...');
+  server.close();
+});
+
+process.once('SIGTERM', function () {
+  console.log('SIGTERM received, closing server...');
+  server.close();
+});
+
 // Expose app
 exports = module.exports = app;

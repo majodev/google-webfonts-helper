@@ -2,7 +2,7 @@
 # --- Stage: development
 # --- Purpose: Local dev environment (no application deps)
 ### -----------------------
-FROM debian:bullseye AS development
+FROM node:18-bullseye AS development
 
 # We install a specific old node version via nvm (we explicitly want this image to be based on a newer debian version)
 # https://stackoverflow.com/questions/25899912/how-to-install-nvm-in-docker
@@ -21,35 +21,19 @@ RUN apt-get update && apt-get install -y -q --no-install-recommends \
     git \
     libssl-dev \
     wget \
+    sudo \
     && rm -rf /var/lib/apt/lists/*
+
+# global npm installs
+RUN npm install -g grunt-cli@1.2.0 \
+    && npm cache clean --force  
 
 # rootless node, user node
 ARG USERNAME=node
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd -s /bin/bash --uid $USER_UID --gid $USER_GID -m $USERNAME
-
 USER ${USERNAME}
-
-ENV NVM_DIR /home/node/.nvm
-ENV NODE_VERSION 0.10.44
-
-# Install nvm with node and npm
-RUN mkdir -p $NVM_DIR \
-    && curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash \
-    && . $NVM_DIR/nvm.sh \
-    && nvm install $NODE_VERSION \
-    && nvm alias default $NODE_VERSION \
-    && nvm use default
-
-ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/v$NODE_VERSION/bin:$PATH
-
-# global npm installs
-RUN npm install -g grunt-cli@1.2.0 \
-    && npm cache clean --force  
 
 WORKDIR /app
 
@@ -62,8 +46,8 @@ FROM development AS builder
 
 # install server and bundler deps
 COPY --chown=${USERNAME}:${USERNAME} package.json /app/package.json
-COPY --chown=${USERNAME}:${USERNAME} npm-shrinkwrap.json /app/npm-shrinkwrap.json
-RUN npm install -d
+COPY --chown=${USERNAME}:${USERNAME} yarn.lock /app/yarn.lock
+RUN yarn --pure-lockfile
 
 # install clientside deps (bower is a managed application local dev dep)
 COPY --chown=${USERNAME}:${USERNAME} bower.json /app/bower.json
@@ -75,8 +59,11 @@ COPY --chown=${USERNAME}:${USERNAME} . /app/
 
 # build dist
 RUN grunt build
-# prepare production node_modules and remove all globally installed deps incl. npm itself
-RUN npm prune --production && npm uninstall -g grunt-cli npm
+
+# prepare production node_modules (this cleans up dev deps)
+# https://github.com/vercel/next.js/pull/23056
+# https://github.com/yarnpkg/yarn/issues/6373
+RUN yarn install --production --ignore-scripts --prefer-offline
 
 ### -----------------------
 # --- Stage: production
@@ -84,22 +71,10 @@ RUN npm prune --production && npm uninstall -g grunt-cli npm
 ### -----------------------
 
 # nonroot or debug-nonroot (unsafe with shell)
-FROM gcr.io/distroless/base-debian11:nonroot AS production
+FROM gcr.io/distroless/nodejs18-debian11:debug-nonroot AS production
 
 USER nonroot
 WORKDIR /app
-
-# copy prebuilt node from builder base image
-ENV NVM_DIR /home/node/.nvm
-ENV NODE_VERSION 0.10.44
-ENV NODE_PATH /app/node/lib/node_modules
-ENV PATH      /app/node/bin:$PATH
-COPY --chown=nonroot:nonroot --from=builder $NVM_DIR/v$NODE_VERSION /app/node
-
-# shared dyn libs: nodejs requirements
-COPY --chown=nonroot:nonroot --from=builder /usr/lib/x86_64-linux-gnu/libstdc++.so.* /usr/lib/x86_64-linux-gnu/
-COPY --chown=nonroot:nonroot --from=builder /lib/x86_64-linux-gnu/libgcc_s.so.* /lib/x86_64-linux-gnu/
-COPY --chown=nonroot:nonroot --from=builder /usr/lib/gcc/x86_64-linux-gnu/10/*.so* /usr/lib/gcc/x86_64-linux-gnu/10/
 
 # copy prebuilt production node_modules
 COPY --chown=nonroot:nonroot --from=builder /app/node_modules /app/node_modules
@@ -110,5 +85,4 @@ COPY --chown=nonroot:nonroot --from=builder /app/dist /app/dist
 ENV NODE_ENV=production
 
 EXPOSE 8080
-ENTRYPOINT [ "/app/node/bin/node" ]
 CMD ["dist/server/app.js"]

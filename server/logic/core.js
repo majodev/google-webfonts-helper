@@ -217,6 +217,16 @@ function getFontFiles(fontItem, cb) {
 (function init() {
   // setTimeout(function() {
 
+  process.once('SIGINT', function () {
+    console.log('SIGINT received, removing core emitter listeners...');
+    emitter.removeAllListeners();
+  });
+
+  process.once('SIGTERM', function () {
+    console.log('SIGTERM received, removing core emitter listeners...');
+    emitter.removeAllListeners();
+  });
+
   googleFontsAPI(googleAPIFontItems, cachedFonts, function (items) {
 
     // items are cached, build up the subsetStore...
