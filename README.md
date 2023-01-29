@@ -6,6 +6,7 @@
 
 - [google-webfonts-helper](#google-webfonts-helper)
   - [Give it a try: https://gwfh.mranftl.com](#give-it-a-try-httpsgwfhmranftlcom)
+  - [Running gwfh on your own server](#running-gwfh-on-your-own-server)
   - [Development](#development)
     - [Quickstart](#quickstart)
     - [Production build](#production-build)
@@ -24,7 +25,17 @@ This service might be handy if you want to host a specific [Google font](https:/
 
 ## Give it a try: [https://gwfh.mranftl.com](https://gwfh.mranftl.com)
 
-![pic running](https://mranftl.com/static/apps/google-webfonts-helper/full_view.png)
+[![pic running](https://mranftl.com/static/apps/google-webfonts-helper/full_view.png)](https://gwfh.mranftl.com)
+
+## Running gwfh on your own server
+
+I provide prebuilt Docker images via [GitHub Packages](https://github.com/majodev/google-webfonts-helper/pkgs/container/google-webfonts-helper). You can use them as follows:
+```bash
+# See https://developers.google.com/fonts/docs/developer_api for creating your own API-Key.
+
+docker run -e GOOGLE_FONTS_API_KEY=<YOUR-API-KEY> -p 8080:8080 ghcr.io/majodev/google-webfonts-helper:<TAG>
+# Express server listening on 8080, in production mode
+```
 
 ## Development
 
@@ -64,7 +75,7 @@ node$ NODE_ENV=production node dist/server/app.js
 
 ### Production build
 
-If you simply want to build and run the **production** container locally:
+If you want to build and run your own **production** container locally:
 ```bash
 # Build the production docker container (final stage)
 docker build . -t <your-image-tag>
@@ -140,7 +151,7 @@ Download a zipped archive with all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` fil
 
 > 2023:
 
-Lock dependencies via yarn. Project upgraded to be compatible with Node.js v18+ and [gcr.io/distroless/nodejs18-debian11:nonroot](https://github.com/GoogleContainerTools/distroless).
+Project upgraded to be compatible with Node.js v18+, yarn 1.x and [gcr.io/distroless/nodejs18-debian11:nonroot](https://github.com/GoogleContainerTools/distroless). Automated prebuilt Docker images via [GitHub Actions](https://github.com/majodev/google-webfonts-helper/actions).
 
 > 2022:
 
