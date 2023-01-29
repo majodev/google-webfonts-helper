@@ -21,19 +21,11 @@ RUN apt-get update && apt-get install -y -q --no-install-recommends \
     git \
     libssl-dev \
     wget \
-    sudo \
     && rm -rf /var/lib/apt/lists/*
 
 # global npm installs
 RUN npm install -g grunt-cli@1.2.0 \
     && npm cache clean --force  
-
-# rootless node, user node
-ARG USERNAME=node
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
-
-USER ${USERNAME}
 
 WORKDIR /app
 
@@ -44,20 +36,18 @@ WORKDIR /app
 
 FROM development AS builder
 
-ARG USERNAME=node
-
 # install server and bundler deps
-COPY --chown=${USERNAME}:${USERNAME} package.json /app/package.json
-COPY --chown=${USERNAME}:${USERNAME} yarn.lock /app/yarn.lock
+COPY package.json /app/package.json
+COPY yarn.lock /app/yarn.lock
 RUN yarn --pure-lockfile
 
 # install clientside deps (bower is a managed application local dev dep)
-COPY --chown=${USERNAME}:${USERNAME} bower.json /app/bower.json
-COPY --chown=${USERNAME}:${USERNAME} .bowerrc /app/.bowerrc
+COPY bower.json /app/bower.json
+COPY .bowerrc /app/.bowerrc
 RUN  ./node_modules/.bin/bower install
 
 # copy in all workspace files
-COPY --chown=${USERNAME}:${USERNAME} . /app/
+COPY . /app/
 
 # build dist
 RUN grunt build
