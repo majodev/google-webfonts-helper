@@ -89,6 +89,14 @@ function fetchUrls(font, storeID, callback) {
 
     } else {
       debug("All variants processed.");
+
+      // stable sort variants
+      // tmpUrlStoreObject.variants = _.sortBy(tmpUrlStoreObject.variants, ["fontWeight", "fontStyle"]);
+      tmpUrlStoreObject.variants = _.sortBy(tmpUrlStoreObject.variants, function ({ fontWeight, fontStyle }) {
+        var styleOrder = fontStyle === "normal" ? 0 : 1;
+        return `${fontWeight}-${styleOrder}`
+      });
+
       // return the processed urlStoreObject...
       callback(tmpUrlStoreObject);
     }
