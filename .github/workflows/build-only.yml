@@ -10,7 +10,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v3
       - name: docker build
         run: docker build --file Dockerfile --tag ${{ github.repository }}:${{ github.sha }} .
       - name: trivy scan

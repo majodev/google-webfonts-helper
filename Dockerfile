@@ -44,6 +44,8 @@ WORKDIR /app
 
 FROM development AS builder
 
+ARG USERNAME=node
+
 # install server and bundler deps
 COPY --chown=${USERNAME}:${USERNAME} package.json /app/package.json
 COPY --chown=${USERNAME}:${USERNAME} yarn.lock /app/yarn.lock
