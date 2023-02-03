@@ -29,6 +29,18 @@ var subsetStore = {}; // every item in here holds a urlStore Object + a unique s
 // fileStore holds arrays of local paths to font files, id = fontItem.id + "-" + fontItem.storeID
 var fileStore = {};
 
+if (debug.enabled) {
+  setInterval(function () {
+    var events = emitter.eventNames();
+    var listenersCount = _.reduce(_.map(events, function (event) {
+      return emitter.listenerCount(event);
+    }), function (sum, n) {
+      return sum + n;
+    }, 0);
+    // console.log("tracked events: ", events);
+    debug("core emitter ops tracked_events=" + events.length + " listeners=" + listenersCount + " eventNames=" + events);
+  }, 10000)
+}
 
 // -----------------------------------------------------------------------------
 // Private
@@ -64,14 +76,16 @@ function getUrlStoreKey(font, subsetArr) {
     fontSubsetKey = _.findKey(fontSubsetStore, {
       subsetMap: getFilterObject(font, subsetArr)
     });
-    debug(fontSubsetKey);
+    debug("fontSubsetKey for " + font.id, fontSubsetKey);
     if (_.isUndefined(fontSubsetKey) === false) {
       return fontSubsetKey;
     } else {
-      throw new Error("fontSubsetKey for " + font.id + " subset " + subsetArr + " not found!");
+      debug("fontSubsetKey for " + font.id + " subset " + subsetArr + " not found!");
+      return null;
     }
   } else {
-    throw new Error("fontSubsetStore for " + font.id + " not found!");
+    debug("fontSubsetStore for " + font.id + " not found!");
+    return null;
   }
 }
 
@@ -80,20 +94,33 @@ function getFontItem(font, subsetArr, callback) {
 
   // find the relevant subsetStore Object that holds the needed unique urlStore to fetch
   var subsetStoreKey = getUrlStoreKey(font, subsetArr);
+
+  if (subsetStoreKey === null) {
+    callback(null); // bailout.
+    return;
+  }
+
   var urlStore = subsetStore[font.id][subsetStoreKey];
 
-  debug(urlStore);
+  debug("urlStore for font.id=" + font.id + " subsetStoreKey=" + subsetStoreKey, urlStore);
 
   if (_.isUndefined(urlStore.variants) === false) {
-    debug(urlStore);
     if (urlStore.isDirty !== true) {
       // already cached, return instantly
-      debug("already cached!");
+      debug("urlStore for font.id=" + font.id + " subsetStoreKey=" + subsetStoreKey, "already cached!");
       callback(_.merge(_.cloneDeep(font), urlStore));
     } else {
       // process to cache has already begun, wait until it has finished...
-      debug("waiting until cache...");
-      emitter.once(font.id + "-pathFetched-" + urlStore.storeID, function (fontItem) {
+      debug("urlStore for font.id=" + font.id + " subsetStoreKey=" + subsetStoreKey, "waiting until cache...");
+
+      // // DEBUG ONLY exit now
+      // // TODO delete me
+      // // !!!!!!!!!!!!!!!!!!!!!!!!
+      // if (!urlStore.storeID) {
+      //   console.error("urlStore.storeID is undefined for font " + font.id + " subset " + subsetStoreKey);
+      //   process.exit(1);
+      // }
+      emitter.once(font.id + "-pathFetched-" + subsetStoreKey, function (fontItem) {
         callback(fontItem);
       });
     }
@@ -106,7 +133,7 @@ function getFontItem(font, subsetArr, callback) {
   urlStore.variants = [];
   urlStore.isDirty = true;
 
-  debug(subsetStore);
+  // debug(subsetStore);
 
   // Fetch fontItem for the first time...
   urlFetcher(font, subsetStoreKey, function (urlStoreObject) {
@@ -115,11 +142,11 @@ function getFontItem(font, subsetArr, callback) {
       console.error('urlStoreObject resolved null for font ' + font.id + ' subset ' + subsetStoreKey);
       urlStore.variants = undefined;
       callback(null);
-      emitter.emit(font.id + "-pathFetched-" + urlStore.storeID, null);
+      emitter.emit(font.id + "-pathFetched-" + subsetStoreKey, null);
       return;
     }
 
-    debug("fetched fontItem", urlStoreObject);
+    debug("fetched fontItem for font.id=" + font.id + " subsetStoreKey=" + subsetStoreKey, urlStoreObject);
 
     var fontItem;
 
@@ -133,18 +160,18 @@ function getFontItem(font, subsetArr, callback) {
     // set and build up a proper fontItem
     fontItem = _.merge(_.cloneDeep(font), subsetStore[font.id][subsetStoreKey]);
 
-    debug("saveable fontimte processed", fontItem);
+    debug("saveable fontItem processed for font.id=" + font.id + " subsetStoreKey=" + subsetStoreKey, "fontItem=", fontItem);
 
     // fullfill the original request
     callback(fontItem);
 
     // fullfill still pending requests awaiting process completion
-    emitter.emit(font.id + "-pathFetched-" + urlStoreObject.storeID, fontItem);
+    emitter.emit(font.id + "-pathFetched-" + subsetStoreKey, fontItem);
 
     // trigger obviating downloading of font files (even tough it's might not needed!)
     getFontFiles(fontItem, null);
 
-    debug(urlStore);
+    // debug(urlStore);
 
   });
 }
@@ -166,13 +193,13 @@ function getFontFiles(fontItem, cb) {
     } else {
       // process has already begun, wait until it has finished...
       emitter.once(fontItem.id + "-filesFetched-" + fontItem.storeID, function (fileStoreItem) {
-        debug("Download: fulfilling pending download request...");
+        debug(fileStoreID + " download: fulfilling pending download request...");
         // callback (if null, it's only obviating)
         if (_.isFunction(cb) === true) {
           // fullfill the original request
           cb(fileStoreItem);
         } else {
-          debug("fulfill fail no callback!");
+          debug(fileStoreID + " fulfill fail no callback!");
           // nothing needs to be done, no callback (obviating)!
         }
       });
@@ -198,10 +225,10 @@ function getFontFiles(fontItem, cb) {
     // callback (if null, it's only obviating)
     if (_.isFunction(cb) === true) {
       // fullfill the original request
-      debug("Download: fulfill original request...");
+      debug(fileStoreID + " download: fulfill original request...");
       cb(fileStore[fileStoreID]);
     } else {
-      debug("obsiation, no callback!");
+      debug(fileStoreID + " obsiation, no callback!");
     }
 
     // fullfill still pending requests awaiting process completion
@@ -290,7 +317,7 @@ module.exports.get = function get(id, subsetArr, callback) {
     getFontItem(font, subsetArr, function (fontItem) {
 
       if (fontItem === null) {
-        console.error("font loading failed for id: " + id + " subsetArr: " + subsetArr);
+        debug("font loading failed for id: " + id + " subsetArr: " + subsetArr);
         callback(null);
         return;
       }
@@ -299,7 +326,7 @@ module.exports.get = function get(id, subsetArr, callback) {
     });
   } else {
     // font not found!
-    console.error("font not found: " + id);
+    debug("font not found: " + id);
     callback(null);
   }
 
@@ -315,7 +342,7 @@ module.exports.getDownload = function getDownload(id, subsetArr, variantsArr, fo
     getFontItem(font, subsetArr, function (fontItem) {
 
       if (fontItem === null) {
-        console.error("font loading failed for id: " + id + " subsetArr: " + subsetArr + " variantsArr " + variantsArr + " formatsArr" + formatsArr);
+        debug("font loading failed for id: " + id + " subsetArr: " + subsetArr + " variantsArr " + variantsArr + " formatsArr" + formatsArr);
         callback(null);
         return;
       }
@@ -347,7 +374,7 @@ module.exports.getDownload = function getDownload(id, subsetArr, variantsArr, fo
     });
   } else {
     // font not found!
-    console.error("font not found: " + id);
+    debug("font not found: " + id);
     callback(null);
   }
 

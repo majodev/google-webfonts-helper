@@ -506,9 +506,9 @@ camelcase@^2.0.0:
   integrity sha512-DLIsRzJVBQu72meAKPkWQOLcujdXT32hwdfnkI1frSiSRMK1MofjKHf+MEx0SB6fjEFXL8fBDv1dKymBlOp4Qw==
 
 "caniuse-db@1.0.20140618 - 2":
-  version "1.0.30001449"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001449.tgz#d07cc14cac52de0945562f563c2a1fae7fd78b63"
-  integrity sha512-K7XIAmo8tCt2W7LFSrTjbrXZqer/4af8cfediBT+iDk4b8eljuMo6gBzJlW7e4RTz5+wYEGKg8gXk1Vm+Jh+YA==
+  version "1.0.30001450"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30001450.tgz#51ea1e1eb6688d391189a46b7d962854035d3ff5"
+  integrity sha512-HqXvh7yrdHTNLVaXu9t/8lkG49xXe97jD6zWvbnT6aQBGPl1I5ukZbSAlOLjJ6/hV8BduRMl1eR6ggNi/O0hTA==
 
 capture-stack-trace@^1.0.0:
   version "1.0.2"
@@ -836,9 +836,9 @@ content-disposition@0.5.4:
     safe-buffer "5.2.1"
 
 content-type@~1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/content-type/-/content-type-1.0.4.tgz#e138cc75e040c727b1966fe5e5f8c9aee256fe3b"
-  integrity sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/content-type/-/content-type-1.0.5.tgz#8b773162656d1d1086784c8f23a54ce6d73d7918"
+  integrity sha512-nTjqfcBFEipKdXCv4YDQWCfmcLZKm81ldF0pAopTvyrFGVbcR6P/VAAd5G7N+0tTr8QqiU0tFadD6FK4NtJwOA==
 
 convert-source-map@^1.1.1:
   version "1.9.0"
