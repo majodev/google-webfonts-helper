@@ -19,11 +19,15 @@ var all = {
   root: path.normalize(__dirname + '/../../..'),
 
   // Server port
-  port: process.env.PORT || 9000,
+  port: process.env.PORT
+    || 9000,
 
   // Should we populate the DB with sample data?
   seedDB: false,
 
+  // Server port
+  serverTimeout: process.env.TIMEOUT_MS
+    || 60 * 1000, // 60 seconds
 };
 
 // Export the config object based on the NODE_ENV

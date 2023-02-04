@@ -17,12 +17,14 @@ var config = require('./config/environment');
 // Setup server
 var app = express();
 var server = require('http').createServer(app);
+server.timeout = config.serverTimeout; // 60 seconds
+
 require('./config/express')(app);
 require('./routes')(app);
 
 // Start server
 server.listen(config.port, config.ip, function () {
-  console.log('Express server listening on %d, in %s mode', config.port, app.get('env'));
+  console.log('Express server listening on %d, in %s mode (timeout=%dms)', config.port, app.get('env'), server.timeout);
   debug("debug enabled.");
 });
 
