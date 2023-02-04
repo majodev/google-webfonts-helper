@@ -11,49 +11,45 @@ function downloadFontFiles(fontItem, cb) {
 
   var filePaths = [];
 
-  mkdirp(conf.CACHE_DIR, function(err) {
-    if (err) {
-      throw new Error("unable to create CACHE directory!" + err);
-    } else {
-      async.each(fontItem.variants, function(variantItem, variantCB) {
-        debug(_.keys(conf.USER_AGENTS));
-        async.each(_.keys(conf.USER_AGENTS), function(formatKey, typeCB) {
+  mkdirp.sync(conf.CACHE_DIR);
 
-          var filename = conf.CACHE_DIR + fontItem.id + "-" + fontItem.version + "-" + fontItem.storeID + "-" + variantItem.id + "." + formatKey;
+  async.each(fontItem.variants, function(variantItem, variantCB) {
+    debug(_.keys(conf.USER_AGENTS));
+    async.each(_.keys(conf.USER_AGENTS), function(formatKey, typeCB) {
 
-          if (!variantItem[formatKey]) {
-            // font format is not available for download...
-            console.warn(filename, "format not available for download", formatKey);
-            typeCB();
-            return;
-          }
+      var filename = conf.CACHE_DIR + fontItem.id + "-" + fontItem.version + "-" + fontItem.storeID + "-" + variantItem.id + "." + formatKey;
 
-          // download the file for type (filename now known)
-          downloadFile(variantItem[formatKey], filename, function() {
-            filePaths.push({
-              variant: variantItem.id, // variants and format are used to filter them out later!
-              format: formatKey,
-              path: filename
-            });
-            typeCB();
-          });
+      if (!variantItem[formatKey]) {
+        // font format is not available for download...
+        console.warn(filename, "format not available for download", formatKey);
+        typeCB();
+        return;
+      }
 
-        }, function(err) {
-          if (err) {
-            variantCB('variant failed: ' + variantItem.id + " err: " + err);
-          } else {
-            variantCB();
-          }
+      // download the file for type (filename now known)
+      downloadFile(variantItem[formatKey], filename, function() {
+        filePaths.push({
+          variant: variantItem.id, // variants and format are used to filter them out later!
+          format: formatKey,
+          path: filename
         });
-      }, function(err) {
-        if (err) {
-          console.error("family failed: " + fontItem.id + " err: " + err);
-          throw new Error("family failed: " + fontItem.id + " err: " + err);
-        } else {
-          debug("family downloaded");
-          cb(filePaths);
-        }
+        typeCB();
       });
+
+    }, function(err) {
+      if (err) {
+        variantCB('variant failed: ' + variantItem.id + " err: " + err);
+      } else {
+        variantCB();
+      }
+    });
+  }, function(err) {
+    if (err) {
+      console.error("family failed: " + fontItem.id + " err: " + err);
+      throw new Error("family failed: " + fontItem.id + " err: " + err);
+    } else {
+      debug("family downloaded");
+      cb(filePaths);
     }
   });
 

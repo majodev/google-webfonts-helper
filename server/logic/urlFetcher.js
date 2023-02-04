@@ -22,7 +22,7 @@ function fetchUrls(font, storeID, callback) {
       id: variant
     };
 
-    async.each(_.pairs(conf.USER_AGENTS), function(typeAgentPair, requestCB) {
+    async.each(_.toPairs(conf.USER_AGENTS), function(typeAgentPair, requestCB) {
 
       cssFetcher(font.family + ":" + variant, cssSubsetString, typeAgentPair[0], typeAgentPair[1], function(err, resources) {
         if (err) {

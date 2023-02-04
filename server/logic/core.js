@@ -56,7 +56,7 @@ function getFilterObject(font, subsetArr) {
     });
   } else {
     _.each(font.subsets, function (subsetItem) {
-      filterObj[subsetItem] = _.contains(subsetArr, subsetItem);
+      filterObj[subsetItem] = _.includes(subsetArr, subsetItem);
     });
   }
 
@@ -288,7 +288,7 @@ function getFontFiles(fontItem, cb) {
 _.mixin({
   'findByValues': function (collection, property, values) {
     return _.filter(collection, function (item) {
-      return _.contains(values, item[property]);
+      return _.includes(values, item[property]);
     });
   }
 });

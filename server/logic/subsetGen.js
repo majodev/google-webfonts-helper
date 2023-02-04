@@ -34,7 +34,7 @@ function getUniqueStoreID(uniqueCombArr) {
   var storeID = '';
   var lastItemIndex = uniqueCombArr.length - 1;
 
-  _.each(uniqueCombArr, function(uniqueItem, index) {
+  _.each(uniqueCombArr, function (uniqueItem, index) {
     if (index < lastItemIndex) {
       storeID += uniqueItem + "_";
     } else {
@@ -53,8 +53,8 @@ function getDefaultSubsetObj(uniqueCombArr, inputArr) {
     subsetMap: {}
   };
 
-  _.each(inputArr, function(inputItem) {
-    urlStore.subsetMap[inputItem] = _.contains(uniqueCombArr, inputItem);
+  _.each(inputArr, function (inputItem) {
+    urlStore.subsetMap[inputItem] = _.includes(uniqueCombArr, inputItem);
   });
 
   return urlStore;

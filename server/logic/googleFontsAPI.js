@@ -8,7 +8,7 @@ var debug = require('debug')('gwfh:googleFontsAPI');
 
 // build up fonts cache via google API...
 var getFontsToDownload = _.once(function (googleAPIFontItems, cachedFonts, cb) {
-  
+
   var hostname = "www.googleapis.com";
   var reqPath = '/webfonts/v1/webfonts?sort=popularity&key=';
 
@@ -20,22 +20,22 @@ var getFontsToDownload = _.once(function (googleAPIFontItems, cachedFonts, cb) {
     headers: {
       'Accept': 'application/json',
     }
-  }, function(res) {
+  }, function (res) {
 
     var output = '';
 
     res.setEncoding('utf8');
 
-    res.on('data', function(chunk) {
+    res.on('data', function (chunk) {
       output += chunk;
     });
 
-    res.on('end', function() {
+    res.on('end', function () {
 
       googleAPIFontItems = JSON.parse(output).items;
 
       // populate our items
-      _.each(googleAPIFontItems, function(item, index) {
+      _.each(googleAPIFontItems, function (item, index) {
 
         debug(index + " - " + item.family);
 
@@ -50,8 +50,8 @@ var getFontsToDownload = _.once(function (googleAPIFontItems, cachedFonts, cb) {
           lastModified: item.lastModified,
           popularity: index + 1,
           // use latin per default, else first found font
-          defSubset: _.contains(item.subsets, 'latin') ? 'latin' : item.subsets[0],
-          defVariant: _.contains(item.variants, 'regular') ? 'regular' : item.variants[0]
+          defSubset: _.includes(item.subsets, 'latin') ? 'latin' : item.subsets[0],
+          defVariant: _.includes(item.variants, 'regular') ? 'regular' : item.variants[0]
         });
 
       });
@@ -62,7 +62,7 @@ var getFontsToDownload = _.once(function (googleAPIFontItems, cachedFonts, cb) {
 
   });
 
-  req.on('error', function(e) {
+  req.on('error', function (e) {
     console.error('Failed to load base google fonts list! Problem with request: ' + e.message + ' tried: ' + hostname + reqPath);
     console.error(e);
 
