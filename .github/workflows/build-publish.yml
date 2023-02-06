@@ -4,6 +4,9 @@ name: Create and publish gwfh
 on:
   push:
     tags: "**"
+    branches:
+      - "master"
+      - "dev"
 
 env:
   REGISTRY: ghcr.io

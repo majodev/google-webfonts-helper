@@ -1,25 +1,20 @@
 var fs = require('fs');
-var archiver = require('archiver');
+var JSZip = require('jszip');
 var _ = require('lodash');
 
 var conf = require('./conf');
 
 function zip(filePaths) {
-  var archive = archiver('zip');
+  var archive = new JSZip();
 
-  archive.on('error', function(err) {
-    throw err;
+  _.each(filePaths, function (fileItem) {
+    archive.file(fileItem.path.replace(conf.CACHE_DIR, ''), fs.createReadStream(fileItem.path))
   });
 
-  _.each(filePaths, function(fileItem) {
-    archive.append(fs.createReadStream(fileItem.path), {
-      name: fileItem.path.replace(conf.CACHE_DIR, '')
-    })
-  });
-
-  archive.finalize();
-
-  return archive; // this can be piped upon the request...
+  return archive.generateNodeStream({
+    streamFiles: true,
+    compression: 'DEFLATE'
+  }); // this can be piped upon the request...
 }
 
 module.exports = zip;

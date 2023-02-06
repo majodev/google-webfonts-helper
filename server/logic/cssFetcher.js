@@ -67,7 +67,7 @@ function parseRemoteCSS(remoteCSS, type, callback) {
       resources.push(resource);
 
     } catch (e) {
-      console.error("cannot load resource of type " + type);
+      debug("cannot load resource of type " + type);
     }
 
   });
