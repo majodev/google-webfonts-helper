@@ -2,6 +2,4 @@
 
 // Development specific configuration
 // ==================================
-module.exports = {
-  seedDB: true
-};
+module.exports = {};

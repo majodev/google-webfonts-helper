@@ -297,6 +297,20 @@ _.mixin({
 // Exports for REST API
 // -----------------------------------------------------------------------------
 
+module.exports.healthy = function healthy() {
+
+  var events = emitter.eventNames();
+  var listenersCount = _.reduce(_.map(events, function (event) {
+    return emitter.listenerCount(event);
+  }), function (sum, n) {
+    return sum + n;
+  }, 0);
+
+  return `${cachedFonts.length} fonts.
+Cached ${_.keys(fileStore).length} variants, ${_.sumBy(_.values(fileStore), function (f) { return (f.files) ? f.files.length : 0; })} files (${events.length}/${listenersCount} in-flight).
+${events.length > 0 ? events.join(", ") : "No in-flight requests."}`;
+}
+
 module.exports.getAll = function getAll(callback) {
   if (cachedFonts.length > 0) {
     callback(cachedFonts);

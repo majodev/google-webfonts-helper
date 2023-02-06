@@ -24,7 +24,7 @@ require('./routes')(app);
 
 // Start server
 server.listen(config.port, config.ip, function () {
-  console.log('Express server listening on %d, in %s mode (timeout=%dms)', config.port, app.get('env'), server.timeout);
+  console.log('Express server listening on %d, in %s mode (timeout=%dms, compress=%s, accesslog=%s)', config.port, app.get('env'), server.timeout, config.enableMiddlewareCompression, config.enableMiddlewareAccessLog);
   debug("debug enabled.");
 });
 
