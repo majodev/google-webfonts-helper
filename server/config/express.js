@@ -11,9 +11,7 @@ var config = require('./environment');
 module.exports = function (app) {
   var env = app.get('env');
 
-  app.set('views', config.root + '/server/views');
-  app.engine('html', require('ejs').renderFile);
-  app.set('view engine', 'html');
+  app.set('viewPath', config.root + '/server/views');
 
   if (config.enableMiddlewareCompression) {
     app.use(require('compression')());
@@ -25,9 +23,7 @@ module.exports = function (app) {
     if (config.enableMiddlewareAccessLog) {
       app.use(require('morgan')(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length]'));
     }
-  }
-
-  if (env === 'development' || env === 'test') {
+  } else {
     app.use(require('connect-livereload')());
     app.use(express.static(path.join(config.root, '.tmp')));
     app.use(express.static(path.join(config.root, 'client')));

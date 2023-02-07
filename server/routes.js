@@ -4,7 +4,6 @@
 
 'use strict';
 
-var errors = require('./components/errors');
 var core = require('./logic/core');
 
 module.exports = function (app) {
@@ -20,7 +19,9 @@ module.exports = function (app) {
 
   // All undefined asset or api routes should return a 404
   app.route('/:url(api|auth|components|app|bower_components|assets)/*')
-    .get(errors[404]);
+    .get(function (req, res) {
+      res.status(404).sendFile(app.get('viewPath') + '/404.html');
+    });
 
   // All other routes should redirect to the index.html
   app.route('/*')
