@@ -12,18 +12,18 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 # Set debconf to run non-interactively
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
-# Install base dependencies (switch to libjemalloc https://github.com/nodejs/help/issues/1518)
+# Install base dependencies 
 RUN apt-get update && apt-get install -y -q --no-install-recommends \
     apt-transport-https \
     build-essential \
     ca-certificates \
     curl \
     git \
-    libjemalloc-dev \
+    # libjemalloc-dev (switch to libjemalloc https://github.com/nodejs/help/issues/1518)
     libssl-dev \
     wget \
-    && rm -rf /var/lib/apt/lists/* \
-    && echo "/usr/lib/$(uname -m)-linux-gnu/libjemalloc.so" >> /etc/ld.so.preload
+    && rm -rf /var/lib/apt/lists/*
+# && echo "/usr/lib/$(uname -m)-linux-gnu/libjemalloc.so" >> /etc/ld.so.preload
 
 # global npm installs
 RUN npm install -g grunt-cli@1.2.0 \
@@ -123,9 +123,9 @@ FROM gcr.io/distroless/nodejs18-debian11:nonroot AS production
 # tini as pid 1
 COPY --from=builder /tini /tini
 
-# switch to libjemalloc
-COPY --from=builder /usr/lib/x86_64-linux-gnu/libjemalloc* /usr/lib/x86_64-linux-gnu/
-COPY --from=builder /etc/ld.so.preload /etc/ld.so.preload
+# # switch to libjemalloc
+# COPY --from=builder /usr/lib/x86_64-linux-gnu/libjemalloc* /usr/lib/x86_64-linux-gnu/
+# COPY --from=builder /etc/ld.so.preload /etc/ld.so.preload
 
 USER nonroot
 WORKDIR /app
