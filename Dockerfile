@@ -12,16 +12,18 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 # Set debconf to run non-interactively
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
-# Install base dependencies
+# Install base dependencies (switch to libjemalloc https://github.com/nodejs/help/issues/1518)
 RUN apt-get update && apt-get install -y -q --no-install-recommends \
     apt-transport-https \
     build-essential \
     ca-certificates \
     curl \
     git \
+    libjemalloc-dev \
     libssl-dev \
     wget \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && echo "/usr/lib/$(uname -m)-linux-gnu/libjemalloc.so" >> /etc/ld.so.preload
 
 # global npm installs
 RUN npm install -g grunt-cli@1.2.0 \
@@ -80,24 +82,51 @@ RUN yarn install --production --ignore-scripts --prefer-offline
 # CMD ["dist/server/app.js"]
 
 
+# ### -----------------------
+# # --- Stage: production
+# # --- Purpose: Final step from a new slim image. this should be a minimal image only housing dist (production service)
+# ### -----------------------
+
+# # nonroot or debug-nonroot (unsafe with shell)
+# FROM node:18-alpine AS production
+
+# USER node
+# WORKDIR /app
+
+# # copy prebuilt production node_modules
+# COPY --chown=node:node --from=builder /app/node_modules /app/node_modules
+
+# # copy prebuilt dist
+# COPY --chown=node:node --from=builder /app/dist /app/dist
+
+# ENV NODE_ENV=production
+
+# EXPOSE 8080
+# CMD ["node","dist/server/app.js"]
+
+
 ### -----------------------
 # --- Stage: production
 # --- Purpose: Final step from a new slim image. this should be a minimal image only housing dist (production service)
 ### -----------------------
 
 # nonroot or debug-nonroot (unsafe with shell)
-FROM node:18-alpine AS production
+FROM gcr.io/distroless/nodejs18-debian11:nonroot AS production
 
-USER node
+# switch to libjemalloc
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libjemalloc* /usr/lib/x86_64-linux-gnu/
+COPY --from=builder /etc/ld.so.preload /etc/ld.so.preload
+
+USER nonroot
 WORKDIR /app
 
 # copy prebuilt production node_modules
-COPY --chown=node:node --from=builder /app/node_modules /app/node_modules
+COPY --chown=nonroot:nonroot --from=builder /app/node_modules /app/node_modules
 
 # copy prebuilt dist
-COPY --chown=node:node --from=builder /app/dist /app/dist
+COPY --chown=nonroot:nonroot --from=builder /app/dist /app/dist
 
 ENV NODE_ENV=production
 
 EXPOSE 8080
-CMD ["node","dist/server/app.js"]
+CMD ["dist/server/app.js"]
