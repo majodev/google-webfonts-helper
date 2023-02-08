@@ -38,6 +38,12 @@ WORKDIR /app
 
 FROM development AS builder
 
+# https://github.com/krallin/tini
+# prepare init system for final image
+ENV TINI_VERSION v0.19.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+
 # install server and bundler deps
 COPY package.json /app/package.json
 COPY yarn.lock /app/yarn.lock
@@ -113,6 +119,10 @@ RUN yarn install --production --ignore-scripts --prefer-offline
 # nonroot or debug-nonroot (unsafe with shell)
 FROM gcr.io/distroless/nodejs18-debian11:nonroot AS production
 
+# https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md#handling-kernel-signals
+# tini as pid 1
+COPY --from=builder /tini /tini
+
 # switch to libjemalloc
 COPY --from=builder /usr/lib/x86_64-linux-gnu/libjemalloc* /usr/lib/x86_64-linux-gnu/
 COPY --from=builder /etc/ld.so.preload /etc/ld.so.preload
@@ -129,4 +139,6 @@ COPY --chown=nonroot:nonroot --from=builder /app/dist /app/dist
 ENV NODE_ENV=production
 
 EXPOSE 8080
-CMD ["dist/server/app.js"]
+
+ENTRYPOINT ["/tini", "--"]
+CMD ["/nodejs/bin/node", "dist/server/app.js"]
