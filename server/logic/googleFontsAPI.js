@@ -18,6 +18,7 @@ var getFontsToDownload = _.once(function (googleAPIFontItems, cachedFonts, cb) {
     port: 443,
     path: reqPath + conf.GOOGLE_FONTS_API_KEY,
     headers: {
+      "Connection": "keep-alive", // fixes native macOS request https://stackoverflow.com/questions/54096937/why-i-keep-getting-econnreset-error-on-proxy-calls-in-mac-osx-only-totally-arbi
       'Accept': 'application/json',
     }
   }, function (res) {

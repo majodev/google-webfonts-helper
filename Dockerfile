@@ -57,24 +57,47 @@ RUN grunt build
 # https://github.com/yarnpkg/yarn/issues/6373
 RUN yarn install --production --ignore-scripts --prefer-offline
 
+# ### -----------------------
+# # --- Stage: production
+# # --- Purpose: Final step from a new slim image.this should be a minimal image only housing dist (production service)
+# ### -----------------------
+
+# # nonroot or debug-nonroot (unsafe with shell)
+# FROM gcr.io/distroless/nodejs18-debian11:nonroot AS production
+
+# USER nonroot
+# WORKDIR /app
+
+# # copy prebuilt production node_modules
+# COPY --chown=nonroot:nonroot --from=builder /app/node_modules /app/node_modules
+
+# # copy prebuilt dist
+# COPY --chown=nonroot:nonroot --from=builder /app/dist /app/dist
+
+# ENV NODE_ENV=production
+
+# EXPOSE 8080
+# CMD ["dist/server/app.js"]
+
+
 ### -----------------------
 # --- Stage: production
-# --- Purpose: Final step from a new slim image.this should be a minimal image only housing dist (production service)
+# --- Purpose: Final step from a new slim image. this should be a minimal image only housing dist (production service)
 ### -----------------------
 
 # nonroot or debug-nonroot (unsafe with shell)
-FROM gcr.io/distroless/nodejs18-debian11:nonroot AS production
+FROM node:18-alpine AS production
 
-USER nonroot
+USER node
 WORKDIR /app
 
 # copy prebuilt production node_modules
-COPY --chown=nonroot:nonroot --from=builder /app/node_modules /app/node_modules
+COPY --chown=node:node --from=builder /app/node_modules /app/node_modules
 
 # copy prebuilt dist
-COPY --chown=nonroot:nonroot --from=builder /app/dist /app/dist
+COPY --chown=node:node --from=builder /app/dist /app/dist
 
 ENV NODE_ENV=production
 
 EXPOSE 8080
-CMD ["dist/server/app.js"]
+CMD ["node","dist/server/app.js"]
