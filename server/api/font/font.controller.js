@@ -33,9 +33,9 @@ exports.show = function (req, res) {
 
   if (req.query.download === "zip") {
     var url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
-    core.getDownload(req.params.id, subsetsArr, variantsArr, formatsArr, function (archiveStream, filename) {
+    core.getDownload(req.params.id, subsetsArr, variantsArr, formatsArr, function (createArchiveStream, filename) {
 
-      if (_.isNil(archiveStream)) {
+      if (_.isNil(createArchiveStream)) {
         // files not found.
         res.status(404)
           .send('Not found');
@@ -48,12 +48,19 @@ exports.show = function (req, res) {
         'Content-disposition': 'attachment; filename=' + filename
       });
 
-      stream.pipeline(archiveStream, res, function (err) {
-        if (err) {
-          console.error(`${url}: error while piping archive to the response stream`, err);
-        }
+      // intentional download delay...
+      var downloadTimeout = setTimeout(function () {
+        stream.pipeline(createArchiveStream(), res, function (err) {
+          if (err) {
+            console.error(`${url}: error while piping archive to the response stream`, err);
+          }
+        });
+      }, _.random(750, 2500));
+
+      res.on('close', function () {
+        clearTimeout(downloadTimeout);
       });
-      return;
+
     });
     return;
   }

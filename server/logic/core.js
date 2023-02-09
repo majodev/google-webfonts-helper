@@ -386,7 +386,7 @@ module.exports.getDownload = function getDownload(id, subsetArr, variantsArr, fo
 
         if (filteredFiles.length > 0) {
           // callback and return archiveStream + zipped filename
-          callback(zipper(filteredFiles), fileStoreItem.zippedFilename);
+          callback(function () { return zipper(filteredFiles) }, fileStoreItem.zippedFilename);
         } else {
           // no files left, return null
           callback(null);
