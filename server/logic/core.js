@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var mkdirp = require('mkdirp');
 
+var conf = require('./conf');
 var googleFontsAPI = require('./googleFontsAPI');
 var urlFetcher = require('./urlFetcher');
 var downloader = require('./downloader');
