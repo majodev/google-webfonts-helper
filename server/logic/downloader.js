@@ -2,7 +2,7 @@ var _ = require('lodash');
 var async = require('async');
 var fs = require('fs');
 var https = require('https');
-var mkdirp = require('mkdirp');
+var stream = require('stream');
 
 var conf = require('./conf');
 var debug = require('debug')('gwfh:downloader');
@@ -10,8 +10,6 @@ var debug = require('debug')('gwfh:downloader');
 function downloadFontFiles(fontItem, cb) {
 
   var filePaths = [];
-
-  mkdirp.sync(conf.CACHE_DIR);
 
   async.each(fontItem.variants, function (variantItem, variantCB) {
     debug(_.keys(conf.USER_AGENTS));
@@ -27,7 +25,7 @@ function downloadFontFiles(fontItem, cb) {
       }
 
       // download the file for type (filename now known)
-      downloadFile(variantItem[formatKey], filename, function (err) {
+      downloadFile(variantItem[formatKey], filename, formatKey, function (err) {
 
         if (!_.isNil(err)) {
           console.warn(filename, "format failed to download", formatKey, err);
@@ -62,26 +60,35 @@ function downloadFontFiles(fontItem, cb) {
 
 }
 
-function downloadFile(url, dest, cb) {
-  debug("downloadFile", url, dest);
-  var req = https.get(url, function (response) {
+function downloadFile(url, dest, formatKey, cb) {
+  debug("downloadFile starting", url, formatKey, dest);
+  https.get(url, function (response) {
+    debug("downloadFile received", url, formatKey, dest, response.statusCode, response.headers['content-type']);
+
+    if (response.statusCode !== 200) {
+      cb(new Error(`${url} downloadFile request failed.\n status code: ${response.statusCode}`));
+      response.resume(); // Consume response data to free up memory
+      return;
+    }
+
+    if (_.isEmpty(response.headers['content-type'])
+      || response.headers['content-type'].indexOf(formatKey) === -1) {
+      cb(new Error(`${url} downloadFile request failed.\n expected ${formatKey} to be in content-type header: ${response.headers['content-type']}`));
+      response.resume(); // Consume response data to free up memory
+      return;
+    }
+
     var file = fs.createWriteStream(dest);
-    response.pipe(file);
-    file.on('error', function (e) {
-      file.destroy();
-      cb(e);
-    });
-    file.on('finish', function () {
-      file.close(cb);
+    stream.pipeline(response, file, function (err) {
+      if (err) {
+        console.error(`downloadFile ${url}: error while piping response to the file writeStream ${dest}`, err);
+        cb(err);
+        return;
+      }
+      debug("downloadFile written", url, formatKey, dest);
+      cb();
     });
   });
-
-  req.on('error', function (e) {
-    console.error('problem with request: ' + e.message + " for url: " + url + " dest: " + dest);
-    cb(e);
-  });
-
-  req.end();
 }
 
 module.exports = downloadFontFiles;

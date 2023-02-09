@@ -21,7 +21,7 @@ function parseRemoteCSS(remoteCSS, type, callback) {
 
   // console.log(remoteCSS);
 
-  _.each(parsedCSS.stylesheet.rules, function(rule) {
+  _.each(parsedCSS.stylesheet.rules, function (rule) {
 
     var resource = {};
     var localNames;
@@ -32,7 +32,7 @@ function parseRemoteCSS(remoteCSS, type, callback) {
     }
 
     // add every property in the css that has to do with a font-face to the resource
-    _.each(rule.declarations, function(declaration) {
+    _.each(rule.declarations, function (declaration) {
       resource[declaration.property] = declaration.value;
     });
 
@@ -77,12 +77,14 @@ function parseRemoteCSS(remoteCSS, type, callback) {
 
 function fetchCSS(family, cssSubsetString, type, userAgent, callback) {
 
-  debug("fonts.googleapis.com" + '/css?family=' + encodeURIComponent(family) + '&subset=' + cssSubsetString);
-
   var reqPath = '/css?family=' + encodeURIComponent(family) + '&subset=' + cssSubsetString;
+  var hostname = "fonts.googleapis.com";
+  var url = `http://${hostname}${reqPath}`;
+
+  debug("fetchCSS starting", url);
 
   var req = http.request({
-    hostname: "fonts.googleapis.com",
+    hostname,
     method: 'GET',
     port: 80,
     path: reqPath,
@@ -90,25 +92,38 @@ function fetchCSS(family, cssSubsetString, type, userAgent, callback) {
       'accept': 'text/css,*/*;q=0.1',
       'User-Agent': userAgent
     }
-  }, function(res) {
+  }, function (res) {
+
+    debug("fetchCSS received", url, res.statusCode, res.headers['content-type']);
+
+    if (res.statusCode !== 200) {
+      callback(new Error(`${url} fetchCSS request failed.\n status code: ${res.statusCode}`));
+      res.resume(); // Consume res data to free up memory
+      return;
+    }
+
+    if (_.isEmpty(res.headers['content-type'])
+      || res.headers['content-type'].indexOf("text/css") === -1) {
+      callback(new Error(`${url} fetchCSS request failed.\n expected "text/css" to be in content-type header: ${res.headers['content-type']}`));
+      res.resume(); // Consume res data to free up memory
+      return;
+    }
 
     var output = '';
 
     res.setEncoding('utf8');
-    res.on('data', function(chunk) {
+    res.on('data', function (chunk) {
       output += chunk;
     });
 
-    res.on('end', function() {
+    res.on('end', function () {
       parseRemoteCSS(output, type, callback);
     });
 
   });
 
-  req.on('error', function(e) {
-    console.error('problem with request: ' + e.message + ' reqPath=' + reqPath);
-
-    callback('problem with request: ' + e.message + ' reqPath=' + reqPath);
+  req.on('error', function (e) {
+    callback('problem with fetchCSS request: ' + e.message + ' url=' + url);
   });
 
   req.end();

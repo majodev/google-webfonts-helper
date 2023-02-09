@@ -16,15 +16,15 @@ function fetchUrls(font, storeID, callback) {
   var cssSubsetString = _.clone(storeID).replace(/_/g, ","); // make the variant string google API compatible...
   debug(cssSubsetString);
 
-  async.each(font.variants, function(variant, variantCB) {
+  async.each(font.variants, function (variant, variantCB) {
 
     var variantItem = {
       id: variant
     };
 
-    async.each(_.toPairs(conf.USER_AGENTS), function(typeAgentPair, requestCB) {
+    async.each(_.toPairs(conf.USER_AGENTS), function (typeAgentPair, requestCB) {
 
-      cssFetcher(font.family + ":" + variant, cssSubsetString, typeAgentPair[0], typeAgentPair[1], function(err, resources) {
+      cssFetcher(font.family + ":" + variant, cssSubsetString, typeAgentPair[0], typeAgentPair[1], function (err, resources) {
         if (err) {
           requestCB(err);
           return;
@@ -70,7 +70,7 @@ function fetchUrls(font, storeID, callback) {
 
       });
 
-    }, function(err) {
+    }, function (err) {
       if (err) {
         variantCB('A font css request failed: ' + err);
       } else {
@@ -82,9 +82,9 @@ function fetchUrls(font, storeID, callback) {
       }
     });
 
-  }, function(err) {
+  }, function (err) {
     if (err) {
-      console.error('fetchUrls bubbled err ' + err + ' for font ' + font + ' storeID ' + storeID);
+      console.error('fetchUrls bubbled err', err, font, 'storeID', storeID);
       callback(null)
 
     } else {

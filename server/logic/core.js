@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var mkdirp = require('mkdirp');
 
 var googleFontsAPI = require('./googleFontsAPI');
 var urlFetcher = require('./urlFetcher');
@@ -253,6 +254,8 @@ function getFontFiles(fontItem, cb) {
     console.log('SIGTERM received, removing core emitter listeners...');
     emitter.removeAllListeners();
   });
+
+  mkdirp.sync(conf.CACHE_DIR);
 
   googleFontsAPI(googleAPIFontItems, cachedFonts, function (items) {
 
