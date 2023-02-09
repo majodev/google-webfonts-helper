@@ -215,7 +215,11 @@ function getFontFiles(fontItem, cb) {
 
 
   // trigger downloading of font files...
-  downloader(fontItem, function (localPaths) {
+  downloader(fontItem, function (err, localPaths) {
+
+    if (err) {
+      console.error("getFontFiles: items failed partially", fontItem.id);
+    }
 
     fileStore[fileStoreID].files = localPaths;
     fileStore[fileStoreID].zippedFilename = fontItem.id + "-" + fontItem.version + "-" + fontItem.storeID + '.zip'

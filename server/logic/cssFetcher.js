@@ -97,14 +97,14 @@ function fetchCSS(family, cssSubsetString, type, userAgent, callback) {
     debug("fetchCSS received", url, res.statusCode, res.headers['content-type']);
 
     if (res.statusCode !== 200) {
-      callback(new Error(`${url} fetchCSS request failed.\n status code: ${res.statusCode}`));
+      callback(new Error(`${url} fetchCSS request failed. status code: ${res.statusCode}`));
       res.resume(); // Consume res data to free up memory
       return;
     }
 
     if (_.isEmpty(res.headers['content-type'])
       || res.headers['content-type'].indexOf("text/css") === -1) {
-      callback(new Error(`${url} fetchCSS request failed.\n expected "text/css" to be in content-type header: ${res.headers['content-type']}`));
+      callback(new Error(`${url} fetchCSS request failed. expected "text/css" to be in content-type header: ${res.headers['content-type']}`));
       res.resume(); // Consume res data to free up memory
       return;
     }
