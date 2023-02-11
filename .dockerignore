@@ -4,3 +4,5 @@ dist
 client/bower_components
 node_modules
 server/logic/cachedFonts
+.tscache
+tscommand-

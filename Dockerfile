@@ -29,6 +29,8 @@ RUN apt-get update && apt-get install -y -q --no-install-recommends \
 RUN npm install -g grunt-cli@1.2.0 \
     && npm cache clean --force  
 
+#  git config --global --add safe.directory /app
+
 WORKDIR /app
 
 ### -----------------------

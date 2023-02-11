@@ -2,12 +2,7 @@
 'use strict';
 
 module.exports = function (grunt) {
-  var localConfig;
-  try {
-    localConfig = require('./server/config/local.env');
-  } catch (e) {
-    localConfig = {};
-  }
+  var localConfig = {};
 
   // Load grunt tasks automatically, when needed
   require('jit-grunt')(grunt, {
@@ -32,11 +27,12 @@ module.exports = function (grunt) {
     },
     express: {
       options: {
-        port: process.env.PORT || 9000
+        port: process.env.PORT || 9000,
+        opts: ['node_modules/.bin/ts-node'],
       },
       dev: {
         options: {
-          script: 'server/app.js',
+          script: 'server/app.ts',
         }
       },
       prod: {
@@ -61,7 +57,7 @@ module.exports = function (grunt) {
         tasks: ['injector:css']
       },
       mochaTest: {
-        files: ['server/**/*.spec.js'],
+        files: ['server/**/*.ts', 'server/**/*.js'],
         tasks: ['env:test', 'mochaTest']
       },
       injectLess: {
@@ -92,7 +88,7 @@ module.exports = function (grunt) {
       },
       express: {
         files: [
-          'server/**/*.{js,json}'
+          'server/**/*.{ts,js,json}'
         ],
         tasks: ['express:dev', 'wait'],
         options: {
@@ -138,7 +134,7 @@ module.exports = function (grunt) {
     // Use nodemon to run server in debug mode with an initial breakpoint
     nodemon: {
       debug: {
-        script: 'server/app.js',
+        script: 'server/app.ts',
         options: {
           env: {
             PORT: process.env.PORT || 9000
@@ -289,20 +285,28 @@ module.exports = function (grunt) {
           cwd: '.tmp/images',
           dest: '<%= yeoman.dist %>/public/assets/images',
           src: ['generated/*']
-        }, {
-          expand: true,
-          dest: '<%= yeoman.dist %>',
-          src: [
-            'server/**/*',
-            '!server/**/*.spec.js',
-          ]
-        }]
+        },
+          // {
+          //   expand: true,
+          //   dest: '<%= yeoman.dist %>',
+          //   src: [
+          //     'server/**/*',
+          //     '!server/**/*.spec.js',
+          //   ]
+          // }
+        ]
       },
       styles: {
         expand: true,
         cwd: '<%= yeoman.client %>',
         dest: '.tmp/',
         src: ['{app,components}/**/*.css']
+      }
+    },
+
+    ts: {
+      default: {
+        tsconfig: './tsconfig.json'
       }
     },
 
@@ -332,9 +336,10 @@ module.exports = function (grunt) {
 
     mochaTest: {
       options: {
-        reporter: 'spec'
+        reporter: 'spec',
+        require: 'ts-node/register'
       },
-      src: ['server/**/*.spec.js']
+      src: ['server/**/*.spec.ts', 'server/**/*.spec.js']
     },
 
     env: {
@@ -521,6 +526,7 @@ module.exports = function (grunt) {
     'concat',
     'ngAnnotate',
     'copy:dist',
+    'ts',
     'cssmin',
     'uglify',
     'rev',

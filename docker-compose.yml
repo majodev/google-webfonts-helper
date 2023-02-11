@@ -19,20 +19,9 @@ services:
       # the container’s view is authoritative (permit delays before updates on the container appear in the host)
       - .:/app:delegated
 
-      # mount cached vscode container extensions
-      # https://code.visualstudio.com/docs/remote/containers-advanced#_avoiding-extension-reinstalls-on-container-rebuild
-      - vscode-extensions:/home/node/.vscode-server/extensions
-      - vscode-extensions-insiders:/home/node/.vscode-server-insiders/extensions
-
     environment:
       # Set your key in the .gitignored .env file.
       GOOGLE_FONTS_API_KEY: ${GOOGLE_FONTS_API_KEY}
 
     # Overrides default command so things don't shut down after the process ends.
     command: /bin/sh -c "while sleep 1000; do :; done"
-
-volumes:
-  # vscode: Avoiding extension reinstalls on container rebuild
-  # https://code.visualstudio.com/docs/remote/containers-advanced#_avoiding-extension-reinstalls-on-container-rebuild
-  vscode-extensions:
-  vscode-extensions-insiders:

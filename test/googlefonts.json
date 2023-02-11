@@ -1,0 +1,52 @@
+{
+  "kind": "webfonts#webfontList",
+  "items": [
+    {
+      "family": "Arvo",
+      "variants": [
+        "regular",
+        "italic",
+        "700",
+        "700italic"
+      ],
+      "subsets": [
+        "latin"
+      ],
+      "version": "v20",
+      "lastModified": "2022-09-22",
+      "files": {
+        "700": "http://localhost/font.ttf",
+        "regular": "http://localhost/font.ttf",
+        "italic": "http://localhost/font.ttf",
+        "700italic": "http://localhost/font.ttf"
+      },
+      "category": "serif",
+      "kind": "webfonts#webfont"
+    },
+    {
+      "family": "Istok Web",
+      "variants": [
+        "regular",
+        "italic",
+        "700",
+        "700italic"
+      ],
+      "subsets": [
+        "cyrillic",
+        "cyrillic-ext",
+        "latin",
+        "latin-ext"
+      ],
+      "version": "v20",
+      "lastModified": "2022-09-22",
+      "files": {
+        "700": "http://localhost/font.ttf",
+        "regular": "http://localhost/font.ttf",
+        "italic": "http://localhost/font.ttf",
+        "700italic": "http://localhost/font.ttf"
+      },
+      "category": "sans-serif",
+      "kind": "webfonts#webfont"
+    }
+  ]
+}

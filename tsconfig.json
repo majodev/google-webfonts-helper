@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "ESNEXT",
+        "module": "commonjs",
+        "sourceMap": true,
+        "outDir": "./dist/server",
+        "rootDir": "./server"
+    },
+    "include": [
+        "server/**/*.ts",
+        "server/**/*.js",
+        "server/**/*.json"
+    ]
+}

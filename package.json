@@ -2,7 +2,7 @@
   "name": "google-webfonts-helper",
   "version": "1.1.0",
   "homepage": "https://gwfh.mranftl.com",
-  "main": "server/app.js",
+  "main": "server/app.ts",
   "author": "majodev",
   "license": "MIT",
   "keywords": [
@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "async": "3.2.4",
+    "bluebird": "^3.7.2",
     "compression": "1.7.4",
     "css": "3.0.0",
     "debug": "4.3.4",
@@ -35,6 +36,16 @@
     "speakingurl": "14.0.1"
   },
   "devDependencies": {
+    "@types/async": "^3.2.16",
+    "@types/bluebird": "^3.5.38",
+    "@types/css": "^0.0.33",
+    "@types/debug": "^4.1.7",
+    "@types/express": "^4.17.17",
+    "@types/lodash": "^4.14.191",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "18",
+    "@types/speakingurl": "^13.0.3",
+    "@types/supertest": "^2.0.12",
     "bower": "^1.3.8",
     "connect-livereload": "~0.4.0",
     "errorhandler": "~1.0.0",
@@ -55,23 +66,30 @@
     "grunt-dom-munger": "^3.4.0",
     "grunt-env": "~0.4.1",
     "grunt-express-server": "~0.4.17",
-    "grunt-mocha-test": "~0.10.2",
+    "grunt-mocha-test": "0.13.3",
     "grunt-newer": "~0.7.0",
     "grunt-ng-annotate": "^0.2.3",
-    "grunt-nodemon": "~0.2.0",
+    "grunt-nodemon": "0.4.2",
     "grunt-rev": "~0.1.0",
     "grunt-svgmin": "~0.4.0",
+    "grunt-ts": "^6.0.0-beta.22",
     "grunt-usemin": "~2.1.1",
     "grunt-wiredep": "~1.8.0",
     "jit-grunt": "^0.5.0",
+    "mocha": "^10.2.0",
     "punycode": "^1.4.1",
-    "should": "~3.3.1",
-    "supertest": "~0.11.0",
-    "time-grunt": "~0.3.1"
+    "should": "13.2.3",
+    "supertest": "6.3.3",
+    "time-grunt": "~0.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
   },
   "scripts": {
-    "start": "node server/app.js",
-    "test": "grunt test"
+    "start": "ts-node server/app.ts",
+    "build": "grunt build",
+    "test": "grunt test",
+    "dev": "grunt serve",
+    "tsc": "tsc --noEmit --skipLibCheck"
   },
   "private": true
 }
