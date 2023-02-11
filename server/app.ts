@@ -1,3 +1,5 @@
+require("source-map-support").install();
+
 import * as express from "express";
 import * as http from "http"
 import * as path from "path";

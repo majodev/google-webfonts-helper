@@ -20,6 +20,11 @@ async function _loadFullFontItem(fontID: string, subsetArr: string[] | null): Pr
   }
 
   const subsetStoreKey = getSubsetStoreKey(font, subsetArr);
+
+  if (_.isNil(subsetStoreKey)) {
+    return null;
+  }
+
   const fontUrlStore = getFontUrlStore(font, subsetArr);
 
   if (!_.isNil(fontUrlStore)) {

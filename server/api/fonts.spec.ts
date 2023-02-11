@@ -4,7 +4,7 @@ import * as should from 'should';
 
 import { app } from "../app";
 
-describe('GET /api/fonts', function () {
+describe('GET /api/fonts', () => {
 
   it('should respond with JSON array with all fonts', async () => {
 
@@ -16,6 +16,10 @@ describe('GET /api/fonts', function () {
     should(res.body).be.instanceof(Array);
 
   });
+
+});
+
+describe('GET /api/fonts/:id', () => {
 
   it('should respond with font files for arvo', async function () {
 
@@ -146,16 +150,50 @@ describe('GET /api/fonts', function () {
 
   });
 
-  it('should respond with 404 for unknown font', async () => {
+  it('should respond with 200 for known font istok-web empty subsets', async () => {
 
     const res = await request(app)
-      .get('/api/fonts/this-font-will-never-exist')
+      .get('/api/fonts/istok-web?subsets=')
       .timeout(10000)
-      .expect(404)
-      .expect('Content-Type', /text\/html/);
+      .expect(200)
+      .expect('Content-Type', /json/);
     should(res.body).be.instanceof(Object);
 
   });
+
+  it('should respond with 404 for unknown font', async () => {
+
+    await request(app)
+      .get('/api/fonts/unknown-font')
+      .timeout(10000)
+      .expect(404)
+      .expect('Content-Type', /text\/html/);
+
+  });
+
+  it('should respond with 404 for unknown font and subset', async () => {
+
+    await request(app)
+      .get('/api/fonts/unknown-font?subsets=latin')
+      .timeout(10000)
+      .expect(404)
+      .expect('Content-Type', /text\/html/);
+
+  });
+
+  it('should respond with 404 for known font istok-web and unknown subset', async () => {
+
+    await request(app)
+      .get('/api/fonts/istok-web?subsets=unknownsubset')
+      .timeout(10000)
+      .expect(404)
+      .expect('Content-Type', /text\/html/);
+
+  });
+
+});
+
+describe('GET /api/fonts/:id?download=zip', () => {
 
   it('should (concurrently) download istok-web', async () => {
 
@@ -180,6 +218,87 @@ describe('GET /api/fonts', function () {
         })
     ]);
     should(triggered).eql(2);
+
+  });
+
+  it('should respond with 200 for download attempt of known font istok-web with unspecified subset', async () => {
+
+    await request(app)
+      .get('/api/fonts/istok-web?download=zip&formats=woff,woff2')
+      .timeout(10000)
+      .expect(200)
+      .expect('Content-Type', "application/zip");
+
+  });
+
+  it('should respond with 200 for download attempt of known font istok-web with unspecified formats', async () => {
+
+    await request(app)
+      .get('/api/fonts/istok-web?download=zip&subsets=latin')
+      .timeout(10000)
+      .expect(200)
+      .expect('Content-Type', "application/zip");
+
+  });
+
+  it('should respond with 200 for download attempt of known font istok-web and empty subsets', async () => {
+
+    await request(app)
+      .get('/api/fonts/istok-web?download=zip&subsets=')
+      .timeout(10000)
+      .expect(200)
+      .expect('Content-Type', "application/zip");
+
+  });
+
+  it('should respond with 200 for download attempt of known font istok-web and a single unknown format sneaked in', async () => {
+
+    await request(app)
+      .get('/api/fonts/istok-web?download=zip&formats=woff,woff2,rolf')
+      .timeout(10000)
+      .expect(200)
+      .expect('Content-Type', "application/zip");
+
+  });
+
+  // https://gwfh.mranftl.com/api/fonts/siemreap?download=zip&subsets=latin,latin-ext&formats=eot,woff,woff2,svg,ttf
+  it('should respond with 404 for download attempt of unknown font and unknown subset', async () => {
+
+    await request(app)
+      .get('/api/fonts/unknown-font?download=zip&subsets=latin&formats=woff,woff2')
+      .timeout(10000)
+      .expect(404)
+      .expect('Content-Type', /text\/html/);
+
+  });
+
+  it('should respond with 404 for download attempt of known font istok-web and unknown subset', async () => {
+
+    await request(app)
+      .get('/api/fonts/istok-web?download=zip&subsets=unknown&formats=woff,woff2')
+      .timeout(10000)
+      .expect(404)
+      .expect('Content-Type', /text\/html/);
+
+  });
+
+  it('should respond with 404 for download attempt of known font istok-web and unknown format', async () => {
+
+    await request(app)
+      .get('/api/fonts/istok-web?download=zip&formats=rolf')
+      .timeout(10000)
+      .expect(404)
+      .expect('Content-Type', /text\/html/);
+
+  });
+
+  it('should respond with 404 for download attempt of known font istok-web and empty formats', async () => {
+
+    await request(app)
+      .get('/api/fonts/istok-web?download=zip&formats=')
+      .timeout(10000)
+      .expect(404)
+      .expect('Content-Type', /text\/html/);
 
   });
 

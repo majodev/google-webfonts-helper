@@ -1,5 +1,4 @@
 import * as _ from "lodash";
-import * as async from "async";
 import { config, IUserAgents } from "../config";
 import * as debugPkg from "debug"
 import { fetchCSS } from "./cssFetcher";
@@ -34,7 +33,7 @@ export async function fetchUrls(font: IFontItem, storeID: string): Promise<IFont
     storeID: storeID
   };
 
-  const cssSubsetString = _.clone(storeID).replace(/_/g, ","); // make the variant string google API compatible...
+  const cssSubsetString = _.replace(storeID, /_/g, ","); // make the variant string google API compatible...
   debug(cssSubsetString);
 
   await Bluebird.map(font.variants, async (variant) => {
