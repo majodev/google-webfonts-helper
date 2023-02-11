@@ -221,6 +221,32 @@ describe('GET /api/fonts/:id?download=zip', () => {
 
   });
 
+  it('should (concurrently) download istok-web (subsets and formats mix)', async () => {
+
+    let triggered = 0;
+
+    await Promise.all([
+      request(app)
+        .get('/api/fonts/istok-web?download=zip&subsets=cyrillic-ext,latin,latin-ext&formats=woff,woff2')
+        .timeout(10000)
+        .expect(200)
+        .expect('Content-Type', "application/zip")
+        .then(() => {
+          triggered += 1;
+        }),
+      request(app)
+        .get('/api/fonts/istok-web?download=zip&subsets=latin-ext,latin,cyrillic-ext&formats=woff,woff2,eot,ttf,svg')
+        .timeout(10000)
+        .expect(200)
+        .expect('Content-Type', "application/zip")
+        .then(() => {
+          triggered += 1;
+        })
+    ]);
+    should(triggered).eql(2);
+
+  });
+
   it('should respond with 200 for download attempt of known font istok-web with unspecified subset', async () => {
 
     await request(app)
@@ -258,6 +284,36 @@ describe('GET /api/fonts/:id?download=zip', () => {
       .timeout(10000)
       .expect(200)
       .expect('Content-Type', "application/zip");
+
+  });
+
+  it('should respond with 200 for download attempt of known font istok-web with variants', async () => {
+
+    await request(app)
+      .get('/api/fonts/istok-web?download=zip&formats=woff,woff2&variants=regular')
+      .timeout(10000)
+      .expect(200)
+      .expect('Content-Type', "application/zip");
+
+  });
+
+  it('should respond with 200 for download attempt of known font istok-web with one known, one unknown variant', async () => {
+
+    await request(app)
+      .get('/api/fonts/istok-web?download=zip&formats=woff,woff2&variants=regular,unknownvar')
+      .timeout(10000)
+      .expect(200)
+      .expect('Content-Type', "application/zip");
+
+  });
+
+  it('should respond with 404 for download attempt of known font istok-web with empty variants', async () => {
+
+    await request(app)
+      .get('/api/fonts/istok-web?download=zip&formats=woff,woff2&variants=')
+      .timeout(10000)
+      .expect(404)
+      .expect('Content-Type', /text\/html/);
 
   });
 

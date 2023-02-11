@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import * as mkdirp from "mkdirp";
 import { IFontItem } from "./font";
 import { getFontsToDownload } from "./googleFontsAPI";
-import { getSubsets, ISubsetMap, ISubsetStored, ISubsetTree } from "./subsetGen";
+import { getSubsets, ISubsetStored, ISubsetTree } from "./subsetGen";
 import { config } from "../config";
 import * as debugPkg from "debug";
 import { IFontURLStore } from "./urlFetcher";
@@ -96,7 +96,7 @@ export function saveFontUrlStore(fontID: string, fontUrlStore: IFontURLStore) {
     });
 
     if (existing) {
-        console.warn("duplicate save of storeID: ", fontUrlStore.storeID);
+        console.warn("duplicate save of storeID: ", fontID, "storeID:", fontUrlStore.storeID, "existing:", existing, "discarded:", fontUrlStore);
         return;
     }
 
@@ -142,8 +142,12 @@ export function getFileStore(fontID: string, storeID: string) {
 
 export function saveFileStoreItem(fontID: string, storeID: string, fileStoreItem: IFileStoreItem) {
     const fileStoreID = fontID + "-" + storeID; // unique identifier in filestore.
-    if (!_.isNil(fileStore[fileStoreID])) {
-        console.warn("duplicate save of fileStoreItem: ", fileStoreID);
+
+    const existing = fileStore[fileStoreID];
+
+    if (!_.isNil(existing)) {
+        console.warn("duplicate save of fileStoreItem: ", fileStoreID, "existing:", existing, "discarded:", fileStoreItem);
+        return;
     }
 
     fileStore[fileStoreID] = fileStoreItem;

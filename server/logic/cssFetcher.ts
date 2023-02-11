@@ -1,7 +1,6 @@
 
 import * as css from "css";
 import * as _ from "lodash";
-import * as http from "http";
 import * as debugPkg from "debug"
 import { IUserAgents } from "../config";
 

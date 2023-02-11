@@ -98,7 +98,7 @@ export function getFontItems(): IFontItem[] {
 };
 
 export async function getFullFontItem(id: string, subsetArr: string[] | null): Promise<IFullFontItem | null> {
-  const synchronizedCacheKey = `${id}_${subsetArr ? subsetArr.join("_") : "_no_subset"}`;
+  const synchronizedCacheKey = `${id}_${subsetArr ? _.sortBy(subsetArr).join("_") : "_no_subset"}`;
   return loadFullFontItem(synchronizedCacheKey, id, subsetArr);
 };
 
@@ -107,7 +107,7 @@ export async function getDownload(id: string, subsetArr: string[] | null, varian
   filename: string
 } | null> {
 
-  const synchronizedLoadFullFontItemCacheKey = `${id}_${subsetArr ? subsetArr.join("_") : "_no_subset"}`;
+  const synchronizedLoadFullFontItemCacheKey = `${id}_${subsetArr ? _.sortBy(subsetArr).join("_") : "_no_subset"}`;
   const fontItem = await loadFullFontItem(synchronizedLoadFullFontItemCacheKey, id, subsetArr);
 
   if (_.isNil(fontItem)) {

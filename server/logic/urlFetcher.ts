@@ -12,7 +12,7 @@ export interface IFontURLStore {
   storeID: string;
 }
 
-export interface IVariantItem extends Partial<IUserAgents> {
+interface IVariantItem extends Partial<IUserAgents> {
   id: string;
   fontFamily: null | string;
   fontStyle: null | string;

@@ -8,7 +8,7 @@ export interface ISubsetStored {
   subsetMap: ISubsetMap;
 }
 
-export interface ISubsetMap {
+interface ISubsetMap {
   [subset: string]: boolean;
 }
 

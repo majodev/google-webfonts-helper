@@ -1,5 +1,7 @@
 import * as _ from "lodash";
-import * as fs from "fs/promises";
+import { Readable } from "stream";
+import { finished } from "stream/promises";
+import * as fs from "fs";
 import { config } from "../config";
 import * as debugPkg from "debug"
 import { IFullFontItem } from "./font";
@@ -66,6 +68,7 @@ async function downloadFile(url: string, dest: string, formatKey: string) {
     throw new Error(`${url} downloadFile request failed. expected ${formatKey} to be in content-type header: ${response.headers.get('content-type')}`);
   }
 
-  await fs.writeFile(dest, await response.text());
+  const stream = fs.createWriteStream(dest);
+  // TODO typing mismatch ReadableStream<any> vs ReadableStream<Uint8Array>
+  await finished(Readable.fromWeb((<any>response.body)).pipe(stream));
 }
-
