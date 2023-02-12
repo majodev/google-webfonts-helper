@@ -47,6 +47,47 @@
       },
       "category": "sans-serif",
       "kind": "webfonts#webfont"
+    },
+    {
+      "family": "Playfair Display",
+      "variants": [
+        "regular",
+        "500",
+        "600",
+        "700",
+        "800",
+        "900",
+        "italic",
+        "500italic",
+        "600italic",
+        "700italic",
+        "800italic",
+        "900italic"
+      ],
+      "subsets": [
+        "cyrillic",
+        "latin",
+        "latin-ext",
+        "vietnamese"
+      ],
+      "version": "v30",
+      "lastModified": "2022-09-22",
+      "files": {
+        "500": "http://localhost/font.ttf",
+        "600": "http://localhost/font.ttf",
+        "700": "http://localhost/font.ttf",
+        "800": "http://localhost/font.ttf",
+        "900": "http://localhost/font.ttf",
+        "regular": "http://localhost/font.ttf",
+        "italic": "http://localhost/font.ttf",
+        "500italic": "http://localhost/font.ttf",
+        "600italic": "http://localhost/font.ttf",
+        "700italic": "http://localhost/font.ttf",
+        "800italic": "http://localhost/font.ttf",
+        "900italic": "http://localhost/font.ttf"
+      },
+      "category": "serif",
+      "kind": "webfonts#webfont"
     }
   ]
 }

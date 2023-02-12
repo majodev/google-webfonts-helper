@@ -10,9 +10,7 @@ import { synchronizedBy } from "./synchronized";
 
 const debug = debugPkg('gwfh:core');
 
-const loadFullFontItem = synchronizedBy(_loadFullFontItem);
-async function _loadFullFontItem(fontID: string, subsetArr: string[] | null): Promise<IFullFontItem | null> {
-
+async function loadFullFontItem(fontID: string, subsetArr: string[] | null): Promise<IFullFontItem | null> {
   const font = getStoredFontItemById(fontID);
 
   if (_.isNil(font)) {
@@ -24,6 +22,14 @@ async function _loadFullFontItem(fontID: string, subsetArr: string[] | null): Pr
   if (_.isNil(subsetStoreKey)) {
     return null;
   }
+
+  const synchronizedCacheKey = `${fontID}_${subsetStoreKey}`;
+
+  return internalLoadFullFontItem(synchronizedCacheKey, font, subsetStoreKey, subsetArr);
+
+}
+const internalLoadFullFontItem = synchronizedBy(_internalLoadFullFontItem);
+async function _internalLoadFullFontItem(font: IFontItem, subsetStoreKey: string, subsetArr: string[] | null): Promise<IFullFontItem | null> {
 
   const fontUrlStore = getFontUrlStore(font, subsetArr);
 
@@ -98,8 +104,7 @@ export function getFontItems(): IFontItem[] {
 };
 
 export async function getFullFontItem(id: string, subsetArr: string[] | null): Promise<IFullFontItem | null> {
-  const synchronizedCacheKey = `${id}_${subsetArr ? _.sortBy(subsetArr).join("_") : "_no_subset"}`;
-  return loadFullFontItem(synchronizedCacheKey, id, subsetArr);
+  return loadFullFontItem(id, subsetArr);
 };
 
 export async function getDownload(id: string, subsetArr: string[] | null, variantsArr: string[] | null, formatsArr: string[] | null): Promise<{
@@ -107,8 +112,7 @@ export async function getDownload(id: string, subsetArr: string[] | null, varian
   filename: string
 } | null> {
 
-  const synchronizedLoadFullFontItemCacheKey = `${id}_${subsetArr ? _.sortBy(subsetArr).join("_") : "_no_subset"}`;
-  const fontItem = await loadFullFontItem(synchronizedLoadFullFontItemCacheKey, id, subsetArr);
+  const fontItem = await loadFullFontItem(id, subsetArr);
 
   if (_.isNil(fontItem)) {
     debug("font loading failed for id: " + id + " subsetArr: " + subsetArr + " variantsArr " + variantsArr + " formatsArr" + formatsArr);

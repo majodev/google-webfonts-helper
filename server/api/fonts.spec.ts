@@ -247,6 +247,37 @@ describe('GET /api/fonts/:id?download=zip', () => {
 
   });
 
+  // "GET /api/fonts/playfair-display?subsets=devanagari,vietnamese,cyrillic-ext,latin,greek-ext,greek,cyrillic,latin-ext,hebrew,korean,oriya"
+  // "GET /api/fonts/playfair-display?download=zip&subsets=cyrillic,latin,latin-ext,vietnamese"
+
+  it('should (concurrently) download playfair-display (different subsets)', async function () {
+
+    let triggered = 0;
+
+    this.timeout(10000);
+
+    await Promise.all([
+      request(app)
+        .get('/api/fonts/playfair-display?subsets=devanagari,vietnamese,cyrillic-ext,latin,greek-ext,greek,cyrillic,latin-ext,hebrew,korean,oriya')
+        .timeout(10000)
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .then(() => {
+          triggered += 1;
+        }),
+      request(app)
+        .get('/api/fonts/playfair-display?download=zip&subsets=cyrillic,latin,latin-ext,vietnamese')
+        .timeout(10000)
+        .expect(200)
+        .expect('Content-Type', "application/zip")
+        .then(() => {
+          triggered += 1;
+        })
+    ]);
+    should(triggered).eql(2);
+
+  });
+
   it('should respond with 200 for download attempt of known font istok-web with unspecified subset', async () => {
 
     await request(app)

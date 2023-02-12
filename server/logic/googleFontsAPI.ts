@@ -43,6 +43,9 @@ export async function getFontsToDownload(): Promise<IFontItem[]> {
   });
 
   const resData: IGoogleFontsRes = await res.json();
+
+  // console.log(JSON.stringify(resData));
+
   return transform(resData);
 }
 

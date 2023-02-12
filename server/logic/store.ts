@@ -96,7 +96,10 @@ export function saveFontUrlStore(fontID: string, fontUrlStore: IFontURLStore) {
     });
 
     if (existing) {
-        console.warn("duplicate save of storeID: ", fontID, "storeID:", fontUrlStore.storeID, "existing:", existing, "discarded:", fontUrlStore);
+        console.warn("saveFontUrlStore: duplicate save of fontID: ", fontID, "storeID:", fontUrlStore.storeID);
+        if (config.ENV === "test") {
+            throw new Error("saveFontUrlStore duplicate write");
+        }
         return;
     }
 
@@ -146,7 +149,10 @@ export function saveFileStoreItem(fontID: string, storeID: string, fileStoreItem
     const existing = fileStore[fileStoreID];
 
     if (!_.isNil(existing)) {
-        console.warn("duplicate save of fileStoreItem: ", fileStoreID, "existing:", existing, "discarded:", fileStoreItem);
+        console.warn("saveFileStoreItem: duplicate save of fileStoreID: ", fileStoreID, "existing:", existing, "discarded:", fileStoreItem);
+        if (config.ENV === "test") {
+            throw new Error("saveFileStoreItem duplicate write");
+        }
         return;
     }
 

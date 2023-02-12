@@ -25,35 +25,35 @@ function parseRemoteCSS(remoteCSS, type): IResource[] {
       return;
     }
 
+    const src: string | null = _.get(_.find((<css.Rule>rule).declarations, (declaration) => {
+      return _.has(declaration, "property")
+        && (<css.Declaration>declaration).property === "src";
+    }), "value");
+
+    const fontFamily: string | null = _.get(_.find((<css.Rule>rule).declarations, (declaration) => {
+      return _.has(declaration, "property")
+        && (<css.Declaration>declaration).property === "font-family";
+    }), "value");
+
+    const fontStyle: string | null = _.get(_.find((<css.Rule>rule).declarations, (declaration) => {
+      return _.has(declaration, "property")
+        && (<css.Declaration>declaration).property === "font-style";
+    }), "value");
+
+    const fontWeight: string | null = _.get(_.find((<css.Rule>rule).declarations, (declaration) => {
+      return _.has(declaration, "property")
+        && (<css.Declaration>declaration).property === "font-weight";
+    }), "value");
+
+    const resource: IResource = {
+      src,
+      fontFamily,
+      fontStyle,
+      fontWeight,
+      url: null
+    };
+
     try {
-
-      const src: string | null = _.get(_.find((<css.Rule>rule).declarations, (declaration) => {
-        return _.has(declaration, "property")
-          && (<css.Declaration>declaration).property === "src";
-      }), "value");
-
-      const fontFamily: string | null = _.get(_.find((<css.Rule>rule).declarations, (declaration) => {
-        return _.has(declaration, "property")
-          && (<css.Declaration>declaration).property === "font-family";
-      }), "value");
-
-      const fontStyle: string | null = _.get(_.find((<css.Rule>rule).declarations, (declaration) => {
-        return _.has(declaration, "property")
-          && (<css.Declaration>declaration).property === "font-style";
-      }), "value");
-
-      const fontWeight: string | null = _.get(_.find((<css.Rule>rule).declarations, (declaration) => {
-        return _.has(declaration, "property")
-          && (<css.Declaration>declaration).property === "font-weight";
-      }), "value");
-
-      const resource: IResource = {
-        src,
-        fontFamily,
-        fontStyle,
-        fontWeight,
-        url: null
-      };
 
       // extract the url
       if (type === "svg") {
@@ -66,7 +66,7 @@ function parseRemoteCSS(remoteCSS, type): IResource[] {
       resources.push(resource);
 
     } catch (e) {
-      console.error("cannot load resource of type", type, (<css.Rule>rule).declarations);
+      console.error("cannot load resource of type", type, resource);
     }
 
   });
