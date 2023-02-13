@@ -1,4 +1,4 @@
-import { ISubsetStored } from "./subsetGen";
+import { ISubsetMap } from "./subsetGen";
 import { IFontURLStore } from "./urlFetcher";
 
 interface IFontItemBase {
@@ -7,7 +7,7 @@ interface IFontItemBase {
     subsets: string[];
     category: string;
     version: string;
-    lastModified: Date;
+    lastModified: string;
     popularity: number;
     defSubset: string;
     defVariant: string;
@@ -18,4 +18,4 @@ export interface IFontItem extends IFontItemBase {
     variants: string[];
 };
 
-export type IFullFontItem = IFontItemBase & IFontURLStore & ISubsetStored;
+export type IFullFontItem = IFontItemBase & IFontURLStore & { subsetMap: ISubsetMap };

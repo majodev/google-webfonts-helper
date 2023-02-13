@@ -1,10 +1,7 @@
 
 import * as css from "css";
 import * as _ from "lodash";
-import * as debugPkg from "debug"
 import { IUserAgents } from "../config";
-
-const debug = debugPkg('gwfh:cssFetcher');
 
 interface IResource {
   src: string | null;
@@ -25,31 +22,11 @@ function parseRemoteCSS(remoteCSS, type): IResource[] {
       return;
     }
 
-    const src: string | null = _.get(_.find((<css.Rule>rule).declarations, (declaration) => {
-      return _.has(declaration, "property")
-        && (<css.Declaration>declaration).property === "src";
-    }), "value");
-
-    const fontFamily: string | null = _.get(_.find((<css.Rule>rule).declarations, (declaration) => {
-      return _.has(declaration, "property")
-        && (<css.Declaration>declaration).property === "font-family";
-    }), "value");
-
-    const fontStyle: string | null = _.get(_.find((<css.Rule>rule).declarations, (declaration) => {
-      return _.has(declaration, "property")
-        && (<css.Declaration>declaration).property === "font-style";
-    }), "value");
-
-    const fontWeight: string | null = _.get(_.find((<css.Rule>rule).declarations, (declaration) => {
-      return _.has(declaration, "property")
-        && (<css.Declaration>declaration).property === "font-weight";
-    }), "value");
-
     const resource: IResource = {
-      src,
-      fontFamily,
-      fontStyle,
-      fontWeight,
+      src: getCSSRuleDeclarationPropertyValue(rule, "src"),
+      fontFamily: getCSSRuleDeclarationPropertyValue(rule, "font-family"),
+      fontStyle: getCSSRuleDeclarationPropertyValue(rule, "font-style"),
+      fontWeight: getCSSRuleDeclarationPropertyValue(rule, "font-weight"),
       url: null
     };
 
@@ -72,6 +49,13 @@ function parseRemoteCSS(remoteCSS, type): IResource[] {
   });
 
   return resources;
+}
+
+function getCSSRuleDeclarationPropertyValue(rule: css.Rule, property: string): string | null {
+  return _.get(_.find((rule).declarations, (declaration) => {
+    return _.has(declaration, "property")
+      && (<css.Declaration>declaration).property === property;
+  }), "value");
 }
 
 export async function fetchCSS(family: string, cssSubsetString: string, type: keyof IUserAgents, userAgent: string): Promise<IResource[]> {

@@ -8,17 +8,73 @@ const debug = debugPkg('gwfh:fonts:controller');
 
 // Get list of fonts
 // /api/fonts
-export async function getApiFonts(req: Request, res: Response, next: NextFunction) {
+interface IAPIListFont {
+  id: string;
+  family: string;
+  variants: string[];
+  subsets: string[];
+  category: string;
+  version: string;
+  lastModified: string; // e.g. 2022-09-22
+  popularity: number;
+  defSubset: string;
+  defVariant: string;
+}
+export async function getApiFonts(req: Request, res: Response<IAPIListFont[]>, next: NextFunction) {
   try {
-    return res.json(getFontItems());
+
+    const fonts = getFontItems();
+
+    const apiListFonts: IAPIListFont[] = _.map(fonts, (font) => {
+      return {
+        id: font.id,
+        family: font.family,
+        variants: font.variants,
+        subsets: font.subsets,
+        category: font.category,
+        version: font.version,
+        lastModified: font.lastModified,
+        popularity: font.popularity,
+        defSubset: font.defSubset,
+        defVariant: font.defVariant
+      };
+    });
+
+    return res.json(apiListFonts);
   } catch (e) {
     next(e);
   }
 }
 
-// Get specific fonts including links
+// Get specific fonts (fixed charsets) including links
 // /api/fonts/:id
-export async function getApiFontsById(req: Request, res: Response, next: NextFunction) {
+interface IAPIFont {
+  id: string;
+  family: string;
+  subsets: string[];
+  category: string;
+  version: string;
+  lastModified: string; // e.g. 2022-09-22
+  popularity: number;
+  defSubset: string;
+  defVariant: string;
+  subsetMap: {
+    [subset: string]: boolean;
+  }
+  storeID: string;
+  variants: {
+    id: string;
+    fontFamily: string | null;
+    fontStyle: string | null;
+    fontWeight: string | null;
+    eot?: string;
+    woff?: string;
+    woff2?: string;
+    svg?: string;
+    ttf?: string;
+  }[];
+}
+export async function getApiFontsById(req: Request, res: Response<IAPIFont | string | NodeJS.WritableStream>, next: NextFunction) {
 
   try {
     // get the subset string if it was supplied... 
@@ -57,7 +113,22 @@ export async function getApiFontsById(req: Request, res: Response, next: NextFun
       return res.status(404).send('Not found');
     }
 
-    return res.json(fullFontItem);
+    const apiFont: IAPIFont = {
+      id: fullFontItem.id,
+      family: fullFontItem.family,
+      subsets: fullFontItem.subsets,
+      category: fullFontItem.category,
+      version: fullFontItem.version,
+      lastModified: fullFontItem.lastModified,
+      popularity: fullFontItem.popularity,
+      defSubset: fullFontItem.defSubset,
+      defVariant: fullFontItem.defVariant,
+      subsetMap: fullFontItem.subsetMap,
+      storeID: fullFontItem.storeID,
+      variants: fullFontItem.variants
+    };
+
+    return res.json(apiFont);
   } catch (e) {
     next(e);
   }

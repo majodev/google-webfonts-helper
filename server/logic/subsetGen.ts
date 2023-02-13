@@ -1,14 +1,10 @@
 import * as _ from "lodash";
 
-export interface ISubsetTree {
-  [storeID: string]: ISubsetStored;
+export interface IFontSubsetMap {
+  [storeID: string]: ISubsetMap;
 }
 
-export interface ISubsetStored {
-  subsetMap: ISubsetMap;
-}
-
-interface ISubsetMap {
+export interface ISubsetMap {
   [subset: string]: boolean;
 }
 
@@ -16,19 +12,19 @@ const MINIMAL_SUBSET_SIZE = 1;
 
 // get all possible unique subset combinations of a font, based on its subset array
 // adapted from http://stackoverflow.com/questions/5752002/find-all-possible-subset-combos-in-an-array
-export function getSubsets(input: string[]): ISubsetTree {
+export function getSubsets(input: string[]): IFontSubsetMap {
 
   if (_.isArray(input) === false || input.length < MINIMAL_SUBSET_SIZE) {
     return {};
   }
 
-  const uniqueInput = _.uniq(input);
-  const results: ISubsetTree = {};
+  const uniqueInput = _.sortBy(_.uniq(input));
+  const results: IFontSubsetMap = {};
   const total = Math.pow(2, uniqueInput.length);
 
   for (let mask = 0; mask < total; mask++) {
     const result = [];
-    var i = uniqueInput.length - 1;
+    let i = uniqueInput.length - 1;
     do {
       if ((mask & (1 << i)) !== 0) {
         result.push(uniqueInput[i]);
@@ -48,12 +44,10 @@ function getUniqueStoreID(uniqueCombinations: string[]) {
 
 // represent the data with a set of booleans, which is duplicate free 
 // and easy to filter
-function getDefaultSubsetObj(uniqueCombinations: string[], input: string[]): { subsetMap: ISubsetMap } {
+function getDefaultSubsetObj(uniqueCombinations: string[], input: string[]): ISubsetMap {
   // within the subset object, a urlStore is setuped. 
-  return {
-    subsetMap: _.reduce(input, (sum, inputItem) => {
-      sum[inputItem] = _.includes(uniqueCombinations, inputItem);
-      return sum;
-    }, {})
-  }
+  return _.reduce(input, (sum, inputItem) => {
+    sum[inputItem] = _.includes(uniqueCombinations, inputItem);
+    return sum;
+  }, {});
 }

@@ -30,11 +30,10 @@ export async function fetchUrls(font: IFontItem, storeID: string): Promise<IFont
 
   const urlStore: IFontURLStore = {
     variants: [],
-    storeID: storeID
+    storeID
   };
 
-  const cssSubsetString = _.replace(storeID, /_/g, ","); // make the variant string google API compatible...
-  debug(cssSubsetString);
+  const cssSubsetString = storeID.split("_").join(","); // make the variant string google API compatible...
 
   await Bluebird.map(font.variants, async (variant) => {
 
@@ -50,14 +49,13 @@ export async function fetchUrls(font: IFontItem, storeID: string): Promise<IFont
 
       // save the type (woff, eot, svg, ttf, usw...)
       const type = target.format;
-      debug(resources);
 
       if (resources.length === 0) {
         return;
       }
 
       // rewrite url to use https instead on http!
-      variantItem[type] = resources[0].url.replace(/^http:\/\//i, 'https://');
+      variantItem[type] = resources[0].url.split("http://").join("https://"); // resources[0].url.replace(/^http:\/\//i, 'https://');
 
       // if not defined, also save procedded font-family, fontstyle, font-weight, unicode-range
       if (_.isNil(variantItem.fontFamily) && !_.isNil(resources[0].fontFamily)) {

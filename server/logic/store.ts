@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import * as mkdirp from "mkdirp";
 import { IFontItem } from "./font";
 import { getFontsToDownload } from "./googleFontsAPI";
-import { getSubsets, ISubsetStored, ISubsetTree } from "./subsetGen";
+import { getSubsets, ISubsetMap, IFontSubsetMap } from "./subsetGen";
 import { config } from "../config";
 import * as debugPkg from "debug";
 import { IFontURLStore } from "./urlFetcher";
@@ -12,10 +12,10 @@ const debug = debugPkg('gwfh:store');
 let storedFonts: IFontItem[];
 
 interface ISubsetStore {
-    [fontID: string]: ISubsetTree
+    [fontID: string]: IFontSubsetMap
 }
 
-const subsetStore: ISubsetStore = {}; // every item in here holds a urlStore Object + a unique subset combo.
+let subsetStore: ISubsetStore;
 
 const fontUrlStores: {
     fontID: string;
@@ -38,20 +38,13 @@ export async function initStore() {
     await mkdirp(config.CACHE_DIR);
 
     storedFonts = await getFontsToDownload();
+    subsetStore = _.reduce(storedFonts, (sum, item) => {
+        const subsets = getSubsets(item.subsets);
+        sum[item.id] = subsets;
+        return sum;
+    }, <ISubsetStore>{});
 
-    let subsetStoreUniqueCombos = 0;
-    _.each(storedFonts, function (item) {
-        var uniqueSubsetCombos = getSubsets(item.subsets);
-
-        // Create subsetStore for item
-        subsetStore[item.id] = uniqueSubsetCombos;
-
-        // for startup: remember count of items to print it out...
-        subsetStoreUniqueCombos += _.keys(uniqueSubsetCombos).length;
-    });
-
-    debug("fonts cached and subsets initialized. num fonts: " + storedFonts.length +
-        " num unique subset combos: " + subsetStoreUniqueCombos);
+    debug("initStore: fonts cached and subsets initialized");
 
 };
 
@@ -71,9 +64,7 @@ export function getSubsetStoreKey(font: IFontItem, subsetArr: string[]): string 
         return null;
     }
 
-    const fontSubsetKey = _.findKey(fontSubsetStore, {
-        subsetMap: getFilterObject(font, subsetArr)
-    });
+    const fontSubsetKey = _.findKey(fontSubsetStore, getFilterObject(font, subsetArr));
 
     if (_.isNil(fontSubsetKey)) {
         debug("fontSubsetKey for " + font.id + " subset " + subsetArr + " not found!");
@@ -83,8 +74,8 @@ export function getSubsetStoreKey(font: IFontItem, subsetArr: string[]): string 
     return fontSubsetKey;
 }
 
-export function getSubsetStored(fontID: string, subsetStoreKey: string): ISubsetStored {
-    return subsetStore[fontID][subsetStoreKey];
+export function getSubsetStored(fontID: string, storeID: string): ISubsetMap {
+    return subsetStore[fontID][storeID];
 }
 
 export function saveFontUrlStore(fontID: string, fontUrlStore: IFontURLStore) {

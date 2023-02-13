@@ -16,6 +16,9 @@ export const app = express();
 
   const env = app.get('env');
 
+  // http://expressjs.com/en/api.html
+  app.set("x-powered-by", false);
+
   if (config.ENABLE_MIDDLEWARE_COMPRESSION) {
     app.use(require('compression')());
   }

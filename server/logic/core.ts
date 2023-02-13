@@ -1,10 +1,9 @@
 import * as _ from "lodash";
 import { zip } from "./zipper";
 import * as debugPkg from "debug";
-import { downloadFontFiles, IFontFilePath } from "./downloader";
+import { downloadFontFiles } from "./downloader";
 import { fetchUrls } from "./urlFetcher";
 import { IFontItem, IFullFontItem } from "./font";
-import { findByValues } from "./utils";
 import { getFileStore, getFontUrlStore, getStoredFontItemById, getStoredFontItems, getSubsetStored, getSubsetStoreKey, IFileStoreItem, saveFileStoreItem, saveFontUrlStore } from "./store";
 import { synchronizedBy } from "./synchronized";
 
@@ -40,7 +39,7 @@ async function _internalLoadFullFontItem(font: IFontItem, subsetStoreKey: string
     // TODO recator full font item fuckup merge
     return {
       ...font,
-      ...subsetStored,
+      ...({ subsetMap: subsetStored }),
       ...fontUrlStore
     };
   }
@@ -49,23 +48,20 @@ async function _internalLoadFullFontItem(font: IFontItem, subsetStoreKey: string
 
   if (fetchedFontUrlStore === null) {
     console.error('urlStoreObject resolved null for font ' + font.id + ' subset ' + subsetStoreKey);
-    // urlStore.variants = undefined;
-    // emitter.emit(font.id + "-pathFetched-" + subsetStoreKey, null);
     return null;
   }
 
+  // SIDE-EFFECT!
   saveFontUrlStore(font.id, fetchedFontUrlStore);
 
   debug("fetched fontItem for font.id=" + font.id + " subsetStoreKey=" + subsetStoreKey, fetchedFontUrlStore);
-
-  // debug("saveable fontItem processed for font.id=" + font.id + " subsetStoreKey=" + subsetStoreKey, "fontItem=", fontItem);
 
   const subsetStored = getSubsetStored(font.id, subsetStoreKey);
 
   // TODO recator full font item fuckup merge
   return {
     ...font,
-    ...subsetStored,
+    ...({ subsetMap: subsetStored }),
     ...fetchedFontUrlStore
   };
 
@@ -91,7 +87,9 @@ async function _loadFileStoreItem(fontItem: IFullFontItem): Promise<IFileStoreIt
     zippedFilename: fontItem.id + "-" + fontItem.version + "-" + fontItem.storeID + '.zip'
   }
 
+  // SIDE-EFFECT!
   saveFileStoreItem(fontItem.id, fontItem.storeID, fileStoreItem);
+
   return fileStoreItem;
 }
 
@@ -121,17 +119,11 @@ export async function getDownload(id: string, subsetArr: string[] | null, varian
 
   const synchronizedLoadFileStoreItem = `${fontItem.id}_${fontItem.storeID}`
   const fileStoreItem = await loadFileStoreItem(synchronizedLoadFileStoreItem, fontItem);
-  let filteredFiles = fileStoreItem.files;
 
-  // filter away unwanted variants...
-  if (variantsArr !== null) {
-    filteredFiles = <IFontFilePath[]>findByValues(filteredFiles, "variant", variantsArr);
-  }
-
-  // filter away unwanted formats...
-  if (formatsArr !== null) {
-    filteredFiles = <IFontFilePath[]>findByValues(filteredFiles, "format", formatsArr);
-  }
+  const filteredFiles = _.filter(fileStoreItem.files, (file) => {
+    return (_.isNil(variantsArr) || _.includes(variantsArr, file.variant))
+      && (_.isNil(formatsArr) || _.includes(formatsArr, file.format));
+  });
 
   if (filteredFiles.length === 0) {
     return null;

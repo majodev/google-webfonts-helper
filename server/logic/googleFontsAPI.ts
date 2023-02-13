@@ -18,7 +18,7 @@ interface IGoogleFontsResItem {
   variants: string[];
   subsets: string[];
   version: string;
-  lastModified: Date;
+  lastModified: string;
   files: {
     [key: string]: string;
   };
