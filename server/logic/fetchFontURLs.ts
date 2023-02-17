@@ -21,9 +21,6 @@ interface IVariantItem {
   urls: IVariantURL[]
 }
 
-const VARIANT_CONCURRENCY = 2;
-const CSS_DOWNLOAD_CONCURRENCY = 2;
-
 const TARGETS = _.map(_.keys(config.USER_AGENTS), (key) => {
   return {
     format: <keyof IUserAgents>key,
@@ -86,11 +83,11 @@ export async function fetchFontURLs(fontFamily: string, fontVariants: string[], 
         }
       });
 
-    }, { concurrency: CSS_DOWNLOAD_CONCURRENCY });
+    });
 
     urlStore.variants.push(variantItem);
 
-  }, { concurrency: VARIANT_CONCURRENCY });
+  });
 
   urlStore.variants = _.sortBy(urlStore.variants, function ({ fontWeight, fontStyle }) {
     const styleOrder = fontStyle === "normal" ? 0 : 1;

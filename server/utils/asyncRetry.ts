@@ -1,4 +1,5 @@
 import * as Bluebird from "bluebird";
+import * as _ from "lodash";
 
 // 2 ** 0 * 100 = 100ms
 // 2 ** 1 * 100 = 200ms  => 300ms
@@ -14,7 +15,7 @@ export async function asyncRetry<T>(fn: () => Promise<T>, options: { retries: nu
   } catch (e) {
 
     if (errors.length >= options.retries) {
-      throw new AggregateError(errors, `asyncRetry: maximal retries exceeded. retries=${options.retries} errors=${errors.length}`);
+      throw new AggregateError(_.uniq(errors), `asyncRetry: maximal retries exceeded. retries=${options.retries} errors=${errors.length}`);
     }
 
     await Bluebird.delay(2 ** options.retries * 100);

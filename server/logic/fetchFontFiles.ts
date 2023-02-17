@@ -16,8 +16,6 @@ export interface IFontFilePath {
   path: string;
 }
 
-const VARIANT_CONCURRENCY = 2;
-const FILE_DOWNLOAD_CONCURRENCY = 2;
 const RETRIES = 5;
 
 export async function fetchFontFiles(fontID: string, fontVersion: string, fontURLStore: IFontURLStore): Promise<IFontFilePath[]> {
@@ -44,8 +42,8 @@ export async function fetchFontFiles(fontID: string, fontVersion: string, fontUR
         path: filename
       });
 
-    }, { concurrency: FILE_DOWNLOAD_CONCURRENCY });
-  }, { concurrency: VARIANT_CONCURRENCY });
+    });
+  });
 
   return filePaths;
 
