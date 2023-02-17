@@ -1,4 +1,4 @@
-import Bluebird = require("bluebird");
+import * as Bluebird from "bluebird";
 
 // 2 ** 0 * 100 = 100ms
 // 2 ** 1 * 100 = 200ms  => 300ms
@@ -8,11 +8,12 @@ import Bluebird = require("bluebird");
 // 2 ** 5 * 100 = 3200ms => 6300ms
 // 2 ** 6 * 100 = 6400ms => 12700ms
 export async function asyncRetry<T>(fn: () => Promise<T>, options: { retries: number }, errors: any[] = []): Promise<T> {
+  let t: T;
   try {
-    return fn();
+    t = await fn();
   } catch (e) {
 
-    if (errors.length === options.retries) {
+    if (errors.length >= options.retries) {
       throw new AggregateError(errors, `asyncRetry: maximal retries exceeded. retries=${options.retries} errors=${errors.length}`);
     }
 
@@ -20,4 +21,6 @@ export async function asyncRetry<T>(fn: () => Promise<T>, options: { retries: nu
 
     return asyncRetry(fn, options, [...errors, e])
   }
+
+  return t;
 }
