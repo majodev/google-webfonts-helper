@@ -195,8 +195,9 @@ describe('GET /api/fonts/:id', () => {
 
 describe('GET /api/fonts/:id?download=zip', () => {
 
-  it('should (concurrently) download istok-web', async () => {
+  it('should (concurrently) download istok-web', async function () {
 
+    this.timeout(10000);
     let triggered = 0;
 
     await Promise.all([
@@ -221,7 +222,9 @@ describe('GET /api/fonts/:id?download=zip', () => {
 
   });
 
-  it('should (concurrently) download istok-web (subsets and formats mix)', async () => {
+  it('should (concurrently) download istok-web (subsets and formats mix)', async function () {
+
+    this.timeout(10000);
 
     let triggered = 0;
 

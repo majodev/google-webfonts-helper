@@ -49,5 +49,5 @@ function getDefaultSubsetObj(uniqueCombinations: string[], input: string[]): ISu
   return _.reduce(input, (sum, inputItem) => {
     sum[inputItem] = _.includes(uniqueCombinations, inputItem);
     return sum;
-  }, {});
+  }, {} as ISubsetMap);
 }

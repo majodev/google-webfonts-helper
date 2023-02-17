@@ -1,94 +1,94 @@
 import * as _ from "lodash";
-import { zip } from "./zipper";
+import * as JSZip from "jszip";
+import * as path from "path";
+import * as fs from "fs";
 import * as debugPkg from "debug";
-import { downloadFontFiles } from "./downloader";
-import { fetchUrls } from "./urlFetcher";
-import { IFontItem, IFullFontItem } from "./font";
-import { getFileStore, getFontUrlStore, getStoredFontItemById, getStoredFontItems, getSubsetStored, getSubsetStoreKey, IFileStoreItem, saveFileStoreItem, saveFontUrlStore } from "./store";
-import { synchronizedBy } from "./synchronized";
+import { fetchFontFiles } from "./fetchFontFiles";
+import { fetchFontURLs, IFontURLStore } from "./fetchFontURLs";
+import { IFontItem, IFontBundle } from "./font";
+import { getFileStore, getFontUrlStore, getStoredFontItemById, getStoredFontItems, getSubsetMap, getStoreID, IFileStoreItem, saveFileStoreItem, saveFontUrlStore } from "./store";
+import { synchronizedBy } from "../utils/synchronized";
 
 const debug = debugPkg('gwfh:core');
 
-async function loadFullFontItem(fontID: string, subsetArr: string[] | null): Promise<IFullFontItem | null> {
+async function loadFontBundle(fontID: string, subsets: string[] | null): Promise<IFontBundle | null> {
   const font = getStoredFontItemById(fontID);
 
   if (_.isNil(font)) {
     return null;
   }
 
-  const subsetStoreKey = getSubsetStoreKey(font, subsetArr);
+  const storeID = getStoreID(font, subsets);
 
-  if (_.isNil(subsetStoreKey)) {
+  if (_.isNil(storeID)) {
     return null;
   }
 
-  const synchronizedCacheKey = `${fontID}_${subsetStoreKey}`;
+  const synchronizedCacheKey = `${fontID}_${storeID}`;
 
-  return internalLoadFullFontItem(synchronizedCacheKey, font, subsetStoreKey, subsetArr);
+  return internalLoadFontBundle(synchronizedCacheKey, font, storeID, subsets);
 
 }
-const internalLoadFullFontItem = synchronizedBy(_internalLoadFullFontItem);
-async function _internalLoadFullFontItem(font: IFontItem, subsetStoreKey: string, subsetArr: string[] | null): Promise<IFullFontItem | null> {
+const internalLoadFontBundle = synchronizedBy(_internalLoadFontBundle);
+async function _internalLoadFontBundle(font: IFontItem, storeID: string, subsets: string[] | null): Promise<IFontBundle | null> {
 
-  const fontUrlStore = getFontUrlStore(font, subsetArr);
+  const fontURLStore = getFontUrlStore(font, subsets);
 
-  if (!_.isNil(fontUrlStore)) {
+  if (!_.isNil(fontURLStore)) {
 
-    const subsetStored = getSubsetStored(font.id, subsetStoreKey);
+    const subsetMap = getSubsetMap(font.id, storeID);
 
-    // TODO recator full font item fuckup merge
     return {
-      ...font,
-      ...({ subsetMap: subsetStored }),
-      ...fontUrlStore
+      font,
+      subsetMap,
+      fontURLStore
     };
   }
 
-  const fetchedFontUrlStore = await fetchUrls(font, subsetStoreKey);
+  const fetchedFontUrlStore = await fetchFontURLs(font.family, font.variants, storeID);
 
   if (fetchedFontUrlStore === null) {
-    console.error('urlStoreObject resolved null for font ' + font.id + ' subset ' + subsetStoreKey);
+    console.error('urlStoreObject resolved null for font ' + font.id + ' subset ' + storeID);
     return null;
   }
 
   // SIDE-EFFECT!
   saveFontUrlStore(font.id, fetchedFontUrlStore);
 
-  debug("fetched fontItem for font.id=" + font.id + " subsetStoreKey=" + subsetStoreKey, fetchedFontUrlStore);
+  debug("fetched fontItem for font.id=" + font.id + " storeID=" + storeID);
 
-  const subsetStored = getSubsetStored(font.id, subsetStoreKey);
+  const subsetMap = getSubsetMap(font.id, storeID);
 
-  // TODO recator full font item fuckup merge
   return {
-    ...font,
-    ...({ subsetMap: subsetStored }),
-    ...fetchedFontUrlStore
+    font,
+    subsetMap,
+    fontURLStore: fetchedFontUrlStore
   };
 
 }
 
 const loadFileStoreItem = synchronizedBy(_loadFileStoreItem);
-async function _loadFileStoreItem(fontItem: IFullFontItem): Promise<IFileStoreItem> {
+async function _loadFileStoreItem(fontID: string, fontVersion: string, fontURLStore: IFontURLStore): Promise<IFileStoreItem> {
 
-  const fontFileStore = getFileStore(fontItem.id, fontItem.storeID);
+  const fontFileStore = getFileStore(fontID, fontURLStore.storeID);
 
   if (!_.isNil(fontFileStore)) {
     return fontFileStore;
   }
 
-  const localPaths = await downloadFontFiles(fontItem);
+  const localPaths = await fetchFontFiles(fontID, fontVersion, fontURLStore);
 
   if (localPaths.length === 0) {
-    throw new Error(`No local paths received for ${fontItem.id}, ${fontItem.storeID}`);
+    throw new Error(`No local paths received for ${fontID}, ${fontURLStore.storeID}`);
   }
 
   const fileStoreItem: IFileStoreItem = {
     files: localPaths,
-    zippedFilename: fontItem.id + "-" + fontItem.version + "-" + fontItem.storeID + '.zip'
+    zippedFilename: fontID + "-" + fontVersion + "-" + fontURLStore.storeID + '.zip'
   }
 
   // SIDE-EFFECT!
-  saveFileStoreItem(fontItem.id, fontItem.storeID, fileStoreItem);
+  saveFileStoreItem(fontID, fontURLStore.storeID, fileStoreItem);
 
   return fileStoreItem;
 }
@@ -101,36 +101,48 @@ export function getFontItems(): IFontItem[] {
   return getStoredFontItems();
 };
 
-export async function getFullFontItem(id: string, subsetArr: string[] | null): Promise<IFullFontItem | null> {
-  return loadFullFontItem(id, subsetArr);
+export async function getFontBundle(id: string, subsets: string[] | null): Promise<IFontBundle | null> {
+  return loadFontBundle(id, subsets);
 };
 
-export async function getDownload(id: string, subsetArr: string[] | null, variantsArr: string[] | null, formatsArr: string[] | null): Promise<{
+export async function getDownload(id: string, subsets: string[] | null, variants: string[] | null, formats: string[] | null): Promise<{
   stream: NodeJS.ReadableStream,
   filename: string
 } | null> {
 
-  const fontItem = await loadFullFontItem(id, subsetArr);
+  const fontBundle = await loadFontBundle(id, subsets);
 
-  if (_.isNil(fontItem)) {
-    debug("font loading failed for id: " + id + " subsetArr: " + subsetArr + " variantsArr " + variantsArr + " formatsArr" + formatsArr);
+  if (_.isNil(fontBundle)) {
+    debug("font loading failed for id: " + id + " subsets: " + subsets + " variants " + variants + " formats" + formats);
     return null;
   }
 
-  const synchronizedLoadFileStoreItem = `${fontItem.id}_${fontItem.storeID}`
-  const fileStoreItem = await loadFileStoreItem(synchronizedLoadFileStoreItem, fontItem);
+  const { font, fontURLStore, subsetMap } = fontBundle;
+
+  const synchronizedLoadFileStoreItem = `${font.id}_${fontURLStore.storeID}`
+  const fileStoreItem = await loadFileStoreItem(synchronizedLoadFileStoreItem, font.id, font.version, fontURLStore);
 
   const filteredFiles = _.filter(fileStoreItem.files, (file) => {
-    return (_.isNil(variantsArr) || _.includes(variantsArr, file.variant))
-      && (_.isNil(formatsArr) || _.includes(formatsArr, file.format));
+    return (_.isNil(variants) || _.includes(variants, file.variant))
+      && (_.isNil(formats) || _.includes(formats, file.format));
   });
 
   if (filteredFiles.length === 0) {
     return null;
   }
 
+  const archive = new JSZip();
+
+  _.each(filteredFiles, function (file) {
+    archive.file(path.basename(file.path), fs.createReadStream(file.path))
+  });
+
   return {
-    stream: zip(_.map(filteredFiles, "path")),
+    stream: archive.generateNodeStream({
+      streamFiles: true,
+      compression: 'DEFLATE'
+    }),
     filename: fileStoreItem.zippedFilename
-  };
+  }
+
 };

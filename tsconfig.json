@@ -4,7 +4,8 @@
         "module": "commonjs",
         "sourceMap": true,
         "outDir": "./dist/server",
-        "rootDir": "./server"
+        "rootDir": "./server",
+        "strict": true
     },
     "include": [
         "server/**/*.ts",

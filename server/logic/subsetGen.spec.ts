@@ -15,7 +15,8 @@ describe('logic/getSubsets', function () {
   it('does not hang', () => {
 
     should(getSubsets([])).be.instanceof(Object).have.keys();
-    should(getSubsets(undefined)).be.instanceof(Object).have.keys();
+    should(getSubsets(undefined as any)).be.instanceof(Object).have.keys();
+    should(getSubsets(null as any)).be.instanceof(Object).have.keys();
     should(getSubsets("asf" as any)).be.instanceof(Object).have.keys();
 
   });
@@ -32,7 +33,7 @@ describe('logic/getSubsets', function () {
     const subsets = ['a', 'b', 'c', 'd', 'e'];
     const subsetStore = getSubsets(subsets);
 
-    const fontSubsetKey = _.findKey(subsetStore, {
+    const fontSubsetKey = <string>_.findKey(subsetStore, {
       a: true,
       b: false,
       c: true,

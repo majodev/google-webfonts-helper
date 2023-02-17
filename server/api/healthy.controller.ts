@@ -4,11 +4,11 @@ import { getFileStoreLengthIds, getFileStoreTrackedFiles, getStoredFontItems } f
 
 // /-/healthy
 export async function getHealthy(req: Request, res: Response<string>, next: NextFunction) {
-    try {
-        res.type('text/plain');
-        return res.send(`${getStoredFontItems().length} fonts.
+  try {
+    res.type('text/plain');
+    return res.send(`${getStoredFontItems().length} fonts.
 Cached ${getFileStoreLengthIds()} variants, ${getFileStoreTrackedFiles()} files.`);
-    } catch (e) {
-        next(e);
-    }
+  } catch (e) {
+    next(e);
+  }
 }

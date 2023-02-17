@@ -5,8 +5,11 @@ import { IFontItem } from "./font";
 import * as fs from "fs/promises";
 import * as path from "path";
 import * as debugPkg from "debug";
+import { asyncRetry } from "../utils/asyncRetry";
 
 const debug = debugPkg('gwfh:googleFontsAPI');
+
+const RETRIES = 5;
 
 interface IGoogleFontsRes {
   kind: string;
@@ -27,26 +30,33 @@ interface IGoogleFontsResItem {
 }
 
 // build up fonts cache via google API...
-export async function getFontsToDownload(): Promise<IFontItem[]> {
+export async function fetchGoogleFonts(): Promise<IFontItem[]> {
 
   if (config.GOOGLE_FONTS_USE_TEST_JSON) {
     const localPath = path.join(config.ROOT, "test/googlefonts.json");
-    console.warn(`getFontsToDownload is using local "${localPath}"`)
+    console.warn(`fetchGoogleFonts is using local "${localPath}"`)
     const testJson = await fs.readFile(localPath);
     return transform(JSON.parse(testJson.toString()));
   }
 
-  const res = await fetch(`https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=${config.GOOGLE_FONTS_API_KEY}`, {
-    headers: {
-      'accept': 'application/json',
+  return asyncRetry(async () => {
+    const res = await fetch(`https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=${config.GOOGLE_FONTS_API_KEY}`, {
+      headers: {
+        'accept': 'application/json',
+      }
+    });
+
+    if (res.status !== 200) {
+      throw new Error(`fetchGoogleFonts request failed. status code: ${res.status} ${res.statusText}`);
     }
-  });
 
-  const resData: IGoogleFontsRes = await res.json();
+    const resData: IGoogleFontsRes = await res.json();
 
-  // console.log(JSON.stringify(resData));
+    // console.log(JSON.stringify(resData));
 
-  return transform(resData);
+    return transform(resData);
+  }, { retries: RETRIES });
+
 }
 
 function transform(resData: IGoogleFontsRes): IFontItem[] {

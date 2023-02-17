@@ -7,38 +7,38 @@ export function synchronizedBy<A1, A2, A3, A4, T>(target: (arg1: A1, arg2: A2, a
 export function synchronizedBy<A1, A2, A3, A4, A5, T>(target: (arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5) => Promise<T>): (cacheKey: string, arg1: A1, arg2: A2, arg3: A3, arg4: A4, arg5: A5) => Promise<T>;
 export function synchronizedBy<A, T>(target: (...args: A[]) => Promise<T>): (cacheKey: string, ...args: A[]) => Promise<T> {
 
-    const mutexCache: { [cacheKey: string]: Promise<T> } = {};
+  const mutexCache: { [cacheKey: string]: Promise<T> } = {};
 
-    return async (cacheKey: string, ...params: A[]) => {
-        let resolveMutexPromise: Function;
-        let rejectMutexPromise: Function;
+  return async function (cacheKey: string, ...params: A[]) {
+    let resolveMutexPromise: Function = () => { };
+    let rejectMutexPromise: Function = () => { };
 
-        if (!mutexCache[cacheKey]) {
+    if (!mutexCache[cacheKey]) {
 
-            mutexCache[cacheKey] = new Promise<T>((resolve, reject) => {
-                resolveMutexPromise = resolve.bind(this);
-                rejectMutexPromise = reject.bind(this);
-            });
+      mutexCache[cacheKey] = new Promise<T>(function (this: Promise<T>, resolve, reject) {
+        resolveMutexPromise = resolve.bind(this);
+        rejectMutexPromise = reject.bind(this);
+      });
 
-            try {
-                const ret = await target(...params);
+      try {
+        const ret = await target(...params);
 
-                resolveMutexPromise(ret);
-            } catch (err) {
-                rejectMutexPromise(err);
-            }
+        resolveMutexPromise(ret);
+      } catch (err) {
+        rejectMutexPromise(err);
+      }
 
-        }
+    }
 
-        try {
-            const value = await mutexCache[cacheKey];
-            // rm from cache again
-            delete mutexCache[cacheKey];
-            return value;
-        } catch (error) {
-            // rm from cache again
-            delete mutexCache[cacheKey];
-            throw error;
-        }
-    };
+    try {
+      const value = await mutexCache[cacheKey];
+      // rm from cache again
+      delete mutexCache[cacheKey];
+      return value;
+    } catch (error) {
+      // rm from cache again
+      delete mutexCache[cacheKey];
+      throw error;
+    }
+  };
 }

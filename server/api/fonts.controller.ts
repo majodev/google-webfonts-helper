@@ -2,7 +2,8 @@ import * as _ from "lodash";
 import * as stream from "stream";
 import { Request, Response, NextFunction } from "express";
 import * as debugPkg from "debug";
-import { getDownload, getFullFontItem, getFontItems } from "../logic/core";
+import { getDownload, getFontBundle, getFontItems } from "../logic/core";
+import { IUserAgents } from "../config";
 
 const debug = debugPkg('gwfh:fonts:controller');
 
@@ -79,13 +80,13 @@ export async function getApiFontsById(req: Request, res: Response<IAPIFont | str
   try {
     // get the subset string if it was supplied... 
     // e.g. "subset=latin,latin-ext," will be transformed into ["latin","latin-ext"] (non whitespace arrays)
-    const subsetsArr = _.isString(req.query.subsets) ? _.without(req.query.subsets.split(/[,]+/), '') : null;
-    const variantsArr = _.isString(req.query.variants) ? _.without(req.query.variants.split(/[,]+/), '') : null;
-    const formatsArr = _.isString(req.query.formats) ? _.without(req.query.formats.split(/[,]+/), '') : null;
+    const subsets = _.isString(req.query.subsets) ? _.without(req.query.subsets.split(/[,]+/), '') : null;
+    const variants = _.isString(req.query.variants) ? _.without(req.query.variants.split(/[,]+/), '') : null;
+    const formats = _.isString(req.query.formats) ? _.without(req.query.formats.split(/[,]+/), '') : null;
 
     if (req.query.download === "zip") {
       const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
-      const zipStream = await getDownload(req.params.id, subsetsArr, variantsArr, formatsArr);
+      const zipStream = await getDownload(req.params.id, subsets, variants, formats);
 
       if (_.isNil(zipStream)) {
         // files not found.
@@ -107,25 +108,38 @@ export async function getApiFontsById(req: Request, res: Response<IAPIFont | str
 
     }
 
-    const fullFontItem = await getFullFontItem(req.params.id, subsetsArr);
+    const fontBundle = await getFontBundle(req.params.id, subsets);
 
-    if (fullFontItem === null) {
+    if (fontBundle === null) {
       return res.status(404).send('Not found');
     }
 
+    const { font, subsetMap, fontURLStore } = fontBundle;
+
     const apiFont: IAPIFont = {
-      id: fullFontItem.id,
-      family: fullFontItem.family,
-      subsets: fullFontItem.subsets,
-      category: fullFontItem.category,
-      version: fullFontItem.version,
-      lastModified: fullFontItem.lastModified,
-      popularity: fullFontItem.popularity,
-      defSubset: fullFontItem.defSubset,
-      defVariant: fullFontItem.defVariant,
-      subsetMap: fullFontItem.subsetMap,
-      storeID: fullFontItem.storeID,
-      variants: fullFontItem.variants
+      id: font.id,
+      family: font.family,
+      subsets: font.subsets,
+      category: font.category,
+      version: font.version,
+      lastModified: font.lastModified,
+      popularity: font.popularity,
+      defSubset: font.defSubset,
+      defVariant: font.defVariant,
+      subsetMap: subsetMap,
+      storeID: fontURLStore.storeID,
+      variants: _.map(fontURLStore.variants, (variant) => {
+        return {
+          id: variant.id,
+          fontFamily: variant.fontFamily,
+          fontStyle: variant.fontStyle,
+          fontWeight: variant.fontWeight,
+          ...(_.reduce(variant.urls, (sum, vurl) => {
+            sum[vurl.format] = vurl.url;
+            return sum;
+          }, {} as IUserAgents))
+        };
+      })
     };
 
     return res.json(apiFont);
