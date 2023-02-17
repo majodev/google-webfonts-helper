@@ -15,7 +15,7 @@ export async function asyncRetry<T>(fn: () => Promise<T>, options: { retries: nu
   } catch (e) {
 
     if (errors.length >= options.retries) {
-      throw new AggregateError(_.uniq(errors), `asyncRetry: maximal retries exceeded. retries=${options.retries} errors=${errors.length}`);
+      throw new AggregateError(_.unionBy([...errors, e], "message"), `asyncRetry: maximal retries exceeded. retries=${options.retries} errors=${errors.length}`);
     }
 
     await Bluebird.delay(2 ** options.retries * 100);

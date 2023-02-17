@@ -23,7 +23,7 @@ describe('utils/asyncRetry', function () {
 
   });
 
-  it('retry works as expected when all fail', async () => {
+  it('retry works as expected when all fail with same error', async () => {
     const RETRIES = 2;
     let cnt = 0;
     let err: AggregateError | null = null;
@@ -43,7 +43,31 @@ describe('utils/asyncRetry', function () {
     // console.log(err);
     should(cnt).eql(RETRIES + 1);
     should(err).instanceOf(AggregateError);
+    should(err?.errors.length).eql(1); // unique errors returned by msg
 
+  });
+
+  it('retry works as expected when all fail with different errors', async () => {
+    const RETRIES = 2;
+    let cnt = 0;
+    let err: AggregateError | null = null;
+
+    try {
+      await asyncRetry(async () => {
+        await Bluebird.delay(1);
+
+        cnt += 1;
+        throw new Error("step" + cnt);
+
+      }, { retries: RETRIES });
+    } catch (e: any) {
+      err = e;
+    }
+
+    // console.log(err);
+    should(cnt).eql(RETRIES + 1);
+    should(err).instanceOf(AggregateError);
+    should(err?.errors.length).eql(RETRIES + 1);
 
   });
 });
