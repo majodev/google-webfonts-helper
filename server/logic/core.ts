@@ -1,12 +1,9 @@
 import * as _ from "lodash";
-import * as debugPkg from "debug";
 import { fetchFontFiles, IFontFilePath } from "./fetchFontFiles";
 import { fetchFontURLs, IVariantItem } from "./fetchFontURLs";
 import { synchronizedBy } from "../utils/synchronized";
 import { IFontItem } from "./fetchGoogleFonts";
 import { getFontBundle, getStoredFontFilePaths, getStoredFontItems, getStoredVariantItems, IFontBundle, storeFontFilePaths, storeVariantItems } from "./store";
-
-const debug = debugPkg('gwfh:core');
 
 export function loadFontItems(): IFontItem[] {
   return getStoredFontItems();
@@ -37,7 +34,6 @@ const _loadVariantItems = synchronizedBy(async function (fontBundle: IFontBundle
 
   // SIDE-EFFECT!
   storeVariantItems(fontBundle, variantItems);
-  debug("storeVariantItems for storeID=" + storeID);
 
   return variantItems;
 });
@@ -60,7 +56,6 @@ const _loadFontFilePaths = synchronizedBy(async function (fontBundle: IFontBundl
 
   // SIDE-EFFECT!
   storeFontFilePaths(fontBundle, fontFilePaths);
-  debug("storeFontFilePaths for storeID=" + fontBundle.storeID);
 
   return fontFilePaths;
 });

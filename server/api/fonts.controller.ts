@@ -1,14 +1,11 @@
 import * as _ from "lodash";
 import * as stream from "stream";
 import { Request, Response, NextFunction } from "express";
-import * as debugPkg from "debug";
 import { loadFontBundle, loadFontItems, loadSubsetMap, loadVariantItems, loadFontFilePaths } from "../logic/core";
 import { IUserAgents } from "../config";
 import * as JSZip from "jszip";
 import * as path from "path";
 import * as fs from "fs";
-
-const debug = debugPkg('gwfh:fonts:controller');
 
 // Get list of fonts
 // /api/fonts
@@ -171,7 +168,7 @@ export async function getApiFontsById(req: Request, res: Response<IAPIFont | str
 
     return stream.pipeline(zipStream, res, function (err) {
       if (err) {
-        debug(`${url}: error while piping archive to the response stream`, err);
+        // noop, client cancelled.
       }
     });
 

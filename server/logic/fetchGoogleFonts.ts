@@ -3,10 +3,7 @@ import * as speakingurl from "speakingurl";
 import { config } from "../config";
 import * as fs from "fs/promises";
 import * as path from "path";
-import * as debugPkg from "debug";
 import { asyncRetry } from "../utils/asyncRetry";
-
-const debug = debugPkg('gwfh:googleFontsAPI');
 
 const RETRIES = 5;
 
@@ -73,7 +70,6 @@ export async function fetchGoogleFonts(): Promise<IFontItem[]> {
 
 function transform(resData: IGoogleFontsRes): IFontItem[] {
   return _.map(resData.items, (item, index) => {
-    debug(index + " - " + item.family);
     return {
       id: speakingurl(item.family),
       family: item.family,

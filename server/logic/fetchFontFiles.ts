@@ -3,12 +3,9 @@ import { Readable } from "stream";
 import { finished } from "stream/promises";
 import * as fs from "fs";
 import { config } from "../config";
-import * as debugPkg from "debug"
 import * as Bluebird from "bluebird";
 import { asyncRetry } from "../utils/asyncRetry";
 import { IVariantItem } from "./fetchFontURLs";
-
-const debug = debugPkg('gwfh:downloader');
 
 const RETRIES = 5;
 
@@ -52,12 +49,8 @@ export async function fetchFontFiles(fontID: string, fontVersion: string, varian
 async function downloadFile(url: string, dest: string, format: string) {
   await asyncRetry(async () => {
 
-    debug("downloadFile starting", url, format, dest);
-
     const response = await fetch(url);
     const contentType = response.headers.get('content-type');
-
-    debug("downloadFile received", url, format, dest, response.status, contentType);
 
     if (response.status !== 200) {
       throw new Error(`${url} downloadFile request failed. status code: ${response.status} ${response.statusText}`);

@@ -2,15 +2,12 @@ import * as _ from "lodash";
 import * as mkdirp from "mkdirp";
 import { fetchGoogleFonts, IFontItem } from "./fetchGoogleFonts";
 import { config } from "../config";
-import * as debugPkg from "debug";
 import { IVariantItem } from "./fetchFontURLs";
 import { IFontFilePath } from "./fetchFontFiles";
 
-const debug = debugPkg('gwfh:store');
-
 // FontBundle holds:
 // * the found stored font from google,
-// * the requested(and found) subsets and
+// * the requested (and found) subsets and
 // * the unique storeID to access Maps in the store.
 // It should be used as the sole way to interact with the store and must be build via store.getFontBundle
 export interface IFontBundle {
@@ -29,8 +26,6 @@ export async function initStore() {
   _.each(await fetchGoogleFonts(), (font: IFontItem) => {
     fontMap.set(font.id, font);
   });
-
-  debug("initStore: fonts initialized:", fontMap.size);
 };
 
 export function getStoredFontItems(): IFontItem[] {

@@ -59,9 +59,6 @@ node$ ./node_modules/.bin/bower install
 
 # start development server
 node$ grunt serve
-
-# start development server with debug statements enabled:
-node$ DEBUG="gwfh*" grunt serve
 # [...]
 # Express server listening on 9000, in development mode
 
@@ -86,7 +83,7 @@ docker run -e GOOGLE_FONTS_API_KEY=<YOUR-API-KEY> -p 8080:8080 <your-image-tag>
 # Express server listening on 8080, in production mode
 ```
 
-To mitigate security issues especially with the projects' deprecated dependencies, the final image is based on a minimal container image ([distroless](https://github.com/GoogleContainerTools/distroless)). It runs rootless, has no shell available and no development dependencies. 
+To mitigate security issues especially with the projects' deprecated dependencies, the final image is based on a minimal container image. It runs rootless and has no development dependencies. 
 
 ## JSON API
 The API is public, feel free to use it directly (rate-limits may apply).
@@ -151,7 +148,11 @@ Download a zipped archive with all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` fil
 
 > 2023:
 
-Project upgraded to be compatible with Node.js v18+, yarn 1.x and [gcr.io/distroless/nodejs18-debian11:nonroot](https://github.com/GoogleContainerTools/distroless). Automated prebuilt Docker images via [GitHub Actions](https://github.com/majodev/google-webfonts-helper/actions).
+* Project upgraded to be compatible with Node.js v18+.
+* Automated prebuilt Docker images via [GitHub Actions](https://github.com/majodev/google-webfonts-helper/actions).
+* `/server` was fully refactored/modernized (async/await) and now compiles with TypeScript.
+* Switch to `node:18-alpine` for the final image (the musl linux memory allocator works better with this server).
+* `/client` can still be considered very legacy Angular code.
 
 > 2022:
 
