@@ -107,7 +107,7 @@ describe('GET /api/fonts/:id', () => {
       latin: true,
       'latin-ext': false
     });
-    should(res.body).have.property("storeID", "latin_cyrillic-ext_cyrillic");
+    should(res.body).have.property("storeID", "cyrillic_cyrillic-ext_latin");
 
     should(res.body.variants).be.instanceof(Array);
     should(res.body.variants).be.lengthOf(4);

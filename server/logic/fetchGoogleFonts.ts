@@ -1,7 +1,6 @@
 import * as _ from "lodash";
 import * as speakingurl from "speakingurl";
 import { config } from "../config";
-import { IFontItem } from "./font";
 import * as fs from "fs/promises";
 import * as path from "path";
 import * as debugPkg from "debug";
@@ -10,6 +9,19 @@ import { asyncRetry } from "../utils/asyncRetry";
 const debug = debugPkg('gwfh:googleFontsAPI');
 
 const RETRIES = 5;
+
+export interface IFontItem {
+  id: string;
+  family: string;
+  subsets: string[];
+  category: string;
+  version: string;
+  lastModified: string;
+  popularity: number;
+  defSubset: string;
+  defVariant: string;
+  variants: string[];
+}
 
 interface IGoogleFontsRes {
   kind: string;

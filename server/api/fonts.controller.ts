@@ -2,8 +2,11 @@ import * as _ from "lodash";
 import * as stream from "stream";
 import { Request, Response, NextFunction } from "express";
 import * as debugPkg from "debug";
-import { getDownload, getFontBundle, getFontItems } from "../logic/core";
+import { loadFontBundle, loadFontItems, loadSubsetMap, loadVariantItems, loadFontFilePaths } from "../logic/core";
 import { IUserAgents } from "../config";
+import * as JSZip from "jszip";
+import * as path from "path";
+import * as fs from "fs";
 
 const debug = debugPkg('gwfh:fonts:controller');
 
@@ -24,7 +27,7 @@ interface IAPIListFont {
 export async function getApiFonts(req: Request, res: Response<IAPIListFont[]>, next: NextFunction) {
   try {
 
-    const fonts = getFontItems();
+    const fonts = loadFontItems();
 
     const apiListFonts: IAPIListFont[] = _.map(fonts, (font) => {
       return {
@@ -81,68 +84,97 @@ export async function getApiFontsById(req: Request, res: Response<IAPIFont | str
     // get the subset string if it was supplied... 
     // e.g. "subset=latin,latin-ext," will be transformed into ["latin","latin-ext"] (non whitespace arrays)
     const subsets = _.isString(req.query.subsets) ? _.without(req.query.subsets.split(/[,]+/), '') : null;
-    const variants = _.isString(req.query.variants) ? _.without(req.query.variants.split(/[,]+/), '') : null;
-    const formats = _.isString(req.query.formats) ? _.without(req.query.formats.split(/[,]+/), '') : null;
 
-    if (req.query.download === "zip") {
-      const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
-      const zipStream = await getDownload(req.params.id, subsets, variants, formats);
+    const fontBundle = await loadFontBundle(req.params.id, subsets);
 
-      if (_.isNil(zipStream)) {
-        // files not found.
-        return res.status(404)
-          .send('Not found');
-      }
-
-      // Tell the browser that this is a zip file.
-      res.writeHead(200, {
-        'Content-Type': 'application/zip',
-        'Content-disposition': 'attachment; filename=' + zipStream.filename
-      });
-
-      return stream.pipeline(zipStream.stream, res, function (err) {
-        if (err) {
-          debug(`${url}: error while piping archive to the response stream`, err);
-        }
-      });
-
-    }
-
-    const fontBundle = await getFontBundle(req.params.id, subsets);
-
-    if (fontBundle === null) {
+    if (_.isNil(fontBundle)) {
       return res.status(404).send('Not found');
     }
 
-    const { font, subsetMap, fontURLStore } = fontBundle;
+    const subsetMap = loadSubsetMap(fontBundle);
+    const variantItems = await loadVariantItems(fontBundle);
 
-    const apiFont: IAPIFont = {
-      id: font.id,
-      family: font.family,
-      subsets: font.subsets,
-      category: font.category,
-      version: font.version,
-      lastModified: font.lastModified,
-      popularity: font.popularity,
-      defSubset: font.defSubset,
-      defVariant: font.defVariant,
-      subsetMap: subsetMap,
-      storeID: fontURLStore.storeID,
-      variants: _.map(fontURLStore.variants, (variant) => {
-        return {
-          id: variant.id,
-          fontFamily: variant.fontFamily,
-          fontStyle: variant.fontStyle,
-          fontWeight: variant.fontWeight,
-          ...(_.reduce(variant.urls, (sum, vurl) => {
-            sum[vurl.format] = vurl.url;
-            return sum;
-          }, {} as IUserAgents))
-        };
-      })
-    };
+    if (_.isNil(variantItems)) {
+      return res.status(404).send('Not found');
+    }
 
-    return res.json(apiFont);
+    // default case: json serialize...
+    if (req.query.download !== "zip") {
+
+      const { font, storeID } = fontBundle;
+
+      const apiFont: IAPIFont = {
+        id: font.id,
+        family: font.family,
+        subsets: font.subsets,
+        category: font.category,
+        version: font.version,
+        lastModified: font.lastModified,
+        popularity: font.popularity,
+        defSubset: font.defSubset,
+        defVariant: font.defVariant,
+        subsetMap: subsetMap,
+        // be compatible with legacy storeIDs, without binding on our new convention.
+        storeID: fontBundle.subsets.join("_"),
+        variants: _.map(variantItems, (variant) => {
+          return {
+            id: variant.id,
+            fontFamily: variant.fontFamily,
+            fontStyle: variant.fontStyle,
+            fontWeight: variant.fontWeight,
+            ...(_.reduce(variant.urls, (sum, vurl) => {
+              sum[vurl.format] = vurl.url;
+              return sum;
+            }, {} as IUserAgents))
+          };
+        })
+      };
+
+      return res.json(apiFont);
+    }
+
+    // otherwise: download as zip
+    const variants = _.isString(req.query.variants) ? _.without(req.query.variants.split(/[,]+/), '') : null;
+    const formats = _.isString(req.query.formats) ? _.without(req.query.formats.split(/[,]+/), '') : null;
+
+    const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+
+    const fontFilePaths = await loadFontFilePaths(fontBundle, variantItems);
+
+    const filteredFiles = _.filter(fontFilePaths, (file) => {
+      return (_.isNil(variants) || _.includes(variants, file.variant))
+        && (_.isNil(formats) || _.includes(formats, file.format));
+    });
+
+    if (filteredFiles.length === 0) {
+      return res.status(404).send('Not found');
+    }
+
+    const archive = new JSZip();
+
+    _.each(filteredFiles, function (file) {
+      archive.file(path.basename(file.path), fs.createReadStream(file.path))
+    });
+
+    const zipFilename = fontBundle.font.id + "-" + fontBundle.font.version + "-" + fontBundle.storeID + '.zip';
+
+    // Tell the browser that this is a zip file.
+    res.writeHead(200, {
+      'Content-Type': 'application/zip',
+      'Content-disposition': 'attachment; filename=' + zipFilename
+    });
+
+    const zipStream = archive.generateNodeStream({
+      streamFiles: true,
+      compression: 'DEFLATE'
+    });
+
+    return stream.pipeline(zipStream, res, function (err) {
+      if (err) {
+        debug(`${url}: error while piping archive to the response stream`, err);
+      }
+    });
+
   } catch (e) {
     next(e);
   }

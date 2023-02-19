@@ -3,18 +3,14 @@ import { config, IUserAgents } from "../config";
 import { fetchCSS } from "./fetchCSS";
 import * as Bluebird from "bluebird";
 
-export interface IFontURLStore {
-  variants: IVariantItem[];
-  storeID: string;
-}
-
-interface IVariantURL {
+export interface IVariantURL {
   format: keyof IUserAgents;
   url: string;
 }
 
-interface IVariantItem {
+export interface IVariantItem {
   id: string;
+  subsets: string[];
   fontFamily: null | string;
   fontStyle: null | string;
   fontWeight: null | string;
@@ -28,14 +24,10 @@ const TARGETS = _.map(_.keys(config.USER_AGENTS), (key) => {
   };
 });
 
-export async function fetchFontURLs(fontFamily: string, fontVariants: string[], storeID: string): Promise<IFontURLStore | null> {
+export async function fetchFontURLs(fontFamily: string, fontVariants: string[], fontSubsets: string[]): Promise<IVariantItem[] | null> {
 
-  const urlStore: IFontURLStore = {
-    variants: [],
-    storeID
-  };
-
-  const cssSubsetString = storeID.split("_").join(","); // make the variant string google API compatible...
+  let variants: IVariantItem[] = [];
+  const cssSubsetString = fontSubsets.join(","); // make the variant string google API compatible...
 
   await Bluebird.map(fontVariants, async (variant) => {
 
@@ -43,6 +35,7 @@ export async function fetchFontURLs(fontFamily: string, fontVariants: string[], 
 
     const variantItem: IVariantItem = {
       id: variant,
+      subsets: fontSubsets,
       fontFamily: null,
       fontStyle: null,
       fontWeight: null,
@@ -85,14 +78,14 @@ export async function fetchFontURLs(fontFamily: string, fontVariants: string[], 
 
     });
 
-    urlStore.variants.push(variantItem);
+    variants.push(variantItem);
 
   });
 
-  urlStore.variants = _.sortBy(urlStore.variants, function ({ fontWeight, fontStyle }) {
+  variants = _.sortBy(variants, function ({ fontWeight, fontStyle }) {
     const styleOrder = fontStyle === "normal" ? 0 : 1;
     return `${fontWeight}-${styleOrder}`
   });
 
-  return urlStore;
+  return variants;
 }

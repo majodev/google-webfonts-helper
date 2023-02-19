@@ -5,10 +5,12 @@ import * as fs from "fs";
 import { config } from "../config";
 import * as debugPkg from "debug"
 import * as Bluebird from "bluebird";
-import { IFontURLStore } from "./fetchFontURLs";
 import { asyncRetry } from "../utils/asyncRetry";
+import { IVariantItem } from "./fetchFontURLs";
 
 const debug = debugPkg('gwfh:downloader');
+
+const RETRIES = 5;
 
 export interface IFontFilePath {
   variant: string;
@@ -16,15 +18,13 @@ export interface IFontFilePath {
   path: string;
 }
 
-const RETRIES = 5;
-
-export async function fetchFontFiles(fontID: string, fontVersion: string, fontURLStore: IFontURLStore): Promise<IFontFilePath[]> {
+export async function fetchFontFiles(fontID: string, fontVersion: string, variants: IVariantItem[]): Promise<IFontFilePath[]> {
 
   const filePaths: IFontFilePath[] = [];
 
-  await Bluebird.map(fontURLStore.variants, async (variant) => {
+  await Bluebird.map(variants, async (variant) => {
     await Bluebird.map(variant.urls, async (variantUrl) => {
-      const filename = config.CACHE_DIR + fontID + "-" + fontVersion + "-" + fontURLStore.storeID + "-" + variant.id + "." + variantUrl.format;
+      const filename = config.CACHE_DIR + fontID + "-" + fontVersion + "-" + variant.subsets.join("_") + "-" + variant.id + "." + variantUrl.format;
 
       // download the file for type (filename now known)
       try {
@@ -32,7 +32,7 @@ export async function fetchFontFiles(fontID: string, fontVersion: string, fontUR
       } catch (e) {
         // if a specific format does not work, silently discard it.
 
-        console.error("fetchFontFiles discarding", fontID, fontURLStore.storeID, variantUrl.url, variantUrl.format, filename, e);
+        console.error("fetchFontFiles discarding", fontID, variant.subsets.join("_"), variantUrl.url, variantUrl.format, filename, e);
         return;
       }
 

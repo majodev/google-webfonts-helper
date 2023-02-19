@@ -13,6 +13,39 @@ interface IResource {
   url: string;
 }
 
+export async function fetchCSS(family: string, cssSubsetString: string, type: keyof IUserAgents, userAgent: string, retry = 0): Promise<IResource[]> {
+
+  const reqPath = '/css?family=' + encodeURIComponent(family) + '&subset=' + cssSubsetString;
+  const hostname = "fonts.googleapis.com";
+  const url = `http://${hostname}${reqPath}`;
+
+  const txt = await asyncRetry(async () => {
+
+    const res = await fetch(url, {
+      headers: {
+        'accept': 'text/css,*/*;q=0.1',
+        'User-Agent': userAgent
+      }
+    });
+
+    if (res.status !== 200) {
+      throw new Error(`${url} fetchCSS request failed. status code: ${res.status} ${res.statusText}`);
+    }
+
+    const contentType = res.headers.get('content-type');
+
+    if (_.isNil(contentType)
+      || _.isEmpty(contentType)
+      || contentType.indexOf("css") === -1) {
+      throw new Error(`${url} fetchCSS request failed. expected "css" to be in content-type header: ${contentType}`);
+    }
+
+    return res.text();
+  }, { retries: RETRIES });
+
+  return parseRemoteCSS(txt, type);
+}
+
 function parseRemoteCSS(remoteCSS: string, type: string): IResource[] {
   const parsedCSS = css.parse(remoteCSS);
 
@@ -72,38 +105,5 @@ function getCSSRuleDeclarationPropertyValue(rule: css.Rule, property: string): s
     return _.has(declaration, "property")
       && (<css.Declaration>declaration).property === property;
   }), "value", null);
-}
-
-export async function fetchCSS(family: string, cssSubsetString: string, type: keyof IUserAgents, userAgent: string, retry = 0): Promise<IResource[]> {
-
-  const reqPath = '/css?family=' + encodeURIComponent(family) + '&subset=' + cssSubsetString;
-  const hostname = "fonts.googleapis.com";
-  const url = `http://${hostname}${reqPath}`;
-
-  const txt = await asyncRetry(async () => {
-
-    const res = await fetch(url, {
-      headers: {
-        'accept': 'text/css,*/*;q=0.1',
-        'User-Agent': userAgent
-      }
-    });
-
-    if (res.status !== 200) {
-      throw new Error(`${url} fetchCSS request failed. status code: ${res.status} ${res.statusText}`);
-    }
-
-    const contentType = res.headers.get('content-type');
-
-    if (_.isNil(contentType)
-      || _.isEmpty(contentType)
-      || contentType.indexOf("css") === -1) {
-      throw new Error(`${url} fetchCSS request failed. expected "css" to be in content-type header: ${contentType}`);
-    }
-
-    return res.text();
-  }, { retries: RETRIES });
-
-  return parseRemoteCSS(txt, type);
 }
 
