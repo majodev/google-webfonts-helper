@@ -1,7 +1,7 @@
+import * as Bluebird from "bluebird";
 import * as _ from "lodash";
 import { config, IUserAgents } from "../config";
 import { fetchCSS } from "./fetchCSS";
-import * as Bluebird from "bluebird";
 
 export interface IVariantURL {
   format: keyof IUserAgents;
@@ -14,24 +14,22 @@ export interface IVariantItem {
   fontFamily: null | string;
   fontStyle: null | string;
   fontWeight: null | string;
-  urls: IVariantURL[]
+  urls: IVariantURL[];
 }
 
 const TARGETS = _.map(_.keys(config.USER_AGENTS), (key) => {
   return {
     format: <keyof IUserAgents>key,
-    userAgent: <string>config.USER_AGENTS[<keyof IUserAgents>key]
+    userAgent: <string>config.USER_AGENTS[<keyof IUserAgents>key],
   };
 });
 
 export async function fetchFontURLs(fontFamily: string, fontVariants: string[], fontSubsets: string[]): Promise<IVariantItem[] | null> {
-
   let variants: IVariantItem[] = [];
   const cssSubsetString = fontSubsets.join(","); // make the variant string google API compatible...
 
   await Bluebird.map(fontVariants, async (variant) => {
-
-    const cssFontFamily = fontFamily + ":" + variant;
+    const cssFontFamily = `${fontFamily}:${variant}`;
 
     const variantItem: IVariantItem = {
       id: variant,
@@ -39,19 +37,25 @@ export async function fetchFontURLs(fontFamily: string, fontVariants: string[], 
       fontFamily: null,
       fontStyle: null,
       fontWeight: null,
-      urls: []
+      urls: [],
     };
 
     await Bluebird.map(TARGETS, async (target) => {
       const resources = await fetchCSS(cssFontFamily, cssSubsetString, target.format, target.userAgent);
 
       if (resources.length === 0) {
-        console.warn(`fetchFontURLs: no css ressources encountered for fontFamily='${cssFontFamily}' subset='${cssSubsetString}' format=${target.format}`, resources);
+        console.warn(
+          `fetchFontURLs: no css ressources encountered for fontFamily='${cssFontFamily}' subset='${cssSubsetString}' format=${target.format}`,
+          resources
+        );
         return;
       }
 
       if (resources.length > 1) {
-        console.warn(`fetchFontURLs: multiple css ressources encountered for fontFamily='${cssFontFamily}' subset='${cssSubsetString}' format=${target.format}`, resources);
+        console.warn(
+          `fetchFontURLs: multiple css ressources encountered for fontFamily='${cssFontFamily}' subset='${cssSubsetString}' format=${target.format}`,
+          resources
+        );
       }
 
       _.each(resources, (resource) => {
@@ -59,7 +63,7 @@ export async function fetchFontURLs(fontFamily: string, fontVariants: string[], 
         variantItem.urls.push({
           format: target.format,
           // rewrite url to use https instead on http!
-          url: resource.url.split("http://").join("https://") // resource.url.replace(/^http:\/\//i, 'https://');
+          url: resource.url.split("http://").join("https://"), // resource.url.replace(/^http:\/\//i, 'https://');
         });
 
         // if not defined, also save procedded font-family, fontstyle, font-weight, unicode-range
@@ -75,16 +79,14 @@ export async function fetchFontURLs(fontFamily: string, fontVariants: string[], 
           variantItem.fontWeight = resource.fontWeight;
         }
       });
-
     });
 
     variants.push(variantItem);
-
   });
 
   variants = _.sortBy(variants, function ({ fontWeight, fontStyle }) {
     const styleOrder = fontStyle === "normal" ? 0 : 1;
-    return `${fontWeight}-${styleOrder}`
+    return `${fontWeight}-${styleOrder}`;
   });
 
   return variants;

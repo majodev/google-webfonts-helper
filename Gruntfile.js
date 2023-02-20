@@ -57,7 +57,7 @@ module.exports = function (grunt) {
         tasks: ['injector:css']
       },
       mochaTest: {
-        files: ['server/**/*.ts', 'server/**/*.js'],
+        files: ['server/**/*.spec.ts', 'server/**/*.spec.js'],
         tasks: ['env:test', 'mochaTest']
       },
       injectLess: {

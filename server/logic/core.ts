@@ -1,9 +1,17 @@
 import * as _ from "lodash";
+import { synchronizedBy } from "../utils/synchronized";
 import { fetchFontFiles, IFontFilePath } from "./fetchFontFiles";
 import { fetchFontURLs, IVariantItem } from "./fetchFontURLs";
-import { synchronizedBy } from "../utils/synchronized";
 import { IFontItem } from "./fetchGoogleFonts";
-import { getFontBundle, getStoredFontFilePaths, getStoredFontItems, getStoredVariantItems, IFontBundle, storeFontFilePaths, storeVariantItems } from "./store";
+import {
+  getFontBundle,
+  getStoredFontFilePaths,
+  getStoredFontItems,
+  getStoredVariantItems,
+  IFontBundle,
+  storeFontFilePaths,
+  storeVariantItems,
+} from "./store";
 
 export function loadFontItems(): IFontItem[] {
   return getStoredFontItems();
@@ -17,7 +25,6 @@ export async function loadVariantItems(fontBundle: IFontBundle): Promise<IVarian
   return _loadVariantItems(fontBundle.storeID, fontBundle);
 }
 const _loadVariantItems = synchronizedBy(async function (fontBundle: IFontBundle): Promise<IVariantItem[] | null> {
-
   const storedVariantItems = getStoredVariantItems(fontBundle);
 
   if (!_.isNil(storedVariantItems)) {
@@ -28,7 +35,7 @@ const _loadVariantItems = synchronizedBy(async function (fontBundle: IFontBundle
   const variantItems = await fetchFontURLs(font.family, font.variants, subsets);
 
   if (variantItems === null) {
-    console.error('urlStoreObject resolved null for ' + storeID);
+    console.error(`loadVariantItems resolved null for storeID=${storeID}`);
     return null;
   }
 
@@ -51,7 +58,7 @@ const _loadFontFilePaths = synchronizedBy(async function (fontBundle: IFontBundl
   const fontFilePaths = await fetchFontFiles(fontBundle.font.id, fontBundle.font.version, variants);
 
   if (fontFilePaths.length === 0) {
-    throw new Error(`No local paths received for ${fontBundle.font.id}, ${fontBundle.storeID}`);
+    throw new Error(`No local paths received for ${fontBundle.storeID}`);
   }
 
   // SIDE-EFFECT!
@@ -64,9 +71,12 @@ export interface ISubsetMap {
 }
 
 export function loadSubsetMap(fontBundle: IFontBundle): ISubsetMap {
-  return _.reduce(fontBundle.font.subsets, (sum, subset) => {
-    sum[subset] = _.includes(fontBundle.subsets, subset);
-    return sum;
-  }, {} as ISubsetMap);
+  return _.reduce(
+    fontBundle.font.subsets,
+    (sum, subset) => {
+      sum[subset] = _.includes(fontBundle.subsets, subset);
+      return sum;
+    },
+    {} as ISubsetMap
+  );
 }
-

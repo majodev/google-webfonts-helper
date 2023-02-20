@@ -1,11 +1,11 @@
-import * as _ from "lodash";
-import * as stream from "stream";
-import { Request, Response, NextFunction } from "express";
-import { loadFontBundle, loadFontItems, loadSubsetMap, loadVariantItems, loadFontFilePaths } from "../logic/core";
-import { IUserAgents } from "../config";
-import * as JSZip from "jszip";
-import * as path from "path";
+import { NextFunction, Request, Response } from "express";
 import * as fs from "fs";
+import * as JSZip from "jszip";
+import * as _ from "lodash";
+import * as path from "path";
+import * as stream from "stream";
+import { IUserAgents } from "../config";
+import { loadFontBundle, loadFontFilePaths, loadFontItems, loadSubsetMap, loadVariantItems } from "../logic/core";
 
 // Get list of fonts
 // /api/fonts
@@ -23,7 +23,6 @@ interface IAPIListFont {
 }
 export async function getApiFonts(req: Request, res: Response<IAPIListFont[]>, next: NextFunction) {
   try {
-
     const fonts = loadFontItems();
 
     const apiListFonts: IAPIListFont[] = _.map(fonts, (font) => {
@@ -37,7 +36,7 @@ export async function getApiFonts(req: Request, res: Response<IAPIListFont[]>, n
         lastModified: font.lastModified,
         popularity: font.popularity,
         defSubset: font.defSubset,
-        defVariant: font.defVariant
+        defVariant: font.defVariant,
       };
     });
 
@@ -61,7 +60,7 @@ interface IAPIFont {
   defVariant: string;
   subsetMap: {
     [subset: string]: boolean;
-  }
+  };
   storeID: string;
   variants: {
     id: string;
@@ -76,29 +75,27 @@ interface IAPIFont {
   }[];
 }
 export async function getApiFontsById(req: Request, res: Response<IAPIFont | string | NodeJS.WritableStream>, next: NextFunction) {
-
   try {
-    // get the subset string if it was supplied... 
+    // get the subset string if it was supplied...
     // e.g. "subset=latin,latin-ext," will be transformed into ["latin","latin-ext"] (non whitespace arrays)
-    const subsets = _.isString(req.query.subsets) ? _.without(req.query.subsets.split(/[,]+/), '') : null;
+    const subsets = _.isString(req.query.subsets) ? _.without(req.query.subsets.split(/[,]+/), "") : null;
 
     const fontBundle = await loadFontBundle(req.params.id, subsets);
 
     if (_.isNil(fontBundle)) {
-      return res.status(404).send('Not found');
+      return res.status(404).send("Not found");
     }
 
     const subsetMap = loadSubsetMap(fontBundle);
     const variantItems = await loadVariantItems(fontBundle);
 
     if (_.isNil(variantItems)) {
-      return res.status(404).send('Not found');
+      return res.status(404).send("Not found");
     }
 
     // default case: json serialize...
     if (req.query.download !== "zip") {
-
-      const { font, storeID } = fontBundle;
+      const { font } = fontBundle;
 
       const apiFont: IAPIFont = {
         id: font.id,
@@ -119,51 +116,52 @@ export async function getApiFontsById(req: Request, res: Response<IAPIFont | str
             fontFamily: variant.fontFamily,
             fontStyle: variant.fontStyle,
             fontWeight: variant.fontWeight,
-            ...(_.reduce(variant.urls, (sum, vurl) => {
-              sum[vurl.format] = vurl.url;
-              return sum;
-            }, {} as IUserAgents))
+            ..._.reduce(
+              variant.urls,
+              (sum, vurl) => {
+                sum[vurl.format] = vurl.url;
+                return sum;
+              },
+              {} as IUserAgents
+            ),
           };
-        })
+        }),
       };
 
       return res.json(apiFont);
     }
 
     // otherwise: download as zip
-    const variants = _.isString(req.query.variants) ? _.without(req.query.variants.split(/[,]+/), '') : null;
-    const formats = _.isString(req.query.formats) ? _.without(req.query.formats.split(/[,]+/), '') : null;
-
-    const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+    const variants = _.isString(req.query.variants) ? _.without(req.query.variants.split(/[,]+/), "") : null;
+    const formats = _.isString(req.query.formats) ? _.without(req.query.formats.split(/[,]+/), "") : null;
 
     const fontFilePaths = await loadFontFilePaths(fontBundle, variantItems);
 
     const filteredFiles = _.filter(fontFilePaths, (file) => {
-      return (_.isNil(variants) || _.includes(variants, file.variant))
-        && (_.isNil(formats) || _.includes(formats, file.format));
+      return (_.isNil(variants) || _.includes(variants, file.variant)) && (_.isNil(formats) || _.includes(formats, file.format));
     });
 
     if (filteredFiles.length === 0) {
-      return res.status(404).send('Not found');
+      return res.status(404).send("Not found");
     }
 
     const archive = new JSZip();
 
     _.each(filteredFiles, function (file) {
-      archive.file(path.basename(file.path), fs.createReadStream(file.path))
+      archive.file(path.basename(file.path), fs.createReadStream(file.path));
     });
 
-    const zipFilename = fontBundle.font.id + "-" + fontBundle.font.version + "-" + fontBundle.storeID + '.zip';
+    const zipFilename = `${fontBundle.font.id}-${fontBundle.font.version}-${fontBundle.subsets.join("_")}.zip`
 
     // Tell the browser that this is a zip file.
     res.writeHead(200, {
-      'Content-Type': 'application/zip',
-      'Content-disposition': 'attachment; filename=' + zipFilename
+      "Content-Type": "application/zip",
+      "Content-disposition": `attachment; filename=${zipFilename}`,
     });
 
     const zipStream = archive.generateNodeStream({
       streamFiles: true,
-      compression: 'DEFLATE'
+      compression: "DEFLATE",
     });
 
     return stream.pipeline(zipStream, res, function (err) {
@@ -171,7 +169,6 @@ export async function getApiFontsById(req: Request, res: Response<IAPIFont | str
         // noop, client cancelled.
       }
     });
-
   } catch (e) {
     next(e);
   }

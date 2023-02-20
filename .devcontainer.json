@@ -20,10 +20,18 @@
     "customizations": {
         "vscode": {
             "settings": {
-                "typescript.tsdk": "node_modules/typescript/lib"
+                "typescript.tsdk": "node_modules/typescript/lib",
+                "[typescript]": {
+                    "editor.defaultFormatter": "esbenp.prettier-vscode",
+                    "editor.formatOnSave": true,
+                    "editor.formatOnType": false,
+                    "editor.formatOnPaste": false
+                }
             },
             "extensions": [
-                "eamodio.gitlens"
+                "eamodio.gitlens",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode"
             ]
         }
     }
