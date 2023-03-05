@@ -10,7 +10,11 @@ import { setupRoutes } from "./routes";
 
 export const app = express();
 
-(async () => {
+export function ready() {
+  return init;
+}
+
+const init = (async () => {
   const server = http.createServer(app);
   server.timeout = config.TIMEOUT_MS;
 

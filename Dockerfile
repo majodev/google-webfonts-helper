@@ -4,8 +4,6 @@
 ### -----------------------
 FROM node:18-bullseye AS development
 
-# We install a specific old node version via nvm (we explicitly want this image to be based on a newer debian version)
-# https://stackoverflow.com/questions/25899912/how-to-install-nvm-in-docker
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
@@ -19,11 +17,9 @@ RUN apt-get update && apt-get install -y -q --no-install-recommends \
     ca-certificates \
     curl \
     git \
-    # libjemalloc-dev (switch to libjemalloc https://github.com/nodejs/help/issues/1518)
     libssl-dev \
     wget \
     && rm -rf /var/lib/apt/lists/*
-# && echo "/usr/lib/$(uname -m)-linux-gnu/libjemalloc.so" >> /etc/ld.so.preload
 
 # global npm installs
 RUN npm install -g grunt-cli@1.2.0 \
@@ -37,12 +33,6 @@ WORKDIR /app
 ### -----------------------
 
 FROM development AS builder
-
-# # https://github.com/krallin/tini
-# # prepare init system for final image
-# ENV TINI_VERSION v0.19.0
-# ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-# RUN chmod +x /tini
 
 # install server and bundler deps
 COPY package.json /app/package.json
@@ -70,7 +60,6 @@ RUN yarn install --production --ignore-scripts --prefer-offline
 # --- Purpose: Final step from a new slim image. this should be a minimal image only housing dist (production service)
 ### -----------------------
 
-# nonroot or debug-nonroot (unsafe with shell)
 FROM node:18-alpine AS production
 
 # https://github.com/nodejs/docker-node/blob/7de353256a35856c788b37c1826331dbba5f0785/docs/BestPractices.md

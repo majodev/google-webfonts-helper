@@ -31,7 +31,8 @@
             "extensions": [
                 "eamodio.gitlens",
                 "dbaeumer.vscode-eslint",
-                "esbenp.prettier-vscode"
+                "esbenp.prettier-vscode",
+                "yzhang.markdown-all-in-one"
             ]
         }
     }
