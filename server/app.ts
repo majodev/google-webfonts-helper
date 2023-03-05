@@ -3,10 +3,14 @@ require("source-map-support").install();
 
 import * as express from "express";
 import * as http from "http";
+import * as JSZip from "jszip";
 import * as path from "path";
 import { config } from "./config";
 import { initStore } from "./logic/store";
 import { setupRoutes } from "./routes";
+
+// use native promises
+JSZip.external.Promise = Promise;
 
 export const app = express();
 

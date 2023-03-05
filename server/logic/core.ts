@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { synchronizedBy } from "../utils/synchronized";
-import { fetchFontFiles, IFontFilePath } from "./fetchFontFiles";
+import { fetchFontFiles, ISubsetFontArchive } from "./fetchFontFiles";
 import { fetchFontURLs, IVariantItem } from "./fetchFontURLs";
 import { IFontItem } from "./fetchGoogleFonts";
 import {
@@ -45,10 +45,10 @@ const _loadVariantItems = synchronizedBy(async function (fontBundle: IFontBundle
   return variantItems;
 });
 
-export async function loadFontFilePaths(fontBundle: IFontBundle, variants: IVariantItem[]): Promise<IFontFilePath[]> {
+export async function loadFontFilePaths(fontBundle: IFontBundle, variants: IVariantItem[]): Promise<ISubsetFontArchive> {
   return _loadFontFilePaths(fontBundle.storeID, fontBundle, variants);
 }
-const _loadFontFilePaths = synchronizedBy(async function (fontBundle: IFontBundle, variants: IVariantItem[]): Promise<IFontFilePath[]> {
+const _loadFontFilePaths = synchronizedBy(async function (fontBundle: IFontBundle, variants: IVariantItem[]): Promise<ISubsetFontArchive> {
   const storedFontFilePaths = getStoredFontFilePaths(fontBundle);
 
   if (!_.isNil(storedFontFilePaths)) {
@@ -57,7 +57,7 @@ const _loadFontFilePaths = synchronizedBy(async function (fontBundle: IFontBundl
 
   const fontFilePaths = await fetchFontFiles(fontBundle.font.id, fontBundle.font.version, variants);
 
-  if (fontFilePaths.length === 0) {
+  if (fontFilePaths.paths.length === 0) {
     throw new Error(`No local paths received for ${fontBundle.storeID}`);
   }
 

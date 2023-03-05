@@ -77,7 +77,7 @@ describe("GET /api/fonts/:id", () => {
     }
 
     should(getStats().urlMap).eql(1);
-    should(getStats().fileMap).eql(0);
+    should(getStats().archiveMap).eql(0);
   });
 
   it("should respond with font files for istok-web multi charsets filtered", async () => {
@@ -145,7 +145,7 @@ describe("GET /api/fonts/:id", () => {
     }
 
     should(getStats().urlMap).eql(1);
-    should(getStats().fileMap).eql(0);
+    should(getStats().archiveMap).eql(0);
   });
 
   it("should respond with 200 for known font istok-web empty subsets", async () => {
@@ -153,7 +153,7 @@ describe("GET /api/fonts/:id", () => {
     should(res.body).be.instanceof(Object);
 
     should(getStats().urlMap).eql(1);
-    should(getStats().fileMap).eql(0);
+    should(getStats().archiveMap).eql(0);
   });
 
   it("should respond with 404 for unknown font", async () => {
@@ -164,7 +164,7 @@ describe("GET /api/fonts/:id", () => {
       .expect("Content-Type", /text\/html/);
 
     should(getStats().urlMap).eql(0);
-    should(getStats().fileMap).eql(0);
+    should(getStats().archiveMap).eql(0);
   });
 
   it("should respond with 404 for unknown font and subset", async () => {
@@ -175,7 +175,7 @@ describe("GET /api/fonts/:id", () => {
       .expect("Content-Type", /text\/html/);
 
     should(getStats().urlMap).eql(0);
-    should(getStats().fileMap).eql(0);
+    should(getStats().archiveMap).eql(0);
   });
 
   it("should respond with 404 for known font istok-web and unknown subset", async () => {
@@ -217,7 +217,7 @@ describe("GET /api/fonts/:id?download=zip", () => {
     should(triggered).eql(2);
 
     should(getStats().urlMap).eql(1);
-    should(getStats().fileMap).eql(1);
+    should(getStats().archiveMap).eql(1);
   });
 
   it("should (concurrently) download istok-web (subsets and formats mix)", async function () {
@@ -246,7 +246,7 @@ describe("GET /api/fonts/:id?download=zip", () => {
     should(triggered).eql(2);
 
     should(getStats().urlMap).eql(1);
-    should(getStats().fileMap).eql(1);
+    should(getStats().archiveMap).eql(1);
   });
 
   // "GET /api/fonts/playfair-display?subsets=devanagari,vietnamese,cyrillic-ext,latin,greek-ext,greek,cyrillic,latin-ext,hebrew,korean,oriya"
@@ -280,7 +280,7 @@ describe("GET /api/fonts/:id?download=zip", () => {
     should(triggered).eql(2);
 
     should(getStats().urlMap).eql(1);
-    should(getStats().fileMap).eql(1);
+    should(getStats().archiveMap).eql(1);
   });
 
   it("should respond with 200 for download attempt of known font istok-web with unspecified subset", async () => {
@@ -291,7 +291,7 @@ describe("GET /api/fonts/:id?download=zip", () => {
       .expect("Content-Type", "application/zip");
 
     should(getStats().urlMap).eql(1);
-    should(getStats().fileMap).eql(1);
+    should(getStats().archiveMap).eql(1);
   });
 
   it("should respond with 200 for download attempt of known font istok-web with unspecified formats", async () => {
@@ -302,7 +302,7 @@ describe("GET /api/fonts/:id?download=zip", () => {
       .expect("Content-Type", "application/zip");
 
     should(getStats().urlMap).eql(1);
-    should(getStats().fileMap).eql(1);
+    should(getStats().archiveMap).eql(1);
   });
 
   it("should respond with 200 for download attempt of known font istok-web and empty subsets", async () => {
@@ -313,7 +313,7 @@ describe("GET /api/fonts/:id?download=zip", () => {
       .expect("Content-Type", "application/zip");
 
     should(getStats().urlMap).eql(1);
-    should(getStats().fileMap).eql(1);
+    should(getStats().archiveMap).eql(1);
   });
 
   it("should respond with 200 for download attempt of known font istok-web and a single unknown format sneaked in", async () => {
@@ -324,7 +324,7 @@ describe("GET /api/fonts/:id?download=zip", () => {
       .expect("Content-Type", "application/zip");
 
     should(getStats().urlMap).eql(1);
-    should(getStats().fileMap).eql(1);
+    should(getStats().archiveMap).eql(1);
   });
 
   it("should respond with 200 for download attempt of known font istok-web with variants", async () => {
@@ -335,7 +335,7 @@ describe("GET /api/fonts/:id?download=zip", () => {
       .expect("Content-Type", "application/zip");
 
     should(getStats().urlMap).eql(1);
-    should(getStats().fileMap).eql(1);
+    should(getStats().archiveMap).eql(1);
   });
 
   it("should respond with 200 for download attempt of known font istok-web with one known, one unknown variant", async () => {
@@ -346,7 +346,7 @@ describe("GET /api/fonts/:id?download=zip", () => {
       .expect("Content-Type", "application/zip");
 
     should(getStats().urlMap).eql(1);
-    should(getStats().fileMap).eql(1);
+    should(getStats().archiveMap).eql(1);
   });
 
   it("should respond with 404 for download attempt of known font istok-web with empty variants", async () => {

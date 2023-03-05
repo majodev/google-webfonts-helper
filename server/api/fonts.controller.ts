@@ -135,9 +135,9 @@ export async function getApiFontsById(req: Request, res: Response<IAPIFont | str
     const variants = _.isString(req.query.variants) ? _.without(req.query.variants.split(/[,]+/), "") : null;
     const formats = _.isString(req.query.formats) ? _.without(req.query.formats.split(/[,]+/), "") : null;
 
-    const fontFilePaths = await loadFontFilePaths(fontBundle, variantItems);
+    const subsetFontArchive = await loadFontFilePaths(fontBundle, variantItems);
 
-    const filteredFiles = _.filter(fontFilePaths, (file) => {
+    const filteredFiles = _.filter(subsetFontArchive.paths, (file) => {
       return (_.isNil(variants) || _.includes(variants, file.variant)) && (_.isNil(formats) || _.includes(formats, file.format));
     });
 
@@ -145,24 +145,39 @@ export async function getApiFontsById(req: Request, res: Response<IAPIFont | str
       return res.status(404).send("Not found");
     }
 
-    const archive = new JSZip();
-
-    _.each(filteredFiles, function (file) {
-      archive.file(path.basename(file.path), fs.createReadStream(file.path));
+    // we build a new .zip from the existing cached .zip, filtered by the requested variants and formats.
+    const archive = await new JSZip.external.Promise(function (resolve, reject) {
+      fs.readFile(subsetFontArchive.zippedFileName, function (err, data) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    }).then(function (data: unknown) {
+      return JSZip.loadAsync(<Buffer>data);
     });
 
-    const zipFilename = `${fontBundle.font.id}-${fontBundle.font.version}-${fontBundle.subsets.join("_")}.zip`
+    _.each(subsetFontArchive.paths, function (fontFilePath) {
+      const includeInArchive =
+        (_.isNil(variants) || _.includes(variants, fontFilePath.variant)) && (_.isNil(formats) || _.includes(formats, fontFilePath.format));
+
+      if (!includeInArchive) {
+        archive.remove(path.basename(fontFilePath.path));
+      }
+    });
 
     // Tell the browser that this is a zip file.
     res.writeHead(200, {
       "Content-Type": "application/zip",
-      "Content-disposition": `attachment; filename=${zipFilename}`,
+      "Content-disposition": `attachment; filename=${path.basename(subsetFontArchive.zippedFileName)}`,
     });
 
     const zipStream = archive.generateNodeStream({
-      streamFiles: true,
-      compression: "DEFLATE",
+      // streamFiles: true,
+      compression: "DEFLATE"
     });
+    
 
     return stream.pipeline(zipStream, res, function (err) {
       if (err) {

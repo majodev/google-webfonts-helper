@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import * as mkdirp from "mkdirp";
 import { config } from "../config";
-import { IFontFilePath } from "./fetchFontFiles";
+import { ISubsetFontArchive } from "./fetchFontFiles";
 import { IVariantItem } from "./fetchFontURLs";
 import { fetchGoogleFonts, IFontItem } from "./fetchGoogleFonts";
 
@@ -18,7 +18,7 @@ export interface IFontBundle {
 
 const fontMap = new Map<string, IFontItem>();
 const urlMap = new Map<string, IVariantItem[]>();
-const fileMap = new Map<string, IFontFilePath[]>();
+const archiveMap = new Map<string, ISubsetFontArchive>();
 
 export async function initStore() {
   await mkdirp(config.CACHE_DIR);
@@ -35,7 +35,7 @@ export async function reinitStore() {
 
   fontMap.clear();
   urlMap.clear();
-  fileMap.clear();
+  archiveMap.clear();
 
   return initStore();
 }
@@ -78,12 +78,12 @@ export function getStoredVariantItems({ storeID }: IFontBundle): IVariantItem[] 
   return variants;
 }
 
-export function getStoredFontFilePaths({ storeID }: IFontBundle): IFontFilePath[] | null {
-  const paths = fileMap.get(storeID);
-  if (_.isNil(paths)) {
+export function getStoredFontFilePaths({ storeID }: IFontBundle): ISubsetFontArchive | null {
+  const subsetFontArchive = archiveMap.get(storeID);
+  if (_.isNil(subsetFontArchive)) {
     return null;
   }
-  return paths;
+  return subsetFontArchive;
 }
 
 export function storeVariantItems({ storeID }: IFontBundle, variants: IVariantItem[]) {
@@ -100,8 +100,8 @@ export function storeVariantItems({ storeID }: IFontBundle, variants: IVariantIt
   urlMap.set(storeID, variants);
 }
 
-export function storeFontFilePaths({ storeID }: IFontBundle, fontFilePaths: IFontFilePath[]) {
-  const existings = fileMap.get(storeID);
+export function storeFontFilePaths({ storeID }: IFontBundle, subsetFontArchive: ISubsetFontArchive) {
+  const existings = archiveMap.get(storeID);
 
   if (!_.isNil(existings)) {
     console.warn("storeFontFilePaths: duplicate save of storeID: ", storeID);
@@ -111,19 +111,19 @@ export function storeFontFilePaths({ storeID }: IFontBundle, fontFilePaths: IFon
     return;
   }
 
-  fileMap.set(storeID, fontFilePaths);
+  archiveMap.set(storeID, subsetFontArchive);
 }
 
 export function getStats() {
   return {
     fontMap: fontMap.size,
     urlMap: urlMap.size,
-    fileMap: fileMap.size,
+    archiveMap: archiveMap.size,
     urls: _.sumBy(Array.from(urlMap.values()), function (f) {
       return f ? f.length : 0;
     }),
-    files: _.sumBy(Array.from(fileMap.values()), function (f) {
-      return f ? f.length : 0;
+    files: _.sumBy(Array.from(archiveMap.values()), function (f) {
+      return f ? f.paths.length : 0;
     }),
   };
 }
