@@ -3,6 +3,10 @@ import { getApiFonts, getApiFontsById } from "./api/fonts.controller";
 import { getHealthy } from "./api/healthy.controller";
 
 export function setupRoutes(app: express.Express) {
+  app.use("/fonts", express.static(app.get("appPath") + "/index.html"));
+  app.use("/fonts/", express.static(app.get("appPath") + "/index.html"));
+  app.use("/fonts/:id", express.static(app.get("appPath") + "/index.html"));
+
   app.route("/api/fonts").get(getApiFonts);
 
   app.route("/api/fonts/:id").get(getApiFontsById);
@@ -16,6 +20,6 @@ export function setupRoutes(app: express.Express) {
 
   // All other routes should redirect to the index.html
   app.route("/*").get(function (req, res) {
-    res.sendFile(app.get("appPath") + "/index.html");
+    res.redirect(req.baseUrl + "/");
   });
 }
