@@ -55,7 +55,7 @@ const _loadFontFilePaths = synchronizedBy(async function (fontBundle: IFontBundl
     return storedFontFilePaths;
   }
 
-  const fontFilePaths = await fetchFontFiles(fontBundle.font.id, fontBundle.font.version, variants);
+  const fontFilePaths = await fetchFontFiles(fontBundle.font.id, fontBundle.font.version, fontBundle.subsets, variants);
 
   if (fontFilePaths.paths.length === 0) {
     throw new Error(`No local paths received for ${fontBundle.storeID}`);

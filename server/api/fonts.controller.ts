@@ -175,9 +175,8 @@ export async function getApiFontsById(req: Request, res: Response<IAPIFont | str
 
     const zipStream = archive.generateNodeStream({
       // streamFiles: true,
-      compression: "DEFLATE"
+      compression: "DEFLATE",
     });
-    
 
     return stream.pipeline(zipStream, res, function (err) {
       if (err) {

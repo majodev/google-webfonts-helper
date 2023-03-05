@@ -22,55 +22,66 @@ export interface IFontFilePath {
   path: string;
 }
 
-export async function fetchFontFiles(fontID: string, fontVersion: string, variants: IVariantItem[]): Promise<ISubsetFontArchive> {
+export async function fetchFontFiles(
+  fontID: string,
+  fontVersion: string,
+  subsets: string[],
+  variants: IVariantItem[]
+): Promise<ISubsetFontArchive> {
   const subsetFontArchive: ISubsetFontArchive = {
-    zippedFileName: path.join(config.CACHE_DIR, `/${fontID}-${fontVersion}-${_.first(variants)?.subsets.join(",")}.zip`),
+    zippedFileName: path.join(config.CACHE_DIR, `/${fontID}-${fontVersion}-${_.first(variants)?.subsets.join("_")}.zip`),
     paths: [],
   };
 
-  // const filePaths: IFontFilePath[] = [];
-
   const archive = new JSZip();
 
-  // // TODO: subset via arg!
-  // const zippedFileName = path.join(
-  //   config.CACHE_DIR,
-  //   `/${fontID}-${fontVersion}-${_.first(variants)?.subsets.join(",")}.zip`
-  // );
+  const streams: (Readable | fs.WriteStream)[] = _.compact(
+    _.flatten(
+      await Bluebird.map(variants, async (variant) => {
+        return await Bluebird.map(variant.urls, async (variantUrl) => {
+          const filename = path.join(config.CACHE_DIR, `/${fontID}-${fontVersion}-${subsets.join("_")}-${variant.id}.${variantUrl.format}`);
 
-  await Bluebird.map(variants, async (variant) => {
-    await Bluebird.map(variant.urls, async (variantUrl) => {
-      const filename = path.join(
-        config.CACHE_DIR,
-        `/${fontID}-${fontVersion}-${variant.subsets.join("_")}-${variant.id}.${variantUrl.format}`
-      );
+          // download the file for type (filename now known)
+          let stream: Readable;
+          try {
+            stream = await fetchFontFileStream(variantUrl.url, filename, variantUrl.format);
+            archive.file(path.basename(filename), stream);
+          } catch (e) {
+            // if a specific format does not work, silently discard it.
+            console.error("fetchFontFiles discarding", fontID, variant.subsets.join("_"), variantUrl.url, variantUrl.format, filename, e);
+            return null;
+          }
 
-      // download the file for type (filename now known)
-      try {
-        const stream = await fetchFontFileStream(variantUrl.url, filename, variantUrl.format);
-        archive.file(path.basename(filename), stream);
-      } catch (e) {
-        // if a specific format does not work, silently discard it.
-        console.error("fetchFontFiles discarding", fontID, variant.subsets.join("_"), variantUrl.url, variantUrl.format, filename, e);
-        return;
-      }
+          subsetFontArchive.paths.push({
+            variant: variant.id, // variants and format are used to filter them out later!
+            format: variantUrl.format,
+            path: filename,
+          });
 
-      subsetFontArchive.paths.push({
-        variant: variant.id, // variants and format are used to filter them out later!
-        format: variantUrl.format,
-        path: filename,
-      });
-    });
-  });
-
-  await finished(
-    archive
-      .generateNodeStream({
-        // streamFiles: true,
-        compression: "DEFLATE",
+          return stream;
+        });
       })
-      .pipe(fs.createWriteStream(subsetFontArchive.zippedFileName))
+    )
   );
+
+  const target = fs.createWriteStream(subsetFontArchive.zippedFileName);
+  streams.push(target);
+
+  try {
+    await finished(
+      archive
+        .generateNodeStream({
+          compression: "DEFLATE",
+        })
+        .pipe(target)
+    );
+  } catch (e) {
+    // ensure all fs streams into the archive and the actual zip file are destroyed
+    _.each(streams, (stream) => {
+      stream.destroy();
+    });
+    throw e;
+  }
 
   return subsetFontArchive;
 }
