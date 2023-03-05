@@ -22,7 +22,7 @@ export function loadFontBundle(fontID: string, subsets: string[] | null): IFontB
 }
 
 export async function loadVariantItems(fontBundle: IFontBundle): Promise<IVariantItem[] | null> {
-  return _loadVariantItems(fontBundle.storeID, fontBundle);
+  return _loadVariantItems(`loadVariantItems__${fontBundle.storeID}`, fontBundle);
 }
 const _loadVariantItems = synchronizedBy(async function (fontBundle: IFontBundle): Promise<IVariantItem[] | null> {
   const storedVariantItems = getStoredVariantItems(fontBundle);
@@ -46,7 +46,7 @@ const _loadVariantItems = synchronizedBy(async function (fontBundle: IFontBundle
 });
 
 export async function loadFontFilePaths(fontBundle: IFontBundle, variants: IVariantItem[]): Promise<ISubsetFontArchive> {
-  return _loadFontFilePaths(fontBundle.storeID, fontBundle, variants);
+  return _loadFontFilePaths(`loadFontFilePaths__${fontBundle.storeID}`, fontBundle, variants);
 }
 const _loadFontFilePaths = synchronizedBy(async function (fontBundle: IFontBundle, variants: IVariantItem[]): Promise<ISubsetFontArchive> {
   const storedFontFilePaths = getStoredFontFilePaths(fontBundle);
