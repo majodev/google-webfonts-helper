@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import * as mkdirp from "mkdirp";
+import { mkdir } from "fs/promises";
 import { config } from "../config";
 import { ISubsetFontArchive } from "./fetchFontFiles";
 import { IVariantItem } from "./fetchFontURLs";
@@ -21,7 +21,7 @@ const urlMap = new Map<string, IVariantItem[]>();
 const archiveMap = new Map<string, ISubsetFontArchive>();
 
 export async function initStore() {
-  await mkdirp(config.CACHE_DIR);
+  await mkdir(config.CACHE_DIR, { recursive: true });
 
   _.each(await fetchGoogleFonts(), (font: IFontItem) => {
     fontMap.set(font.id, font);
