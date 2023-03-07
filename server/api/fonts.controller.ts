@@ -3,9 +3,8 @@ import * as fs from "fs";
 import * as JSZip from "jszip";
 import * as _ from "lodash";
 import * as path from "path";
-import { pipeline } from "stream/promises"
 import { IUserAgents } from "../config";
-import { loadFontBundle, loadFontFilePaths, loadFontItems, loadSubsetMap, loadVariantItems } from "../logic/core";
+import { loadFontBundle, loadFontItems, loadFontSubsetArchive, loadSubsetMap, loadVariantItems } from "../logic/core";
 
 // Get list of fonts
 // /api/fonts
@@ -135,9 +134,9 @@ export async function getApiFontsById(req: Request, res: Response<IAPIFont | str
     const variants = _.isString(req.query.variants) ? _.without(req.query.variants.split(/[,]+/), "") : null;
     const formats = _.isString(req.query.formats) ? _.without(req.query.formats.split(/[,]+/), "") : null;
 
-    const subsetFontArchive = await loadFontFilePaths(fontBundle, variantItems);
+    const subsetFontArchive = await loadFontSubsetArchive(fontBundle, variantItems);
 
-    const filteredFiles = _.filter(subsetFontArchive.paths, (file) => {
+    const filteredFiles = _.filter(subsetFontArchive.files, (file) => {
       return (_.isNil(variants) || _.includes(variants, file.variant)) && (_.isNil(formats) || _.includes(formats, file.format));
     });
 
@@ -146,40 +145,43 @@ export async function getApiFontsById(req: Request, res: Response<IAPIFont | str
     }
 
     // we build a new .zip from the existing cached .zip, filtered by the requested variants and formats.
-    const archive = await new JSZip.external.Promise(function (resolve, reject) {
-      fs.readFile(subsetFontArchive.zippedFileName, function (err, data) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data);
-        }
-      });
-    }).then(function (data: unknown) {
-      return JSZip.loadAsync(<Buffer>data);
-    });
+    const archive = await loadZipArchive(subsetFontArchive.zipPath);
 
-    _.each(subsetFontArchive.paths, function (fontFilePath) {
-      const includeInArchive =
-        (_.isNil(variants) || _.includes(variants, fontFilePath.variant)) && (_.isNil(formats) || _.includes(formats, fontFilePath.format));
-
-      if (!includeInArchive) {
-        archive.remove(path.basename(fontFilePath.path));
+    // remove all files that are not in the filtered list.
+    _.each(subsetFontArchive.files, function (file) {
+      if (!_.includes(filteredFiles, file)) {
+        archive.remove(file.path);
       }
     });
 
-    // Tell the browser that this is a zip file.
+    // tell the browser that this is a zip file.
     res.writeHead(200, {
       "Content-Type": "application/zip",
-      "Content-disposition": `attachment; filename=${path.basename(subsetFontArchive.zippedFileName)}`,
+      "Content-disposition": `attachment; filename=${path.basename(subsetFontArchive.zipPath)}`,
     });
 
-    const zipStream = archive.generateNodeStream({
-      // streamFiles: true,
-      compression: "DEFLATE",
-    });
-
-    return pipeline(zipStream, res);
+    return archive
+      .generateNodeStream({
+        // streamFiles: true,
+        compression: "DEFLATE",
+      })
+      .pipe(res);
   } catch (e) {
     next(e);
   }
+}
+
+// exported for testing
+function loadZipArchive(zipPath: string): PromiseLike<JSZip> {
+  return new JSZip.external.Promise(function (resolve, reject) {
+    fs.readFile(zipPath, function (err, data) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  }).then(function (data: unknown) {
+    return JSZip.loadAsync(<Buffer>data);
+  });
 }

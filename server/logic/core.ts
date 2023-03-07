@@ -1,15 +1,15 @@
 import * as _ from "lodash";
 import { synchronizedBy } from "../utils/synchronized";
-import { fetchFontFiles, ISubsetFontArchive } from "./fetchFontFiles";
+import { fetchFontSubsetArchive, IFontSubsetArchive } from "./fetchFontSubsetArchive";
 import { fetchFontURLs, IVariantItem } from "./fetchFontURLs";
 import { IFontItem } from "./fetchGoogleFonts";
 import {
   getFontBundle,
-  getStoredFontFilePaths,
   getStoredFontItems,
+  getStoredFontSubsetArchive,
   getStoredVariantItems,
   IFontBundle,
-  storeFontFilePaths,
+  storeFontSubsetArchive,
   storeVariantItems,
 } from "./store";
 
@@ -45,26 +45,29 @@ const _loadVariantItems = synchronizedBy(async function (fontBundle: IFontBundle
   return variantItems;
 });
 
-export async function loadFontFilePaths(fontBundle: IFontBundle, variants: IVariantItem[]): Promise<ISubsetFontArchive> {
-  return _loadFontFilePaths(`loadFontFilePaths__${fontBundle.storeID}`, fontBundle, variants);
+export async function loadFontSubsetArchive(fontBundle: IFontBundle, variants: IVariantItem[]): Promise<IFontSubsetArchive> {
+  return _loadFontSubsetArchive(`loadFontSubsetArchive__${fontBundle.storeID}`, fontBundle, variants);
 }
-const _loadFontFilePaths = synchronizedBy(async function (fontBundle: IFontBundle, variants: IVariantItem[]): Promise<ISubsetFontArchive> {
-  const storedFontFilePaths = getStoredFontFilePaths(fontBundle);
+const _loadFontSubsetArchive = synchronizedBy(async function (
+  fontBundle: IFontBundle,
+  variants: IVariantItem[]
+): Promise<IFontSubsetArchive> {
+  const storedFontSubsetArchive = getStoredFontSubsetArchive(fontBundle);
 
-  if (!_.isNil(storedFontFilePaths)) {
-    return storedFontFilePaths;
+  if (!_.isNil(storedFontSubsetArchive)) {
+    return storedFontSubsetArchive;
   }
 
-  const fontFilePaths = await fetchFontFiles(fontBundle.font.id, fontBundle.font.version, fontBundle.subsets, variants);
+  const fontSubsetArchive = await fetchFontSubsetArchive(fontBundle.font.id, fontBundle.font.version, fontBundle.subsets, variants);
 
-  if (fontFilePaths.paths.length === 0) {
-    throw new Error(`No local paths received for ${fontBundle.storeID}`);
+  if (fontSubsetArchive.files.length === 0) {
+    throw new Error(`No files received for '${fontBundle.storeID}' font subset archive!`);
   }
 
   // SIDE-EFFECT!
-  storeFontFilePaths(fontBundle, fontFilePaths);
+  storeFontSubsetArchive(fontBundle, fontSubsetArchive);
 
-  return fontFilePaths;
+  return fontSubsetArchive;
 });
 export interface ISubsetMap {
   [subset: string]: boolean;

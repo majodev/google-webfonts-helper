@@ -10,7 +10,6 @@ export interface IVariantURL {
 
 export interface IVariantItem {
   id: string;
-  subsets: string[];
   fontFamily: null | string;
   fontStyle: null | string;
   fontWeight: null | string;
@@ -33,7 +32,6 @@ export async function fetchFontURLs(fontFamily: string, fontVariants: string[], 
 
     const variantItem: IVariantItem = {
       id: variant,
-      subsets: fontSubsets,
       fontFamily: null,
       fontStyle: null,
       fontWeight: null,

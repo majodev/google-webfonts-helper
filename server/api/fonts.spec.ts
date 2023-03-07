@@ -1,7 +1,7 @@
+import * as JSZip from "jszip";
 import * as _ from "lodash";
 import * as should from "should";
 import * as request from "supertest";
-
 import { app } from "../app";
 import { getStats, reinitStore } from "../logic/store";
 
@@ -225,128 +225,249 @@ describe("GET /api/fonts/:id?download=zip", () => {
 
     let triggered = 0;
 
-    await Promise.all([
+    const [res1, res2] = await Promise.all([
       request(app)
         .get("/api/fonts/istok-web?download=zip&subsets=cyrillic-ext,latin,latin-ext&formats=woff,woff2")
+        .responseType("blob")
         .timeout(10000)
         .expect(200)
         .expect("Content-Type", "application/zip")
-        .then(() => {
+        .then((res) => {
           triggered += 1;
+          return res;
         }),
       request(app)
         .get("/api/fonts/istok-web?download=zip&subsets=latin-ext,latin,cyrillic-ext&formats=woff,woff2,eot,ttf,svg")
+        .responseType("blob")
         .timeout(10000)
         .expect(200)
         .expect("Content-Type", "application/zip")
-        .then(() => {
+        .then((res) => {
           triggered += 1;
+          return res;
         }),
     ]);
     should(triggered).eql(2);
 
     should(getStats().urlMap).eql(1);
     should(getStats().archiveMap).eql(1);
-  });
 
-  // "GET /api/fonts/playfair-display?subsets=devanagari,vietnamese,cyrillic-ext,latin,greek-ext,greek,cyrillic,latin-ext,hebrew,korean,oriya"
-  // "GET /api/fonts/playfair-display?download=zip&subsets=cyrillic,latin,latin-ext,vietnamese"
+    const archive1 = await JSZip.loadAsync(<Buffer>res1.body);
+
+    // 8 files in archive1
+    should(_.keys(archive1.files).length).eql(8);
+
+    const archive2 = await JSZip.loadAsync(<Buffer>res2.body);
+
+    // 60 files in archive2
+    should(_.keys(archive2.files).length).eql(20);
+  });
 
   it("should (concurrently) download playfair-display (different but unknown subsets resolve to the same key)", async function () {
     let triggered = 0;
 
     this.timeout(10000);
 
-    await Promise.all([
+    const [res1, res2] = await Promise.all([
       request(app)
         .get(
-          "/api/fonts/playfair-display?subsets=devanagari,vietnamese,cyrillic-ext,latin,greek-ext,greek,cyrillic,latin-ext,hebrew,korean,oriya"
+          "/api/fonts/playfair-display?download=zip&subsets=devanagari,vietnamese,cyrillic-ext,latin,greek-ext,greek,cyrillic,latin-ext,hebrew,korean,oriya"
         )
-        .timeout(10000)
-        .expect(200)
-        .expect("Content-Type", /json/)
-        .then(() => {
-          triggered += 1;
-        }),
-      request(app)
-        .get("/api/fonts/playfair-display?download=zip&subsets=cyrillic,latin,latin-ext,vietnamese")
+        .responseType("blob")
         .timeout(10000)
         .expect(200)
         .expect("Content-Type", "application/zip")
-        .then(() => {
+        .then((res) => {
           triggered += 1;
+          return res;
+        }),
+      request(app)
+        .get("/api/fonts/playfair-display?download=zip&subsets=cyrillic,latin,latin-ext,vietnamese")
+        .responseType("blob")
+        .timeout(10000)
+        .expect(200)
+        .expect("Content-Type", "application/zip")
+        .then((res) => {
+          triggered += 1;
+          return res;
         }),
     ]);
     should(triggered).eql(2);
 
     should(getStats().urlMap).eql(1);
     should(getStats().archiveMap).eql(1);
+
+    const archive1 = await JSZip.loadAsync(<Buffer>res1.body);
+
+    // 60 files in archive1
+    should(_.keys(archive1.files).length).eql(60);
+
+    const archive2 = await JSZip.loadAsync(<Buffer>res2.body);
+
+    // 60 files in archive2
+    should(_.keys(archive2.files).length).eql(60);
   });
 
   it("should respond with 200 for download attempt of known font istok-web with unspecified subset", async () => {
-    await request(app)
+    const res = await request(app)
       .get("/api/fonts/istok-web?download=zip&formats=woff,woff2")
+      .responseType("blob")
       .timeout(10000)
       .expect(200)
       .expect("Content-Type", "application/zip");
 
     should(getStats().urlMap).eql(1);
     should(getStats().archiveMap).eql(1);
+
+    const archive = await JSZip.loadAsync(<Buffer>res.body);
+
+    // 4 default variants, 2 formats -> 8 files in archive
+    should(_.keys(archive.files).length).eql(8);
+
+    const files = _.map(_.sortBy(_.keys(archive.files)), (key) => {
+      const file = archive.files[key];
+      return file;
+    });
+
+    should(files[0].name).eql("istok-web-v20-latin-700.woff");
+    should(files[1].name).eql("istok-web-v20-latin-700.woff2");
+    should(files[2].name).eql("istok-web-v20-latin-700italic.woff");
+    should(files[3].name).eql("istok-web-v20-latin-700italic.woff2");
+    should(files[4].name).eql("istok-web-v20-latin-italic.woff");
+    should(files[5].name).eql("istok-web-v20-latin-italic.woff2");
+    should(files[6].name).eql("istok-web-v20-latin-regular.woff");
+    should(files[7].name).eql("istok-web-v20-latin-regular.woff2");
   });
 
   it("should respond with 200 for download attempt of known font istok-web with unspecified formats", async () => {
-    await request(app)
+    const res = await request(app)
       .get("/api/fonts/istok-web?download=zip&subsets=latin")
+      .responseType("blob")
       .timeout(10000)
       .expect(200)
       .expect("Content-Type", "application/zip");
 
     should(getStats().urlMap).eql(1);
     should(getStats().archiveMap).eql(1);
+
+    const archive = await JSZip.loadAsync(<Buffer>res.body);
+
+    // 4 default variants, 5 formats -> 20 files in archive
+    should(_.keys(archive.files).length).eql(20);
+
+    const files = _.map(_.sortBy(_.keys(archive.files)), (key) => {
+      const file = archive.files[key];
+      return file;
+    });
+
+    // _.each(files, (file) => console.log(file.name));
+
+    should(files[0].name).eql("istok-web-v20-latin-700.eot");
+    should(files[1].name).eql("istok-web-v20-latin-700.svg");
+    should(files[2].name).eql("istok-web-v20-latin-700.ttf");
+    should(files[3].name).eql("istok-web-v20-latin-700.woff");
+    should(files[4].name).eql("istok-web-v20-latin-700.woff2");
+    should(files[5].name).eql("istok-web-v20-latin-700italic.eot");
+    should(files[6].name).eql("istok-web-v20-latin-700italic.svg");
+    should(files[7].name).eql("istok-web-v20-latin-700italic.ttf");
+    should(files[8].name).eql("istok-web-v20-latin-700italic.woff");
+    should(files[9].name).eql("istok-web-v20-latin-700italic.woff2");
+    should(files[10].name).eql("istok-web-v20-latin-italic.eot");
+    should(files[11].name).eql("istok-web-v20-latin-italic.svg");
+    should(files[12].name).eql("istok-web-v20-latin-italic.ttf");
+    should(files[13].name).eql("istok-web-v20-latin-italic.woff");
+    should(files[14].name).eql("istok-web-v20-latin-italic.woff2");
+    should(files[15].name).eql("istok-web-v20-latin-regular.eot");
+    should(files[16].name).eql("istok-web-v20-latin-regular.svg");
+    should(files[17].name).eql("istok-web-v20-latin-regular.ttf");
+    should(files[18].name).eql("istok-web-v20-latin-regular.woff");
+    should(files[19].name).eql("istok-web-v20-latin-regular.woff2");
   });
 
   it("should respond with 200 for download attempt of known font istok-web and empty subsets", async () => {
-    await request(app)
+    const res = await request(app)
       .get("/api/fonts/istok-web?download=zip&subsets=")
+      .responseType("blob")
       .timeout(10000)
       .expect(200)
       .expect("Content-Type", "application/zip");
 
     should(getStats().urlMap).eql(1);
     should(getStats().archiveMap).eql(1);
+
+    const archive = await JSZip.loadAsync(<Buffer>res.body);
+
+    // defaults to latin with 4 default variants, 5 formats -> 20 files in archive
+    should(_.keys(archive.files).length).eql(20);
+
+    _.each(_.sortBy(_.keys(archive.files)), (key) => {
+      should(key.indexOf("istok-web-v20-latin-")).eql(0);
+    });
   });
 
   it("should respond with 200 for download attempt of known font istok-web and a single unknown format sneaked in", async () => {
-    await request(app)
+    const res = await request(app)
       .get("/api/fonts/istok-web?download=zip&formats=woff,woff2,rolf")
+      .responseType("blob")
       .timeout(10000)
       .expect(200)
       .expect("Content-Type", "application/zip");
 
     should(getStats().urlMap).eql(1);
     should(getStats().archiveMap).eql(1);
+
+    const archive = await JSZip.loadAsync(<Buffer>res.body);
+
+    // defaults to latin with 4 default variants, 2 formats -> 8 files in archive
+    should(_.keys(archive.files).length).eql(8);
+
+    _.each(_.sortBy(_.keys(archive.files)), (key) => {
+      should(key.indexOf("istok-web-v20-latin-")).eql(0);
+    });
   });
 
   it("should respond with 200 for download attempt of known font istok-web with variants", async () => {
-    await request(app)
+    const res = await request(app)
       .get("/api/fonts/istok-web?download=zip&formats=woff,woff2&variants=regular")
+      .responseType("blob")
       .timeout(10000)
       .expect(200)
       .expect("Content-Type", "application/zip");
 
     should(getStats().urlMap).eql(1);
     should(getStats().archiveMap).eql(1);
+
+    const archive = await JSZip.loadAsync(<Buffer>res.body);
+
+    // defaults to latin with 1 variant, 2 formats -> 2 files in archive
+    should(_.keys(archive.files).length).eql(2);
+
+    _.each(_.sortBy(_.keys(archive.files)), (key) => {
+      should(_.endsWith(key, ".woff") || _.endsWith(key, ".woff2")).eql(true);
+      should(key.indexOf("regular") === -1).eql(false);
+    });
   });
 
   it("should respond with 200 for download attempt of known font istok-web with one known, one unknown variant", async () => {
-    await request(app)
+    const res = await request(app)
       .get("/api/fonts/istok-web?download=zip&formats=woff,woff2&variants=regular,unknownvar")
+      .responseType("blob")
       .timeout(10000)
       .expect(200)
       .expect("Content-Type", "application/zip");
 
     should(getStats().urlMap).eql(1);
     should(getStats().archiveMap).eql(1);
+
+    const archive = await JSZip.loadAsync(<Buffer>res.body);
+
+    // defaults to latin with 1 variant, 2 formats -> 2 files in archive
+    should(_.keys(archive.files).length).eql(2);
+
+    _.each(_.sortBy(_.keys(archive.files)), (key) => {
+      should(_.endsWith(key, ".woff") || _.endsWith(key, ".woff2")).eql(true);
+      should(key.indexOf("regular") === -1).eql(false);
+    });
   });
 
   it("should respond with 404 for download attempt of known font istok-web with empty variants", async () => {

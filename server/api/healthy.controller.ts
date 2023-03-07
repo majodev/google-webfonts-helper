@@ -9,7 +9,7 @@ export async function getHealthy(req: Request, res: Response<string>, next: Next
     res.type("text/plain");
 
     return res.send(`${fontMap} fonts available.
-${urlMap} unique subsets loaded (${urls} URLs), ${archiveMap} subsets fetched (${files} files).`);
+${urlMap} unique subsets loaded (${urls} URLs), ${archiveMap} subset archives fetched (${files} files).`);
   } catch (e) {
     next(e);
   }

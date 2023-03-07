@@ -1,7 +1,7 @@
-import * as _ from "lodash";
 import { mkdir } from "fs/promises";
+import * as _ from "lodash";
 import { config } from "../config";
-import { ISubsetFontArchive } from "./fetchFontFiles";
+import { IFontSubsetArchive } from "./fetchFontSubsetArchive";
 import { IVariantItem } from "./fetchFontURLs";
 import { fetchGoogleFonts, IFontItem } from "./fetchGoogleFonts";
 
@@ -18,7 +18,7 @@ export interface IFontBundle {
 
 const fontMap = new Map<string, IFontItem>();
 const urlMap = new Map<string, IVariantItem[]>();
-const archiveMap = new Map<string, ISubsetFontArchive>();
+const archiveMap = new Map<string, IFontSubsetArchive>();
 
 export async function initStore() {
   await mkdir(config.CACHE_DIR, { recursive: true });
@@ -78,7 +78,7 @@ export function getStoredVariantItems({ storeID }: IFontBundle): IVariantItem[] 
   return variants;
 }
 
-export function getStoredFontFilePaths({ storeID }: IFontBundle): ISubsetFontArchive | null {
+export function getStoredFontSubsetArchive({ storeID }: IFontBundle): IFontSubsetArchive | null {
   const subsetFontArchive = archiveMap.get(storeID);
   if (_.isNil(subsetFontArchive)) {
     return null;
@@ -100,13 +100,13 @@ export function storeVariantItems({ storeID }: IFontBundle, variants: IVariantIt
   urlMap.set(storeID, variants);
 }
 
-export function storeFontFilePaths({ storeID }: IFontBundle, subsetFontArchive: ISubsetFontArchive) {
+export function storeFontSubsetArchive({ storeID }: IFontBundle, subsetFontArchive: IFontSubsetArchive) {
   const existings = archiveMap.get(storeID);
 
   if (!_.isNil(existings)) {
-    console.warn("storeFontFilePaths: duplicate save of storeID: ", storeID);
+    console.warn("storeFontSubsetArchive: duplicate save of storeID: ", storeID);
     if (config.ENV === "test") {
-      throw new Error("storeFontFilePaths duplicate write");
+      throw new Error("storeFontSubsetArchive duplicate write");
     }
     return;
   }
@@ -120,10 +120,10 @@ export function getStats() {
     urlMap: urlMap.size,
     archiveMap: archiveMap.size,
     urls: _.sumBy(Array.from(urlMap.values()), function (f) {
-      return f ? f.length : 0;
+      return f.length;
     }),
-    files: _.sumBy(Array.from(archiveMap.values()), function (f) {
-      return f ? f.paths.length : 0;
+    files: _.sumBy(Array.from(archiveMap.values()), function (archive) {
+      return archive.files.length;
     }),
   };
 }
