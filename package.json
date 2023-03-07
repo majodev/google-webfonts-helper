@@ -49,6 +49,7 @@
     "connect-livereload": "~0.4.0",
     "errorhandler": "~1.0.0",
     "eslint": "^8.34.0",
+    "file-type": "16.5.4",
     "grunt": "~0.4.4",
     "grunt-angular-templates": "^0.5.4",
     "grunt-asset-injector": "^0.1.0",

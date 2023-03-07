@@ -1,3 +1,4 @@
+import { fromBuffer as fileTypeFromBuffer } from "file-type";
 import * as JSZip from "jszip";
 import * as _ from "lodash";
 import * as should from "should";
@@ -308,7 +309,8 @@ describe("GET /api/fonts/:id?download=zip", () => {
     should(_.keys(archive2.files).length).eql(60);
   });
 
-  it("should respond with 200 for download attempt of known font istok-web with unspecified subset", async () => {
+  it("should respond with 200 for download attempt of known font istok-web with unspecified subset", async function () {
+    this.timeout(10000);
     const res = await request(app)
       .get("/api/fonts/istok-web?download=zip&formats=woff,woff2")
       .responseType("blob")
@@ -330,13 +332,21 @@ describe("GET /api/fonts/:id?download=zip", () => {
     });
 
     should(files[0].name).eql("istok-web-v20-latin-700.woff");
+    should((await fileTypeFromBuffer(await files[0].async("nodebuffer")))?.mime).eql("font/woff");
     should(files[1].name).eql("istok-web-v20-latin-700.woff2");
+    should((await fileTypeFromBuffer(await files[1].async("nodebuffer")))?.mime).eql("font/woff2");
     should(files[2].name).eql("istok-web-v20-latin-700italic.woff");
+    should((await fileTypeFromBuffer(await files[2].async("nodebuffer")))?.mime).eql("font/woff");
     should(files[3].name).eql("istok-web-v20-latin-700italic.woff2");
+    should((await fileTypeFromBuffer(await files[3].async("nodebuffer")))?.mime).eql("font/woff2");
     should(files[4].name).eql("istok-web-v20-latin-italic.woff");
+    should((await fileTypeFromBuffer(await files[4].async("nodebuffer")))?.mime).eql("font/woff");
     should(files[5].name).eql("istok-web-v20-latin-italic.woff2");
+    should((await fileTypeFromBuffer(await files[5].async("nodebuffer")))?.mime).eql("font/woff2");
     should(files[6].name).eql("istok-web-v20-latin-regular.woff");
+    should((await fileTypeFromBuffer(await files[6].async("nodebuffer")))?.mime).eql("font/woff");
     should(files[7].name).eql("istok-web-v20-latin-regular.woff2");
+    should((await fileTypeFromBuffer(await files[7].async("nodebuffer")))?.mime).eql("font/woff2");
   });
 
   it("should respond with 200 for download attempt of known font istok-web with unspecified formats", async () => {
@@ -363,25 +373,45 @@ describe("GET /api/fonts/:id?download=zip", () => {
     // _.each(files, (file) => console.log(file.name));
 
     should(files[0].name).eql("istok-web-v20-latin-700.eot");
+    should((await fileTypeFromBuffer(await files[0].async("nodebuffer")))?.mime).eql("application/vnd.ms-fontobject");
     should(files[1].name).eql("istok-web-v20-latin-700.svg");
+    should((await fileTypeFromBuffer(await files[1].async("nodebuffer")))?.mime).eql("application/xml");
     should(files[2].name).eql("istok-web-v20-latin-700.ttf");
+    should((await fileTypeFromBuffer(await files[2].async("nodebuffer")))?.mime).eql("font/ttf");
     should(files[3].name).eql("istok-web-v20-latin-700.woff");
+    should((await fileTypeFromBuffer(await files[3].async("nodebuffer")))?.mime).eql("font/woff");
     should(files[4].name).eql("istok-web-v20-latin-700.woff2");
+    should((await fileTypeFromBuffer(await files[4].async("nodebuffer")))?.mime).eql("font/woff2");
     should(files[5].name).eql("istok-web-v20-latin-700italic.eot");
+    should((await fileTypeFromBuffer(await files[5].async("nodebuffer")))?.mime).eql("application/vnd.ms-fontobject");
     should(files[6].name).eql("istok-web-v20-latin-700italic.svg");
+    should((await fileTypeFromBuffer(await files[6].async("nodebuffer")))?.mime).eql("application/xml");
     should(files[7].name).eql("istok-web-v20-latin-700italic.ttf");
+    should((await fileTypeFromBuffer(await files[7].async("nodebuffer")))?.mime).eql("font/ttf");
     should(files[8].name).eql("istok-web-v20-latin-700italic.woff");
+    should((await fileTypeFromBuffer(await files[8].async("nodebuffer")))?.mime).eql("font/woff");
     should(files[9].name).eql("istok-web-v20-latin-700italic.woff2");
+    should((await fileTypeFromBuffer(await files[9].async("nodebuffer")))?.mime).eql("font/woff2");
     should(files[10].name).eql("istok-web-v20-latin-italic.eot");
+    should((await fileTypeFromBuffer(await files[10].async("nodebuffer")))?.mime).eql("application/vnd.ms-fontobject");
     should(files[11].name).eql("istok-web-v20-latin-italic.svg");
+    should((await fileTypeFromBuffer(await files[11].async("nodebuffer")))?.mime).eql("application/xml");
     should(files[12].name).eql("istok-web-v20-latin-italic.ttf");
+    should((await fileTypeFromBuffer(await files[12].async("nodebuffer")))?.mime).eql("font/ttf");
     should(files[13].name).eql("istok-web-v20-latin-italic.woff");
+    should((await fileTypeFromBuffer(await files[13].async("nodebuffer")))?.mime).eql("font/woff");
     should(files[14].name).eql("istok-web-v20-latin-italic.woff2");
+    should((await fileTypeFromBuffer(await files[14].async("nodebuffer")))?.mime).eql("font/woff2");
     should(files[15].name).eql("istok-web-v20-latin-regular.eot");
+    should((await fileTypeFromBuffer(await files[15].async("nodebuffer")))?.mime).eql("application/vnd.ms-fontobject");
     should(files[16].name).eql("istok-web-v20-latin-regular.svg");
+    should((await fileTypeFromBuffer(await files[16].async("nodebuffer")))?.mime).eql("application/xml");
     should(files[17].name).eql("istok-web-v20-latin-regular.ttf");
+    should((await fileTypeFromBuffer(await files[17].async("nodebuffer")))?.mime).eql("font/ttf");
     should(files[18].name).eql("istok-web-v20-latin-regular.woff");
+    should((await fileTypeFromBuffer(await files[18].async("nodebuffer")))?.mime).eql("font/woff");
     should(files[19].name).eql("istok-web-v20-latin-regular.woff2");
+    should((await fileTypeFromBuffer(await files[19].async("nodebuffer")))?.mime).eql("font/woff2");
   });
 
   it("should respond with 200 for download attempt of known font istok-web and empty subsets", async () => {
