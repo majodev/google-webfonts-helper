@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as JSZip from "jszip";
 import * as _ from "lodash";
 import * as path from "path";
-import * as stream from "stream";
+import { pipeline } from "stream/promises"
 import { IUserAgents } from "../config";
 import { loadFontBundle, loadFontFilePaths, loadFontItems, loadSubsetMap, loadVariantItems } from "../logic/core";
 
@@ -178,11 +178,7 @@ export async function getApiFontsById(req: Request, res: Response<IAPIFont | str
       compression: "DEFLATE",
     });
 
-    return stream.pipeline(zipStream, res, function (err) {
-      if (err) {
-        // noop, client cancelled.
-      }
-    });
+    return pipeline(zipStream, res);
   } catch (e) {
     next(e);
   }
