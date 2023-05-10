@@ -46,7 +46,7 @@ angular.module('googleWebfontsHelperApp')
 
   })
 
-.controller('FontsItemCtrl', function($scope, $stateParams, $http, $state, $timeout, $interval) {
+.controller('FontsItemCtrl', function($scope, $stateParams, $http, $state, $timeout, $interval, $rootScope) {
 
   var subSetString = $stateParams.subsets || '';
 
@@ -80,6 +80,7 @@ angular.module('googleWebfontsHelperApp')
 
   $scope.loadingPromise = $http.get('/api/fonts/' + $stateParams.id + '?subsets=' + subSetString)
     .success(function(fontItem) {
+      window.document.title = fontItem.family + ' | ' + $rootScope.APP_TITLE;
       $scope.fontItem = fontItem;
 
       $scope.downloadSubSetID = fontItem.storeID.replace(/_/g, ',');
