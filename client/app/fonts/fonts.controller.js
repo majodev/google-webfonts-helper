@@ -80,6 +80,8 @@ angular.module('googleWebfontsHelperApp')
 
   $scope.loadingPromise = $http.get('/api/fonts/' + $stateParams.id + '?subsets=' + subSetString)
     .success(function(fontItem) {
+
+      // Prepend the name of the typeface to the document title
       window.document.title = fontItem.family + ' | ' + $rootScope.APP_TITLE;
       $scope.fontItem = fontItem;
 
