@@ -73,7 +73,7 @@ angular.module('googleWebfontsHelperApp')
   }
 
   $scope.error = false;
-  $scope.modernFontsOnly = false;
+  $scope.fontFormats = 'woff2';
 
   $scope.downloadSubSetID = '';
   $scope.subSetsSelected = 0;
@@ -260,13 +260,15 @@ angular.module('googleWebfontsHelperApp')
       selection.addRange(range);
     }
   };
-
-  $scope.modernOnlyActive = function() {
-    $scope.modernFontsOnly = true;
+  
+  $scope.modernSupportActive = function() {
+    $scope.fontFormats =  'woff2';
   };
-
-  $scope.modernOnlyDeactive = function() {
-    $scope.modernFontsOnly = false;
+  $scope.legacySupportActive = function() {
+    $scope.fontFormats =  'woff2,ttf';
+  };
+  $scope.historicSupportActive = function() {
+    $scope.fontFormats =  'woff2,woff,ttf,svg,eot';
   };
 
 });
