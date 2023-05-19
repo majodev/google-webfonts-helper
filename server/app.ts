@@ -5,6 +5,7 @@ import * as express from "express";
 import * as http from "http";
 import * as JSZip from "jszip";
 import * as path from "path";
+import * as cors from "cors";
 import { config } from "./config";
 import { initStore } from "./logic/store";
 import { setupRoutes } from "./routes";
@@ -45,6 +46,8 @@ const init = (async () => {
     app.use(require("morgan")("dev"));
     app.use(require("errorhandler")()); // Error handler - has to be last
   }
+
+  app.use(cors());
 
   setupRoutes(app);
 
