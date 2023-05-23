@@ -5,6 +5,7 @@ import * as _ from "lodash";
 import * as path from "path";
 import { IUserAgents } from "../config";
 import { loadFontBundle, loadFontItems, loadFontSubsetArchive, loadSubsetMap, loadVariantItems } from "../logic/core";
+import { IFontSubsetArchive } from "../logic/fetchFontSubsetArchive";
 
 // Get list of fonts
 // /api/fonts
@@ -134,7 +135,14 @@ export async function getApiFontsById(req: Request, res: Response<IAPIFont | str
     const variants = _.isString(req.query.variants) ? _.without(req.query.variants.split(/[,]+/), "") : null;
     const formats = _.isString(req.query.formats) ? _.without(req.query.formats.split(/[,]+/), "") : null;
 
-    const subsetFontArchive = await loadFontSubsetArchive(fontBundle, variantItems);
+    let subsetFontArchive: IFontSubsetArchive;
+
+    try {
+      subsetFontArchive = await loadFontSubsetArchive(fontBundle, variantItems);
+    } catch (e) {
+      console.error("getApiFontsById.loadFontSubsetArchive received error -> 404", e);
+      return res.status(404).send("Not found");
+    }
 
     const filteredFiles = _.filter(subsetFontArchive.files, (file) => {
       return (_.isNil(variants) || _.includes(variants, file.variant)) && (_.isNil(formats) || _.includes(formats, file.format));

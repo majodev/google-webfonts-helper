@@ -67,14 +67,19 @@ export async function fetchFontSubsetArchive(
   const target = fs.createWriteStream(subsetFontArchive.zipPath);
   streams.push(target);
 
+  console.info(`fetchFontSubsetArchive streaming into ${subsetFontArchive.zipPath}...`, fontID, subsets);
+
   try {
     await finished(
       archive
         .generateNodeStream({
           compression: "DEFLATE",
+          streamFiles: true,
         })
         .pipe(target)
     );
+
+    console.info(`fetchFontSubsetArchive streaming into ${subsetFontArchive.zipPath} streaming done!`, fontID, subsets);
   } catch (e) {
     console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed", fontID, subsets, e);
     // ensure all fs streams into the archive and the actual zip file are destroyed
