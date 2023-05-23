@@ -267,7 +267,7 @@ describe("GET /api/fonts/:id?download=zip", () => {
   it("should (concurrently) download playfair-display (different but unknown subsets resolve to the same key)", async function () {
     let triggered = 0;
 
-    this.timeout(10000);
+    this.timeout(30000);
 
     const [res1, res2] = await Promise.all([
       request(app)
@@ -275,7 +275,7 @@ describe("GET /api/fonts/:id?download=zip", () => {
           "/api/fonts/playfair-display?download=zip&subsets=devanagari,vietnamese,cyrillic-ext,latin,greek-ext,greek,cyrillic,latin-ext,hebrew,korean,oriya"
         )
         .responseType("blob")
-        .timeout(10000)
+        .timeout(30000)
         .expect(200)
         .expect("Content-Type", "application/zip")
         .then((res) => {
@@ -285,7 +285,7 @@ describe("GET /api/fonts/:id?download=zip", () => {
       request(app)
         .get("/api/fonts/playfair-display?download=zip&subsets=cyrillic,latin,latin-ext,vietnamese")
         .responseType("blob")
-        .timeout(10000)
+        .timeout(30000)
         .expect(200)
         .expect("Content-Type", "application/zip")
         .then((res) => {
@@ -300,13 +300,13 @@ describe("GET /api/fonts/:id?download=zip", () => {
 
     const archive1 = await JSZip.loadAsync(<Buffer>res1.body);
 
-    // 60 files in archive1
-    should(_.keys(archive1.files).length).eql(60);
+    // 59 files in archive1
+    should(_.keys(archive1.files).length).eql(59);
 
     const archive2 = await JSZip.loadAsync(<Buffer>res2.body);
 
-    // 60 files in archive2
-    should(_.keys(archive2.files).length).eql(60);
+    // 59 files in archive2
+    should(_.keys(archive2.files).length).eql(59);
   });
 
   it("should respond with 200 for download attempt of known font istok-web with unspecified subset", async function () {

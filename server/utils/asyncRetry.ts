@@ -21,8 +21,11 @@ export async function asyncRetry<T>(fn: () => Promise<T>, options: { retries: nu
       );
     }
 
-    await Bluebird.delay(2 ** options.retries * 100);
+    const bailoutMS = 2 ** errors.length * 100;
+    console.error(`asyncRetry: try ${errors.length + 1} failed, retries=${options.retries}. Delaying next try ${bailoutMS}ms`, e);
+    await Bluebird.delay(bailoutMS);
 
+    console.warn(`asyncRetry: retrying after ${bailoutMS}ms`);
     return asyncRetry(fn, options, [...errors, e]);
   }
 

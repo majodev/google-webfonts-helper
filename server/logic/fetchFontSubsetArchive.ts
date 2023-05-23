@@ -9,7 +9,7 @@ import { config } from "../config";
 import { asyncRetry } from "../utils/asyncRetry";
 import { IVariantItem } from "./fetchFontURLs";
 
-const RETRIES = 5;
+const RETRIES = 3;
 
 export interface IFontSubsetArchive {
   zipPath: string; // absolute path to the zip file
@@ -76,10 +76,17 @@ export async function fetchFontSubsetArchive(
         .pipe(target)
     );
   } catch (e) {
+    console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed", fontID, subsets, e);
     // ensure all fs streams into the archive and the actual zip file are destroyed
     _.each(streams, (stream) => {
-      stream.destroy();
+      try {
+        stream.destroy();
+      } catch (err) {
+        console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed, stream.destroy failed (catched)", fontID, subsets, err);
+      }
     });
+
+    console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed, streams destroyed. Rethrowing err...", fontID, subsets, e);
     throw e;
   }
 
@@ -100,6 +107,10 @@ async function fetchFontSubsetArchiveStream(url: string, dest: string, format: s
         throw new Error(
           `${url} fetchFontSubsetArchiveStream request failed. expected ${format} to be in content-type header: ${contentType}`
         );
+      }
+
+      if (_.isNil(response.body)) {
+        throw new Error(`${url} fetchFontSubsetArchiveStream request failed. response.body is null`);
       }
 
       // TODO typing mismatch ReadableStream<any> vs ReadableStream<Uint8Array>
