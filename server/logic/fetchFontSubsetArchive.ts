@@ -3,7 +3,6 @@ import * as fs from "fs";
 import * as JSZip from "jszip";
 import * as _ from "lodash";
 import * as path from "path";
-import { Readable } from "stream";
 import { finished } from "stream/promises";
 import { config } from "../config";
 import { asyncRetry } from "../utils/asyncRetry";
@@ -35,39 +34,40 @@ export async function fetchFontSubsetArchive(
 
   const archive = new JSZip();
 
-  const streams: (Readable | fs.WriteStream)[] = _.compact(
-    _.flatten(
-      await Bluebird.map(variants, async (variant) => {
-        return await Bluebird.map(variant.urls, async (variantUrl) => {
-          const filename = `${fontID}-${fontVersion}-${subsets.join("_")}-${variant.id}.${variantUrl.format}`;
+  // const streams: (Readable | fs.WriteStream)[] = _.compact(
+  //   _.flatten(
+  await Bluebird.map(variants, async (variant) => {
+    return await Bluebird.map(variant.urls, async (variantUrl) => {
+      const filename = `${fontID}-${fontVersion}-${subsets.join("_")}-${variant.id}.${variantUrl.format}`;
 
-          // download the file for type (filename now known)
-          let stream: Readable;
-          try {
-            stream = await fetchFontSubsetArchiveStream(variantUrl.url, filename, variantUrl.format);
-            archive.file(filename, stream);
-          } catch (e) {
-            // if a specific format does not work, silently discard it.
-            console.error("fetchFontSubsetArchive discarding", fontID, subsets, variantUrl.url, variantUrl.format, filename, e);
-            return null;
-          }
+      // download the file for type (filename now known)
+      let arrayBuffer: ArrayBuffer;
+      try {
+        console.log("fetchFontSubsetArchive...", fontID, subsets, variantUrl.url, variantUrl.format, filename);
+        arrayBuffer = await fetchFontSubsetArchiveStream(variantUrl.url, filename, variantUrl.format);
+        archive.file(filename, arrayBuffer);
+      } catch (e) {
+        // if a specific format does not work, silently discard it.
+        console.error("fetchFontSubsetArchive discarding", fontID, subsets, variantUrl.url, variantUrl.format, filename, e);
+        return null;
+      }
 
-          subsetFontArchive.files.push({
-            variant: variant.id, // variants and format are used to filter them out later!
-            format: variantUrl.format,
-            path: filename,
-          });
+      subsetFontArchive.files.push({
+        variant: variant.id, // variants and format are used to filter them out later!
+        format: variantUrl.format,
+        path: filename,
+      });
 
-          return stream;
-        });
-      })
-    )
-  );
+      // return stream;
+    });
+  });
+  //   )
+  // );
 
   const target = fs.createWriteStream(subsetFontArchive.zipPath);
-  streams.push(target);
+  // streams.push(target);
 
-  console.info(`fetchFontSubsetArchive streaming into ${subsetFontArchive.zipPath}...`, fontID, subsets);
+  console.info(`fetchFontSubsetArchive create archive... file=${subsetFontArchive.zipPath}`, fontID, subsets);
 
   try {
     await finished(
@@ -79,27 +79,27 @@ export async function fetchFontSubsetArchive(
         .pipe(target)
     );
 
-    console.info(`fetchFontSubsetArchive streaming into ${subsetFontArchive.zipPath} streaming done!`, fontID, subsets);
+    console.info(`fetchFontSubsetArchive create archive done! file=${subsetFontArchive.zipPath}`, fontID, subsets);
   } catch (e) {
     console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed", fontID, subsets, e);
     // ensure all fs streams into the archive and the actual zip file are destroyed
-    _.each(streams, (stream) => {
-      try {
-        stream.destroy();
-      } catch (err) {
-        console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed, stream.destroy failed (catched)", fontID, subsets, err);
-      }
-    });
+    // _.each(streams, (stream) => {
+    //   try {
+    //     stream.destroy();
+    //   } catch (err) {
+    //     console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed, stream.destroy failed (catched)", fontID, subsets, err);
+    //   }
+    // });
 
-    console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed, streams destroyed. Rethrowing err...", fontID, subsets, e);
+    // console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed, streams destroyed. Rethrowing err...", fontID, subsets, e);
     throw e;
   }
 
   return subsetFontArchive;
 }
 
-async function fetchFontSubsetArchiveStream(url: string, dest: string, format: string): Promise<Readable> {
-  return asyncRetry<Readable>(
+async function fetchFontSubsetArchiveStream(url: string, dest: string, format: string): Promise<ArrayBuffer> {
+  return asyncRetry<ArrayBuffer>(
     async () => {
       const response = await fetch(url);
       const contentType = response.headers.get("content-type");
@@ -118,9 +118,12 @@ async function fetchFontSubsetArchiveStream(url: string, dest: string, format: s
         throw new Error(`${url} fetchFontSubsetArchiveStream request failed. response.body is null`);
       }
 
-      // TODO typing mismatch ReadableStream<any> vs ReadableStream<Uint8Array>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return Readable.fromWeb(<any>response.body);
+      // hold in mem while creating archive.
+      return response.arrayBuffer();
+
+      // // TODO typing mismatch ReadableStream<any> vs ReadableStream<Uint8Array>
+      // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // return Readable.fromWeb(<any>response.body);
     },
     { retries: RETRIES }
   );
