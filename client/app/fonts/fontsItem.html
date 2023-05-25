@@ -94,15 +94,15 @@
     <!-- css snippets -->
     <div class="fontItemCSSWrap">
 
-      <h4>3. Copy CSS:&nbsp;<small>(default is <code>Best Support</code>)</small></h4>
+      <h4>3. Copy CSS:&nbsp;<small>(default is <code>Modern Browsers</code>)</small></h4>
 
       <tabset type="pills">
-        <tab heading="Best Support">
-          <p class="small">Choose <code>Best Support</code> if old browsers still need to be supported. Formats in this snippet: <code>[eot,woff,woff2,ttf,svg]</code></p>
+        <tab heading="Modern Browsers" select="modernSupportActive();">
+          <p class="small">Choose <code>Modern Browsers</code> if supporting old browsers is not relevant. Formats in this snippet: <code>[{{fontFormats}}]</code></p>
 
           <div ng-click="selectText($event)" class="cssCodeStyle">
             <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix"
-              type="{bestSupport:true}"></div>
+              type="{modernSupport:true}"></div>
           </div>
 
           <div class="form-inline folderPrefixBar small">Customize folder prefix (optional):&nbsp;
@@ -113,19 +113,36 @@
           </div>
           <p class="small">Click on code to select all statements, then copy/paste it into your own CSS file.</p>
         </tab>
-
-        <tab heading="Modern Browsers" select="modernOnlyActive();" deselect="modernOnlyDeactive();">
-          <p class="small">Choose <code>Modern Browsers</code> if supporting old browsers is not relevant. Formats in this snippet: <code>[woff,woff2]</code></p>
-
+        
+        <tab heading="Legacy Support" select="legacySupportActive();">
+          <p class="small">Choose <code>Legacy Support</code> if old browsers still need to be supported. Formats in this snippet: <code>[{{fontFormats}}]</code></p>
+          
           <div ng-click="selectText($event)" class="cssCodeStyle">
             <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix"
-              type="{modernBrowsers:true}"></div>
+                 type="{legacySupport:true}"></div>
           </div>
 
           <div class="form-inline folderPrefixBar small">Customize folder prefix (optional):&nbsp;
             <div class="form-group">
               <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'"
-                value="../fonts/">
+                     value="../fonts/">
+            </div>
+          </div>
+          <p class="small">Click on code to select all statements, then copy/paste it into your own CSS file.</p>
+        </tab>
+        
+        <tab heading="Historic Support" select="historicSupportActive();">
+          <p class="small">Choose <code>Historic Support</code> if very old browsers still need to be supported. Formats in this snippet: <code>[{{fontFormats}}]</code></p>
+          
+          <div ng-click="selectText($event)" class="cssCodeStyle">
+            <div ng-repeat="variant in fontItem.variants | filter:variantFilter" css-code variant="variant" font-item="fontItem" folder-prefix="folderPrefix"
+                 type="{historicSupport:true}"></div>
+          </div>
+          
+          <div class="form-inline folderPrefixBar small">Customize folder prefix (optional):&nbsp;
+            <div class="form-group">
+              <input class="form-control input-sm" type="text" ng-model="folderPrefix" placeholder="no folder prefix" ng-init="folderPrefix='../fonts/'"
+                     value="../fonts/">
             </div>
           </div>
           <p class="small">Click on code to select all statements, then copy/paste it into your own CSS file.</p>
@@ -153,9 +170,9 @@
     <div>
       <hr>
       <h4>4. Download files:</h4>
-      <p>Your generated archive for <strong>{{fontItem.family}}</strong> with charsets <strong><code>[{{downloadSubSetID}}]</code></strong>        and styles <strong><code>[{{variantDownloadQueryString}}]</code></strong> includes the formats <strong><code>[{{modernFontsOnly === true ? 'woff,woff2' : 'eot,ttf,svg,woff,woff2'}}]</code></strong>.</p>
+      <p>Your generated archive for <strong>{{fontItem.family}}</strong> with charsets <strong><code>[{{downloadSubSetID}}]</code></strong>        and styles <strong><code>[{{variantDownloadQueryString}}]</code></strong> includes the formats <strong><code>[{{fontFormats}}]</code></strong>.</p>
 
-      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}&amp;variants={{variantDownloadQueryString}}{{modernFontsOnly === true ? '&formats=woff,woff2' : ''}}"
+      <a href="/api/fonts/{{fontItem.id}}?download=zip&amp;subsets={{downloadSubSetID}}&amp;variants={{variantDownloadQueryString}}&formats={{fontFormats}}"
         target="_blank" role="button" class="btn btn-primary download-button"><i class="fa fa-download fa-lg"></i><br/>{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}.zip</a>
       <p><small>Fonts are copyright of their respective authors.<br><b>See <a target="_blank" href="https://fonts.google.com/attribution">Google Fonts Open Source Font Attribution</a> to find out the specific license that this font uses.</b></small></p>
 

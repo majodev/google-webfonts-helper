@@ -1,4 +1,23 @@
-<pre ng-if="type.bestSupport"><code data-hljs="css" highlightjs>/* {{fontItem.id}}-{{variant.id}} - {{fontItem.storeID}} */
+<pre ng-if="type.modernSupport"><code data-hljs="css" highlightjs>/* {{fontItem.id}}-{{variant.id}} - {{fontItem.storeID}} */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: {{variant.fontFamily}};
+  font-style: {{variant.fontStyle}};
+  font-weight: {{variant.fontWeight}};
+  src: url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+</code></pre>
+<pre ng-if="type.legacySupport"><code data-hljs="css" highlightjs>/* {{fontItem.id}}-{{variant.id}} - {{fontItem.storeID}} */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: {{variant.fontFamily}};
+  font-style: {{variant.fontStyle}};
+  font-weight: {{variant.fontWeight}};
+  src: url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.woff2') format('woff2'), /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+       url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
+}
+</code></pre>
+<pre ng-if="type.historicSupport"><code data-hljs="css" highlightjs>/* {{fontItem.id}}-{{variant.id}} - {{fontItem.storeID}} */
 @font-face {
   font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
   font-family: {{variant.fontFamily}};
@@ -6,20 +25,10 @@
   font-weight: {{variant.fontWeight}};
   src: url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.eot'); /* IE9 Compat Modes */
   src: url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-       url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.woff2') format('woff2'), /* Super Modern Browsers */
-       url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.woff') format('woff'), /* Modern Browsers */
-       url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.ttf') format('truetype'), /* Safari, Android, iOS */
+       url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.woff2') format('woff2'), /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+       url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.woff') format('woff'), /* Chrome 5+, Firefox 3.6+, IE 9+, Safari 5.1+, iOS 5+ */
+       url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.ttf') format('truetype'), /* Chrome 4+, Firefox 3.5+, IE 9+, Safari 3.1+, iOS 4.2+, Android Browser 2.2+ */
        url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.svg#{{variant.svg.substring(variant.svg.indexOf('#')+1);}}') format('svg'); /* Legacy iOS */
-}
-</code></pre>
-<pre ng-if="type.modernBrowsers"><code data-hljs="css" highlightjs>/* {{fontItem.id}}-{{variant.id}} - {{fontItem.storeID}} */
-@font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
-  font-family: {{variant.fontFamily}};
-  font-style: {{variant.fontStyle}};
-  font-weight: {{variant.fontWeight}};
-  src: url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.woff2') format('woff2'), /* Chrome 36+, Opera 23+, Firefox 39+ */
-       url('{{folderPrefix}}{{fontItem.id}}-{{fontItem.version}}-{{fontItem.storeID}}-{{variant.id}}.woff') format('woff'); /* Chrome 5+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 </code></pre>
 <style ng-if="type.styleTag" type="text/css">
