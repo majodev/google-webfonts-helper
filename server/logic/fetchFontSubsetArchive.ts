@@ -7,7 +7,7 @@ import { finished } from "stream/promises";
 import { config } from "../config";
 import { asyncRetry } from "../utils/asyncRetry";
 import { IVariantItem } from "./fetchFontURLs";
-import { Readable, pipeline } from "stream";
+import { Readable } from "stream";
 
 const RETRIES = 2;
 
@@ -35,63 +35,69 @@ export async function fetchFontSubsetArchive(
 
   const archive = new JSZip();
 
-  // const streams: (Readable | fs.WriteStream)[] = _.compact(
-  //   _.flatten(
-  await Bluebird.map(variants, (variant) => {
-    return Bluebird.map(variant.urls, async (variantUrl) => {
-      const filename = `${fontID}-${fontVersion}-${subsets.join("_")}-${variant.id}.${variantUrl.format}`;
+  const streams: (Readable | fs.WriteStream)[] = _.compact(
+    _.flatten(
+      await Bluebird.map(variants, (variant) => {
+        return Bluebird.map(variant.urls, async (variantUrl) => {
+          const filename = `${fontID}-${fontVersion}-${subsets.join("_")}-${variant.id}.${variantUrl.format}`;
 
-      // download the file for type (filename now known)
-      let readable: Readable;
-      try {
-        // console.log("fetchFontSubsetArchive...", variantUrl.format, filename, variantUrl.url);
-        readable = await fetchFontSubsetArchiveStream(variantUrl.url, filename, variantUrl.format);
-        archive.file(filename, readable);
-      } catch (e) {
-        // if a specific format does not work, silently discard it.
-        console.error("fetchFontSubsetArchive discarding", variantUrl.format, filename, variantUrl.url);
-        return null;
-      }
+          // download the file for type (filename now known)
+          let readable: Readable;
+          try {
+            // console.log("fetchFontSubsetArchive...", variantUrl.format, filename, variantUrl.url);
+            readable = await fetchFontSubsetArchiveStream(variantUrl.url, filename, variantUrl.format);
+            archive.file(filename, readable);
+          } catch (e) {
+            // if a specific format does not work, silently discard it.
+            console.error("fetchFontSubsetArchive discarding", variantUrl.format, filename, variantUrl.url);
+            return null;
+          }
 
-      subsetFontArchive.files.push({
-        variant: variant.id, // variants and format are used to filter them out later!
-        format: variantUrl.format,
-        path: filename,
-      });
+          subsetFontArchive.files.push({
+            variant: variant.id, // variants and format are used to filter them out later!
+            format: variantUrl.format,
+            path: filename,
+          });
 
-      // return stream;
-    });
-  });
-  //   )
-  // );
+          return readable;
+        });
+      })
+    )
+  );
 
   const target = fs.createWriteStream(subsetFontArchive.zipPath);
-  // streams.push(target);
+  streams.push(target);
 
   console.info(`fetchFontSubsetArchive create archive... file=${subsetFontArchive.zipPath}`);
 
   try {
-    await finished(pipeline(archive.generateNodeStream({
+    await finished(archive.generateNodeStream({
       compression: "DEFLATE",
-      streamFiles: true,
-    }), target, (err) => {
-      if (err) {
-        console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed file=${subsetFontArchive.zipPath}", err);
-      }
-    }));
+      // streamFiles: true,
+    }).pipe(target));
+
+    // await finished(pipeline(archive.generateNodeStream({
+    //   compression: "DEFLATE",
+    //   streamFiles: true,
+    // }), target, (err) => {
+    //   if (err) {
+    //     console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed file=${subsetFontArchive.zipPath}", err);
+    //   }
+    // }));
     console.info(`fetchFontSubsetArchive create archive done! file=${subsetFontArchive.zipPath}`);
   } catch (e) {
     console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed", e);
     // ensure all fs streams into the archive and the actual zip file are destroyed
-    // _.each(streams, (stream) => {
-    //   try {
-    //     stream.destroy();
-    //   } catch (err) {
-    //     console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed, stream.destroy failed (catched)", fontID, subsets, err);
-    //   }
-    // });
+    _.each(streams, (stream, index) => {
+      try {
+        console.warn(`fetchFontSubsetArchive archive.generateNodeStream destroy stream ${index}/${streams.length}...`)
+        stream.destroy();
+      } catch (err) {
+        console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed, stream.destroy failed (catched)", fontID, subsets, err);
+      }
+    });
 
-    // console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed, streams destroyed. Rethrowing err...", fontID, subsets, e);
+    console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed, streams destroyed. Rethrowing err...", fontID, subsets, e);
     throw e;
   }
 
