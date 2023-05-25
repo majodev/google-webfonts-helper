@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import { IUserAgents } from "../config";
 import { asyncRetry } from "../utils/asyncRetry";
 
-const RETRIES = 5;
+const RETRIES = 2;
 
 interface IResource {
   src: string | null;

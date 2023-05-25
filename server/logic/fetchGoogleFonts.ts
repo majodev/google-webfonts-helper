@@ -5,7 +5,7 @@ import * as speakingurl from "speakingurl";
 import { config } from "../config";
 import { asyncRetry } from "../utils/asyncRetry";
 
-const RETRIES = 5;
+const RETRIES = 2;
 
 export interface IFontItem {
   id: string;
