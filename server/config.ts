@@ -38,6 +38,8 @@ export const config = {
 
   ENABLE_MIDDLEWARE_COMPRESSION: process.env.ENABLE_MIDDLEWARE_COMPRESSION === "false" ? false : true, // default true
 
+  ENABLE_MIDDLEWARE_CORS: process.env.ENABLE_MIDDLEWARE_CORS === 'false' ? false : true, // default true
+
   GOOGLE_FONTS_API_KEY,
 
   GOOGLE_FONTS_USE_TEST_JSON: process.env.GOOGLE_FONTS_USE_TEST_JSON === "true" ? true : env === "test" ? true : false, // enabled in test, else default false
