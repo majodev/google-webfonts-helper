@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y -q --no-install-recommends \
     curl \
     git \
     libssl-dev \
+    lsof \
+    tini \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
@@ -59,13 +61,16 @@ RUN yarn install --production --ignore-scripts --prefer-offline
 # --- Stage: production
 # --- Purpose: Final step from a new slim image. this should be a minimal image only housing dist (production service)
 ### -----------------------
-
-FROM node:18.16.0-alpine AS production
+FROM node:18.16.0-bullseye AS production
 
 # https://github.com/nodejs/docker-node/blob/7de353256a35856c788b37c1826331dbba5f0785/docs/BestPractices.md
 # Node.js was not designed to run as PID 1 which leads to unexpected behaviour when running inside of Docker. 
 # You can also include Tini directly in your Dockerfile, ensuring your process is always started with an init wrapper.
-RUN apk add --no-cache tini
+RUN apt-get update && apt-get install -y -q --no-install-recommends \
+    ca-certificates \
+    lsof \
+    tini \
+    && rm -rf /var/lib/apt/lists/*
 
 USER node
 WORKDIR /app
@@ -79,5 +84,5 @@ COPY --chown=node:node --from=builder /app/dist /app/dist
 ENV NODE_ENV=production
 
 EXPOSE 8080
-ENTRYPOINT ["/sbin/tini", "--"]
+ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["node","dist/server/app.js"]
