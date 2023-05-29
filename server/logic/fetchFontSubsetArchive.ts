@@ -75,17 +75,8 @@ export async function fetchFontSubsetArchive(
   try {
     await finished(archive.generateNodeStream({
       compression: "DEFLATE",
-      // streamFiles: true,
     }).pipe(target));
 
-    // await finished(pipeline(archive.generateNodeStream({
-    //   compression: "DEFLATE",
-    //   streamFiles: true,
-    // }), target, (err) => {
-    //   if (err) {
-    //     console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed file=${subsetFontArchive.zipPath}", err);
-    //   }
-    // }));
     console.info(`fetchFontSubsetArchive create archive done! file=${subsetFontArchive.zipPath}`);
   } catch (e) {
     console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed", e);
@@ -118,29 +109,6 @@ async function fetchFontSubsetArchiveStream(url: string): Promise<Readable> {
 
       return res.data;
 
-      // const response = await fetch(url);
-      // const contentType = response.headers.get("content-type");
-
-      // if (response.status !== 200) {
-      //   throw new Error(`${url} fetchFontSubsetArchiveStream request failed. status code: ${response.status} ${response.statusText}`);
-      // }
-
-      // if (_.isNil(contentType) || _.isEmpty(contentType) || contentType.indexOf(format) === -1) {
-      //   throw new Error(
-      //     `${url} fetchFontSubsetArchiveStream request failed. expected ${format} to be in content-type header: ${contentType}`
-      //   );
-      // }
-
-      // if (_.isNil(response.body)) {
-      //   throw new Error(`${url} fetchFontSubsetArchiveStream request failed. response.body is null`);
-      // }
-
-      // // // hold in mem while creating archive.
-      // // return response.arrayBuffer();
-
-      // // TODO typing mismatch ReadableStream<any> vs ReadableStream<Uint8Array>
-      // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // return Readable.fromWeb(<any>response.body);
     },
     { retries: RETRIES }
   );

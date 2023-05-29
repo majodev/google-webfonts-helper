@@ -64,21 +64,6 @@ export async function fetchGoogleFonts(): Promise<IFontItem[]> {
 
       return transform(res.data);
 
-      // const res = await fetch(`https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=${config.GOOGLE_FONTS_API_KEY}`, {
-      //   headers: {
-      //     accept: "application/json",
-      //   },
-      // });
-
-      // if (res.status !== 200) {
-      //   throw new Error(`fetchGoogleFonts request failed. status code: ${res.status} ${res.statusText}`);
-      // }
-
-      // const resData: IGoogleFontsRes = await res.json();
-
-      // // console.log(JSON.stringify(resData));
-
-      // return transform(resData);
     },
     { retries: RETRIES }
   );

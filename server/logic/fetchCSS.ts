@@ -35,24 +35,6 @@ export async function fetchCSS(family: string, cssSubsetString: string, type: ke
 
       return res.data;
 
-      // const res = await fetch(url, {
-      //   headers: {
-      //     accept: "text/css,*/*;q=0.1",
-      //     "User-Agent": userAgent,
-      //   },
-      // });
-
-      // if (res.status !== 200) {
-      //   throw new Error(`${url} fetchCSS request failed. status code: ${res.status} ${res.statusText}`);
-      // }
-
-      // const contentType = res.headers.get("content-type");
-
-      // if (_.isNil(contentType) || _.isEmpty(contentType) || contentType.indexOf("css") === -1) {
-      //   throw new Error(`${url} fetchCSS request failed. expected "css" to be in content-type header: ${contentType}`);
-      // }
-
-      // return res.text();
     },
     { retries: RETRIES }
   );

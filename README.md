@@ -151,7 +151,7 @@ Download a zipped archive with all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` fil
 * Project upgraded to be compatible with Node.js v18+.
 * Automated prebuilt Docker images via [GitHub Actions](https://github.com/majodev/google-webfonts-helper/actions).
 * `/server` was fully refactored/modernized (async/await) and now compiles with TypeScript.
-* Switch to `node:18-alpine` for the final image (the musl linux memory allocator works better with this server).
+* Switch to `node:18` for the final image.
 * `/client` can still be considered very legacy Angular code.
 
 > 2022:
