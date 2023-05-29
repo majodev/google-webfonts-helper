@@ -4,8 +4,10 @@ import * as path from "path";
 import * as speakingurl from "speakingurl";
 import { config } from "../config";
 import { asyncRetry } from "../utils/asyncRetry";
+import axios from "axios";
 
 const RETRIES = 2;
+const REQUEST_TIMEOUT_MS = 10000;
 
 export interface IFontItem {
   id: string;
@@ -53,21 +55,30 @@ export async function fetchGoogleFonts(): Promise<IFontItem[]> {
 
   return asyncRetry(
     async () => {
-      const res = await fetch(`https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=${config.GOOGLE_FONTS_API_KEY}`, {
-        headers: {
-          accept: "application/json",
-        },
+
+      const res = await axios.get<IGoogleFontsRes>(`https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=${config.GOOGLE_FONTS_API_KEY}`, {
+        timeout: REQUEST_TIMEOUT_MS,
+        responseType: "json",
+        maxRedirects: 0 // https://github.com/axios/axios/issues/2610
       });
 
-      if (res.status !== 200) {
-        throw new Error(`fetchGoogleFonts request failed. status code: ${res.status} ${res.statusText}`);
-      }
+      return transform(res.data);
 
-      const resData: IGoogleFontsRes = await res.json();
+      // const res = await fetch(`https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=${config.GOOGLE_FONTS_API_KEY}`, {
+      //   headers: {
+      //     accept: "application/json",
+      //   },
+      // });
 
-      // console.log(JSON.stringify(resData));
+      // if (res.status !== 200) {
+      //   throw new Error(`fetchGoogleFonts request failed. status code: ${res.status} ${res.statusText}`);
+      // }
 
-      return transform(resData);
+      // const resData: IGoogleFontsRes = await res.json();
+
+      // // console.log(JSON.stringify(resData));
+
+      // return transform(resData);
     },
     { retries: RETRIES }
   );

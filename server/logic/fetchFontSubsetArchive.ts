@@ -8,8 +8,10 @@ import { config } from "../config";
 import { asyncRetry } from "../utils/asyncRetry";
 import { IVariantItem } from "./fetchFontURLs";
 import { Readable } from "stream";
+import axios from "axios";
 
 const RETRIES = 2;
+const REQUEST_TIMEOUT_MS = 6000;
 
 export interface IFontSubsetArchive {
   zipPath: string; // absolute path to the zip file
@@ -45,11 +47,11 @@ export async function fetchFontSubsetArchive(
           let readable: Readable;
           try {
             // console.log("fetchFontSubsetArchive...", variantUrl.format, filename, variantUrl.url);
-            readable = await fetchFontSubsetArchiveStream(variantUrl.url, filename, variantUrl.format);
+            readable = await fetchFontSubsetArchiveStream(variantUrl.url);
             archive.file(filename, readable);
           } catch (e) {
             // if a specific format does not work, silently discard it.
-            console.error("fetchFontSubsetArchive discarding", variantUrl.format, filename, variantUrl.url);
+            console.error("fetchFontSubsetArchive discarding", variantUrl.format, filename, variantUrl.url, e);
             return null;
           }
 
@@ -104,32 +106,41 @@ export async function fetchFontSubsetArchive(
   return subsetFontArchive;
 }
 
-async function fetchFontSubsetArchiveStream(url: string, dest: string, format: string): Promise<Readable> {
+async function fetchFontSubsetArchiveStream(url: string): Promise<Readable> {
   return asyncRetry<Readable>(
     async () => {
-      const response = await fetch(url);
-      const contentType = response.headers.get("content-type");
 
-      if (response.status !== 200) {
-        throw new Error(`${url} fetchFontSubsetArchiveStream request failed. status code: ${response.status} ${response.statusText}`);
-      }
+      const res = await axios.get<Readable>(url, {
+        timeout: REQUEST_TIMEOUT_MS,
+        responseType: "stream",
+        maxRedirects: 0 // https://github.com/axios/axios/issues/2610
+      });
 
-      if (_.isNil(contentType) || _.isEmpty(contentType) || contentType.indexOf(format) === -1) {
-        throw new Error(
-          `${url} fetchFontSubsetArchiveStream request failed. expected ${format} to be in content-type header: ${contentType}`
-        );
-      }
+      return res.data;
 
-      if (_.isNil(response.body)) {
-        throw new Error(`${url} fetchFontSubsetArchiveStream request failed. response.body is null`);
-      }
+      // const response = await fetch(url);
+      // const contentType = response.headers.get("content-type");
 
-      // // hold in mem while creating archive.
-      // return response.arrayBuffer();
+      // if (response.status !== 200) {
+      //   throw new Error(`${url} fetchFontSubsetArchiveStream request failed. status code: ${response.status} ${response.statusText}`);
+      // }
 
-      // TODO typing mismatch ReadableStream<any> vs ReadableStream<Uint8Array>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return Readable.fromWeb(<any>response.body);
+      // if (_.isNil(contentType) || _.isEmpty(contentType) || contentType.indexOf(format) === -1) {
+      //   throw new Error(
+      //     `${url} fetchFontSubsetArchiveStream request failed. expected ${format} to be in content-type header: ${contentType}`
+      //   );
+      // }
+
+      // if (_.isNil(response.body)) {
+      //   throw new Error(`${url} fetchFontSubsetArchiveStream request failed. response.body is null`);
+      // }
+
+      // // // hold in mem while creating archive.
+      // // return response.arrayBuffer();
+
+      // // TODO typing mismatch ReadableStream<any> vs ReadableStream<Uint8Array>
+      // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // return Readable.fromWeb(<any>response.body);
     },
     { retries: RETRIES }
   );

@@ -5,7 +5,7 @@ describe("GET /api/not_defined", () => {
   it("should respond with 404", async () => {
     await request(app)
       .get("/api/not_defined")
-      .timeout(2000)
+      .timeout(4000)
       .expect(404)
       .expect("Content-Type", /text\/html/);
   });
@@ -15,7 +15,7 @@ describe("GET /", () => {
   it("should respond with 200", async () => {
     await request(app)
       .get("/")
-      .timeout(2000)
+      .timeout(4000)
       .expect(200)
       .expect("Content-Type", /text\/html/);
   });

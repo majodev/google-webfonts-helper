@@ -2,8 +2,10 @@ import * as css from "css";
 import * as _ from "lodash";
 import { IUserAgents } from "../config";
 import { asyncRetry } from "../utils/asyncRetry";
+import axios from "axios";
 
 const RETRIES = 2;
+const REQUEST_TIMEOUT_MS = 6000;
 
 interface IResource {
   src: string | null;
@@ -20,24 +22,37 @@ export async function fetchCSS(family: string, cssSubsetString: string, type: ke
 
   const txt = await asyncRetry(
     async () => {
-      const res = await fetch(url, {
+
+      const res = await axios.get<string>(url, {
+        timeout: REQUEST_TIMEOUT_MS,
+        responseType: "text",
+        maxRedirects: 0, // https://github.com/axios/axios/issues/2610
         headers: {
-          accept: "text/css,*/*;q=0.1",
+          Accept: "text/css,*/*;q=0.1",
           "User-Agent": userAgent,
-        },
+        }
       });
 
-      if (res.status !== 200) {
-        throw new Error(`${url} fetchCSS request failed. status code: ${res.status} ${res.statusText}`);
-      }
+      return res.data;
 
-      const contentType = res.headers.get("content-type");
+      // const res = await fetch(url, {
+      //   headers: {
+      //     accept: "text/css,*/*;q=0.1",
+      //     "User-Agent": userAgent,
+      //   },
+      // });
 
-      if (_.isNil(contentType) || _.isEmpty(contentType) || contentType.indexOf("css") === -1) {
-        throw new Error(`${url} fetchCSS request failed. expected "css" to be in content-type header: ${contentType}`);
-      }
+      // if (res.status !== 200) {
+      //   throw new Error(`${url} fetchCSS request failed. status code: ${res.status} ${res.statusText}`);
+      // }
 
-      return res.text();
+      // const contentType = res.headers.get("content-type");
+
+      // if (_.isNil(contentType) || _.isEmpty(contentType) || contentType.indexOf("css") === -1) {
+      //   throw new Error(`${url} fetchCSS request failed. expected "css" to be in content-type header: ${contentType}`);
+      // }
+
+      // return res.text();
     },
     { retries: RETRIES }
   );
