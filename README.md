@@ -1,8 +1,11 @@
 # google-webfonts-helper
 > A Hassle-Free Way to Self-Host Google Fonts
 
-> ✅ **[https://gwfh.mranftl.com](https://gwfh.mranftl.com)** is the new base url!   
-> ❌ ~~https://google-webfonts-helper.herokuapp.com~~ (shut down 2022-11-27)
+✅ **[https://gwfh.mranftl.com](https://gwfh.mranftl.com)**
+
+[![Uptime Robot status](https://img.shields.io/uptimerobot/status/m793130668-adecafe120852713ed46d6c6)](https://gwfh.mranftl.com) [![Uptime Robot ratio (30 days)](https://img.shields.io/uptimerobot/ratio/m793130668-adecafe120852713ed46d6c6)](https://gwfh.mranftl.com) [![GitHub Sponsors](https://img.shields.io/github/sponsors/majodev)](https://github.com/sponsors/majodev)
+
+> *Help me keep this service alive by [sponsoring me](https://github.com/sponsors/majodev). Thank you. ❤️*
 
 - [google-webfonts-helper](#google-webfonts-helper)
   - [Give it a try: https://gwfh.mranftl.com](#give-it-a-try-httpsgwfhmranftlcom)
