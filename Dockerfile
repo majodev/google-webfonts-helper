@@ -2,7 +2,7 @@
 # --- Stage: development
 # --- Purpose: Local dev environment (no application deps)
 ### -----------------------
-FROM node:18.16.0-bullseye AS development
+FROM node:18.18.0-bullseye AS development
 
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
@@ -61,7 +61,7 @@ RUN yarn install --production --ignore-scripts --prefer-offline
 # --- Stage: production
 # --- Purpose: Final step from a new slim image. this should be a minimal image only housing dist (production service)
 ### -----------------------
-FROM node:18.16.0-bullseye AS production
+FROM node:18.18.0-bullseye AS production
 
 # https://github.com/nodejs/docker-node/blob/7de353256a35856c788b37c1826331dbba5f0785/docs/BestPractices.md
 # Node.js was not designed to run as PID 1 which leads to unexpected behaviour when running inside of Docker. 
