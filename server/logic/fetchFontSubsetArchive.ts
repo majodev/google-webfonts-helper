@@ -86,7 +86,7 @@ export async function fetchFontSubsetArchive(
         console.warn(`fetchFontSubsetArchive archive.generateNodeStream destroy stream ${index}/${streams.length}...`)
         stream.destroy();
       } catch (err) {
-        console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed, stream.destroy failed (catched)", fontID, subsets, err);
+        console.error("fetchFontSubsetArchive archive.generateNodeStream pipe failed, stream.destroy failed (caught)", fontID, subsets, err);
       }
     });
 
