@@ -1,5 +1,5 @@
 # https://docs.github.com/en/actions/publishing-packages/publishing-docker-images
-name: Create and publish gwfh
+name: Create, publish and deploy gwfh
 
 on:
   push:
@@ -13,7 +13,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-push-image:
+  build-publish-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
