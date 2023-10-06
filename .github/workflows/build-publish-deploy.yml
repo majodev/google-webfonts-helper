@@ -55,7 +55,7 @@ jobs:
 
       - name: Set image on dev cluster
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/dev' }}
-        uses: actions-hub/kubectl@1.26.3
+        uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_DEV }}
           NAMESPACE: gwfh-dev
@@ -64,7 +64,7 @@ jobs:
 
       - name: Set image on prod cluster
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-        uses: actions-hub/kubectl@1.26.3
+        uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_PROD }}
           NAMESPACE: gwfh-prod
