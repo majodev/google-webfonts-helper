@@ -50,45 +50,31 @@
         <!-- App name -->
         <h4 class="page-header"><a href="/" ng-click="selectedItemID=''">google-webfonts-helper</a><br /><small>Get eot,
             ttf, svg, woff and woff2 + CSS</small></h4>
-        <!-- GH Sponsor -->
-        <!-- <iframe id="githubSponsor" src="https://ghbtns.com/github-btn.html?user=majodev&type=sponsor&count=true&size=large"
-          allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="30px"></iframe> -->
-        <!-- <div id="githubSponsor">
-          <a href="https://github.com/sponsors/majodev" target="_blank">
-            <img alt="GitHub Sponsors"
-              src="https://img.shields.io/github/sponsors/majodev?style=social&logo=github%20sponsors&label=sponsor"
-              height="30px">
-          </a>
-        </div> -->
 
         <div class="nav-push-right">
           <a class="btn btn-default actSponsorButton actSponsorButton{{ sponsor.type }}"
-            href="https://github.com/{{ sponsor.login }}" ng-repeat="sponsor in sponsors" role="button" target="_blank">
-            <img class="sponsor-img" src="{{ sponsor.url }}" alt="{{ sponsor.login }}" />
-            <div class="sponsor-img-overlay" />
+            href="https://github.com/{{ sponsor.login }}" ng-repeat="sponsor in sponsors" role="button" target="_blank"
+            data-toggle="tooltip" data-placement="bottom" title="{{ sponsor.login }}">
+            <span>
+              <img class="sponsor-img" src="{{ sponsor.url }}" alt="{{ sponsor.login }}" />
+              <span class="sponsor-img-overlay" />
+            </span>
           </a>
 
           <a href="https://github.com/sponsors/majodev" target="_blank" role="button" type="button"
-            class="btn btn-default actNavButton">
-            <i class="fa fa-heart-o sponsorheart"></i>&nbsp;<strong>Sponsor</strong>&nbsp;<span
-              ng-if="sponsors.length > 0" class="badge">{{sponsors.length}}</span>
+            class="btn btn-default actNavButton" data-toggle="tooltip" data-placement="bottom"
+            title="Join {{ sponsors.length }} lovely sponsors!">
+            <span>
+              <i class="fa fa-heart-o sponsorheart"></i>&nbsp;<strong>Sponsor</strong>
+            </span>
           </a>
           <a href="https://github.com/majodev/google-webfonts-helper" target="_blank" role="button" type="button"
             class="btn btn-default actNavButton">
-            <i class="fa fa-star-o"></i>&nbsp;<strong>Star</strong>
+            <span>
+              <i class="fa fa-star-o"></i>&nbsp;<strong>Star</strong>
+            </span>
           </a>
         </div>
-
-        <!-- GH Stars -->
-        <!-- <iframe id="githubCount" src="https://ghbtns.com/github-btn.html?user=majodev&repo=google-webfonts-helper&type=watch&count=true&size=large"
-          allowtransparency="true" frameborder="0" scrolling="0" width="170px" height="30px"></iframe> -->
-        <!-- <div id="githubCount">
-          <a href="https://github.com/majodev/google-webfonts-helper" target="_blank">
-            <img alt="GitHub Repo stars"
-              src="https://img.shields.io/github/stars/majodev/google-webfonts-helper?style=social&logo=github&label=star"
-              height="30px">
-          </a>
-        </div> -->
 
       </div>
     </div>

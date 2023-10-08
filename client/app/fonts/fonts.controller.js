@@ -44,7 +44,11 @@ angular.module('googleWebfontsHelperApp')
     $scope.sponsorsPromise = $http.get('https://sponsors.mranftl.com/json')
       .success(function (data) {
         $scope.sponsors = data.sponsors;
-        $scope.busy = false;
+
+        setTimeout(function () {
+          $('[data-toggle="tooltip"]').tooltip();
+        }, 0);
+
       }) // err is not handled, because it is not critical
 
     $scope.scrollListTop = function() {
