@@ -20,6 +20,7 @@ angular.module('googleWebfontsHelperApp')
   .controller('FontsCtrl', function($scope, $http) {
 
     $scope.fonts = [];
+    $scope.sponsors = [];
     $scope.busy = true;
     $scope.selectedItemID = '';
 
@@ -39,6 +40,12 @@ angular.module('googleWebfontsHelperApp')
       .error(function(data, status, headers, config) {
         apiError($scope, status, headers, config);
       });
+    
+    $scope.sponsorsPromise = $http.get('https://sponsors.mranftl.com/json')
+      .success(function (data) {
+        $scope.sponsors = data.sponsors;
+        $scope.busy = false;
+      }) // err is not handled, because it is not critical
 
     $scope.scrollListTop = function() {
       $('.scrollerLeft').scrollTop(0);

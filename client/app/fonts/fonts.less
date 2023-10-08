@@ -8,33 +8,44 @@
 // -----------------------------------------------------------------------------
 
 /* ui bootstrap click to pointers */
-.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+.nav,
+.pagination,
+.carousel,
+.panel-title a {
+  cursor: pointer;
+}
 
 
 
 // Page wide
 // -----------------------------------------------------------------------------
-html, body {
-    height: 100%;
-}
-
-.fonts-top-container, .top-overlay, .box {
-  min-width: 900px;
-}
-
-.fonts-top-container, .row-fluid {
+html,
+body {
   height: 100%;
 }
 
-.fonts-top-container:before, .fonts-top-container:after,
-.column:before, .column:after {
-    content: "";
-    display: table;
+.fonts-top-container,
+.top-overlay,
+.box {
+  min-width: 900px;
+}
+
+.fonts-top-container,
+.row-fluid {
+  height: 100%;
+}
+
+.fonts-top-container:before,
+.fonts-top-container:after,
+.column:before,
+.column:after {
+  content: "";
+  display: table;
 }
 
 .fonts-top-container:after,
 .column:after {
-    clear: both;
+  clear: both;
 }
 
 
@@ -54,14 +65,61 @@ html, body {
   float: left;
 }
 
-#githubSponsor, #githubCount {
+.nav-push-right {
   float: right;
-  margin-left: 16px;
-  opacity: 0.8;
 }
 
-#githubSponsor:hover, #githubCount:hover {
-  opacity: 1;
+.actNavButton {
+  i {
+    font-size: 16px;
+  }
+}
+
+.actSponsorButton {
+  padding: 0;
+  margin-left: 4px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  animation: show 600ms 100ms cubic-bezier(0.38, 0.97, 0.56, 0.76) forwards;
+}
+
+@keyframes show {
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.actSponsorButtonUser {
+  border-radius: 50%;
+}
+
+.actSponsorButtonOrganization {
+  border-radius: 8px;
+}
+
+.sponsorheart {
+  color: #DB61A2;
+}
+
+.sponsor-img {
+  height: 34px;
+  width: 34px;
+}
+
+.sponsor-img-overlay {
+  height: 34px;
+  width: 34px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #DB61A2;
+  opacity: 0.05;
+}
+
+.sponsor-img-overlay:hover {
+  opacity: 0.4;
 }
 
 .ordering {
@@ -100,7 +158,7 @@ html, body {
 }
 
 #orderButton {
-  border-bottom-right-radius: 4px; 
+  border-bottom-right-radius: 4px;
   border-top-right-radius: 4px;
 }
 
@@ -134,25 +192,60 @@ html, body {
   animation: pulse 1s infinite;
 }
 
-@-webkit-keyframes pulse { 
-    0% { -webkit-transform: scale(1); } 
-    50% { -webkit-transform: scale(1.3); } 
-    100% { -webkit-transform: scale(1); } 
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-transform: scale(1);
+  }
+
+  50% {
+    -webkit-transform: scale(1.3);
+  }
+
+  100% {
+    -webkit-transform: scale(1);
+  }
 }
+
 @-moz-keyframes pulse {
-    0% { -moz-transform: scale(1); } 
-    50% { -moz-transform: scale(1.3); } 
-    100% { -moz-transform: scale(1); } 
+  0% {
+    -moz-transform: scale(1);
+  }
+
+  50% {
+    -moz-transform: scale(1.3);
+  }
+
+  100% {
+    -moz-transform: scale(1);
+  }
 }
+
 @-o-keyframes pulse {
-    0% { -o-transform: scale(1); } 
-    50% { -o-transform: scale(1.3); } 
-    100% { -o-transform: scale(1); } 
+  0% {
+    -o-transform: scale(1);
+  }
+
+  50% {
+    -o-transform: scale(1.3);
+  }
+
+  100% {
+    -o-transform: scale(1);
+  }
 }
-@keyframes pulse { 
-    0% { transform: scale(1); } 
-    50% { transform: scale(1.3); } 
-    100% { transform: scale(1); } 
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.3);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 
@@ -168,17 +261,16 @@ html, body {
 }
 
 .column {
-    height: 100%;
-    overflow: auto;
-    *zoom:1;
+  height: 100%;
+  overflow: auto;
+  *zoom: 1;
 }
 
 .scrollerLeft {
   background: #eee;
 }
 
-.scrollerRight {
-}
+.scrollerRight {}
 
 // Font content
 // -----------------------------------------------------------------------------
@@ -193,6 +285,7 @@ html, body {
   dt {
     width: auto;
   }
+
   dd {
     margin-left: 120px;
   }
@@ -214,7 +307,7 @@ html, body {
 
 .download-button {
   white-space: normal;
-//   margin-top: 30px;
+  //   margin-top: 30px;
 }
 
 .head-right-block {
@@ -275,7 +368,7 @@ code {
 }
 
 textarea {
-   resize: none;
+  resize: none;
 }
 
 .mini {

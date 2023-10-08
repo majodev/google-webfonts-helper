@@ -7,9 +7,10 @@
         <div class="input-group">
           <!-- search box -->
           <div id="searchwrap" class="btn-group">
-            <input id="searchinput" class="form-control" ng-model="query" type="search" placeholder="{{fonts.length}} fonts {{predicate.name}}"
-              autofocus>
-            <span id="searchclear" class="glyphicon glyphicon-remove-circle" ng-class="{'show': query.length > 0}" ng-click="query = ''"></span>
+            <input id="searchinput" class="form-control" ng-model="query" type="search"
+              placeholder="{{fonts.length}} fonts {{predicate.name}}" autofocus>
+            <span id="searchclear" class="glyphicon glyphicon-remove-circle" ng-class="{'show': query.length > 0}"
+              ng-click="query = ''"></span>
           </div>
           <!-- Filter / Order options -->
           <div class="input-group-btn" dropdown is-open="status.isopen">
@@ -18,14 +19,27 @@
             </button>
             <ul class="dropdown-menu" role="menu">
               <li role="presentation" class="dropdown-header">Order by</li>
-              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="{name: 'by family', filter: 'family', bindArg: 'category'}"><a href="#">Family</a></li>
-              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="{name: 'by category', filter: ['category','family'], bindArg: 'category'}"><a href="#">Category</a></li>
-              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="{name: 'by popularity', filter: 'popularity', pre: 'Rank '}"><a href="#">Popularity</a></li>
-              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="{name: 'by last modified', filter: ['-lastModified','family'], bindArg: 'lastModified'}"><a href="#">Last modified</a></li>
-              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="{name: 'by # styles', filter: ['-variants.length','family'], bindArg: 'variants', len: true, post: ' styles'}"><a href="#">Number of styles</a></li>
-              <li ng-click="scrollListTop()" ng-model="predicate" btn-radio="{name: 'by # charsets', filter: ['-subsets.length','family'], bindArg: 'subsets', len: true, post: ' charsets'}"><a href="#">Number of charsets</a></li>
+              <li ng-click="scrollListTop()" ng-model="predicate"
+                btn-radio="{name: 'by family', filter: 'family', bindArg: 'category'}"><a href="#">Family</a></li>
+              <li ng-click="scrollListTop()" ng-model="predicate"
+                btn-radio="{name: 'by category', filter: ['category','family'], bindArg: 'category'}"><a
+                  href="#">Category</a></li>
+              <li ng-click="scrollListTop()" ng-model="predicate"
+                btn-radio="{name: 'by popularity', filter: 'popularity', pre: 'Rank '}"><a href="#">Popularity</a></li>
+              <li ng-click="scrollListTop()" ng-model="predicate"
+                btn-radio="{name: 'by last modified', filter: ['-lastModified','family'], bindArg: 'lastModified'}"><a
+                  href="#">Last modified</a></li>
+              <li ng-click="scrollListTop()" ng-model="predicate"
+                btn-radio="{name: 'by # styles', filter: ['-variants.length','family'], bindArg: 'variants', len: true, post: ' styles'}">
+                <a href="#">Number of styles</a>
+              </li>
+              <li ng-click="scrollListTop()" ng-model="predicate"
+                btn-radio="{name: 'by # charsets', filter: ['-subsets.length','family'], bindArg: 'subsets', len: true, post: ' charsets'}">
+                <a href="#">Number of charsets</a>
+              </li>
               <li class="divider"></li>
-              <li ng-click="reverse=!reverse; scrollListTop()"><a href="#">{{reverse === true ? "↑ ascending" : "↓ descending"}}</a></li>
+              <li ng-click="reverse=!reverse; scrollListTop()"><a href="#">{{reverse === true ? "↑ ascending" : "↓
+                  descending"}}</a></li>
             </ul>
           </div>
         </div>
@@ -34,23 +48,48 @@
 
       <div class="col-lg-10 col-md-9 col-sm-9 col-xs-8">
         <!-- App name -->
-        <h4 class="page-header"><a href="/" ng-click="selectedItemID=''">google-webfonts-helper</a><br/><small>Get eot, ttf, svg, woff and woff2 + CSS</small></h4>
+        <h4 class="page-header"><a href="/" ng-click="selectedItemID=''">google-webfonts-helper</a><br /><small>Get eot,
+            ttf, svg, woff and woff2 + CSS</small></h4>
         <!-- GH Sponsor -->
         <!-- <iframe id="githubSponsor" src="https://ghbtns.com/github-btn.html?user=majodev&type=sponsor&count=true&size=large"
           allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="30px"></iframe> -->
-        <div id="githubSponsor">
+        <!-- <div id="githubSponsor">
           <a href="https://github.com/sponsors/majodev" target="_blank">
-            <img alt="GitHub Sponsors" src="https://img.shields.io/github/sponsors/majodev?style=social&logo=github%20sponsors&label=sponsor" height="30px">
+            <img alt="GitHub Sponsors"
+              src="https://img.shields.io/github/sponsors/majodev?style=social&logo=github%20sponsors&label=sponsor"
+              height="30px">
+          </a>
+        </div> -->
+
+        <div class="nav-push-right">
+          <a class="btn btn-default actSponsorButton actSponsorButton{{ sponsor.type }}"
+            href="https://github.com/{{ sponsor.login }}" ng-repeat="sponsor in sponsors" role="button" target="_blank">
+            <img class="sponsor-img" src="{{ sponsor.url }}" alt="{{ sponsor.login }}" />
+            <div class="sponsor-img-overlay" />
+          </a>
+
+          <a href="https://github.com/sponsors/majodev" target="_blank" role="button" type="button"
+            class="btn btn-default actNavButton">
+            <i class="fa fa-heart-o sponsorheart"></i>&nbsp;<strong>Sponsor</strong>&nbsp;<span
+              ng-if="sponsors.length > 0" class="badge">{{sponsors.length}}</span>
+          </a>
+          <a href="https://github.com/majodev/google-webfonts-helper" target="_blank" role="button" type="button"
+            class="btn btn-default actNavButton">
+            <i class="fa fa-star-o"></i>&nbsp;<strong>Star</strong>
           </a>
         </div>
+
         <!-- GH Stars -->
         <!-- <iframe id="githubCount" src="https://ghbtns.com/github-btn.html?user=majodev&repo=google-webfonts-helper&type=watch&count=true&size=large"
           allowtransparency="true" frameborder="0" scrolling="0" width="170px" height="30px"></iframe> -->
-        <div id="githubCount">
+        <!-- <div id="githubCount">
           <a href="https://github.com/majodev/google-webfonts-helper" target="_blank">
-            <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/majodev/google-webfonts-helper?style=social&logo=github&label=star" height="30px">
+            <img alt="GitHub Repo stars"
+              src="https://img.shields.io/github/stars/majodev/google-webfonts-helper?style=social&logo=github&label=star"
+              height="30px">
           </a>
-        </div>
+        </div> -->
+
       </div>
     </div>
 
@@ -60,11 +99,15 @@
   <div class="box">
     <!-- wrapper for scrollbar divs -->
     <div class="row-fluid">
-      <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scrollerLeft column" cg-busy="{promise: fontsPromise, message: 'Listing fonts...'}">
+      <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 scrollerLeft column"
+        cg-busy="{promise: fontsPromise, message: 'Listing fonts...'}">
         <div class="list-group">
-          <a href="/fonts/{{font.id}}?subsets={{font.defSubset}}" class="list-group-item {{selectedItemID === font.id ? 'active' : ''}}"
+          <a href="/fonts/{{font.id}}?subsets={{font.defSubset}}"
+            class="list-group-item {{selectedItemID === font.id ? 'active' : ''}}"
             ng-repeat="font in fonts | filter:query | orderBy:predicate.filter:reverse">
-            <h5 class="list-group-item-heading">{{font.family}} <small>{{predicate.pre}}{{predicate.bindArg ? (predicate.len ? font[predicate.bindArg].length : font[predicate.bindArg]) : font[predicate.filter]}}{{predicate.post}}</small></h5>
+            <h5 class="list-group-item-heading">{{font.family}} <small>{{predicate.pre}}{{predicate.bindArg ?
+                (predicate.len ? font[predicate.bindArg].length : font[predicate.bindArg]) :
+                font[predicate.filter]}}{{predicate.post}}</small></h5>
           </a>
         </div>
       </div>
@@ -80,27 +123,38 @@
                 <h6>by <a href="http://mranftl.com" target="_blank">Mario Ranftl</a></h6>
                 <hr />
 
-                <h3><small><i class="fa fa-arrow-circle-o-left pulse"></i>&nbsp;&nbsp;Select a font to continue...</small></h3>
+                <h3><small><i class="fa fa-arrow-circle-o-left pulse"></i>&nbsp;&nbsp;Select a font to
+                    continue...</small></h3>
 
               </div>
 
             </header>
 
             <p class="download-info">
-              <a href="https://github.com/majodev/google-webfonts-helper" class="btn btn-default btn-large" target="_blank">View project on GitHub</a>
-              <a href="http://mranftl.com/2014/12/23/self-hosting-google-web-fonts/" class="btn btn-default btn-large" target="_blank">Read the author's note</a>
-              <a href="https://github.com/majodev/google-webfonts-helper#rest-api" class="btn btn-default btn-large" target="_blank">API</a>
+              <a href="https://github.com/majodev/google-webfonts-helper" class="btn btn-default btn-large"
+                target="_blank">View project on GitHub</a>
+              <a href="http://mranftl.com/2014/12/23/self-hosting-google-web-fonts/" class="btn btn-default btn-large"
+                target="_blank">Read the author's note</a>
+              <a href="https://github.com/sponsors/majodev" class="btn btn-default btn-large" target="_blank">Sponsor
+                this project</a>
             </p>
 
             <h3>Useful resources</h3>
             <ul class="list-unstyled">
-              <li><a href="https://fonts.google.com/attribution" class="btn btn-link btn-large" target="_blank">Google Fonts Open Source Font Attribution</a></li>
-              <li><a href="http://css-tricks.com/snippets/css/using-font-face/" class="btn btn-link btn-large" target="_blank">Using @font-face</a></li>
-              <li><a href="http://caniuse.com/#feat=woff" class="btn btn-link btn-large" target="_blank">Can I use woff? (compatibility information)</a></li>
-              <li><a href="https://gist.github.com/sergejmueller/cf6b4f2133bcb3e2f64a" class="btn btn-link btn-large" target="_blank">WOFF 2.0 – Learn more about the next generation Web Font Format</a></li>
-              <li><a href="https://gist.github.com/lindsayevans/794800" class="btn btn-link btn-large" target="_blank">Sample MIME server config (Apache, Nginx, IIS)</a></li>
-              <li><a href="https://github.com/gabiseabra/google-fonts-webpack-plugin" class="btn btn-link btn-large" target="_blank">Google Fonts Webpack Plugin</a></li>
-              <li><a href="https://www.news47ell.com/how-to/host-google-fonts-locally-wordpress/" class="btn btn-link btn-large" target="_blank">How to Host Google Fonts Locally in WordPress</a></li>
+              <li><a href="https://fonts.google.com/attribution" class="btn btn-link btn-large" target="_blank">Google
+                  Fonts Open Source Font Attribution</a></li>
+              <li><a href="http://css-tricks.com/snippets/css/using-font-face/" class="btn btn-link btn-large"
+                  target="_blank">Using @font-face</a></li>
+              <li><a href="http://caniuse.com/#feat=woff" class="btn btn-link btn-large" target="_blank">Can I use woff?
+                  (compatibility information)</a></li>
+              <li><a href="https://gist.github.com/sergejmueller/cf6b4f2133bcb3e2f64a" class="btn btn-link btn-large"
+                  target="_blank">WOFF 2.0 – Learn more about the next generation Web Font Format</a></li>
+              <li><a href="https://gist.github.com/lindsayevans/794800" class="btn btn-link btn-large"
+                  target="_blank">Sample MIME server config (Apache, Nginx, IIS)</a></li>
+              <li><a href="https://github.com/gabiseabra/google-fonts-webpack-plugin" class="btn btn-link btn-large"
+                  target="_blank">Google Fonts Webpack Plugin</a></li>
+              <li><a href="https://www.news47ell.com/how-to/host-google-fonts-locally-wordpress/"
+                  class="btn btn-link btn-large" target="_blank">How to Host Google Fonts Locally in WordPress</a></li>
             </ul>
 
           </div>
