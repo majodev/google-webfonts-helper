@@ -43,7 +43,7 @@ export async function fetchFontURLs(fontFamily: string, fontVariants: string[], 
 
       if (resources.length === 0) {
         console.warn(
-          `fetchFontURLs: no css ressources encountered for fontFamily='${cssFontFamily}' subset='${cssSubsetString}' format=${target.format}`,
+          `fetchFontURLs: no css resources encountered for fontFamily='${cssFontFamily}' subset='${cssSubsetString}' format=${target.format}`,
           resources
         );
         return;
@@ -51,7 +51,7 @@ export async function fetchFontURLs(fontFamily: string, fontVariants: string[], 
 
       if (resources.length > 1) {
         console.warn(
-          `fetchFontURLs: multiple css ressources encountered for fontFamily='${cssFontFamily}' subset='${cssSubsetString}' format=${target.format}`,
+          `fetchFontURLs: multiple css resources encountered for fontFamily='${cssFontFamily}' subset='${cssSubsetString}' format=${target.format}`,
           resources
         );
       }
