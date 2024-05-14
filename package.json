@@ -23,11 +23,11 @@
     "url": "https://github.com/majodev/google-webfonts-helper.git"
   },
   "dependencies": {
-    "axios": "^1.4.0",
+    "axios": "1.6.8",
     "bluebird": "3.7.2",
     "compression": "1.7.4",
     "css": "3.0.0",
-    "express": "4.18.2",
+    "express": "4.19.2",
     "jszip": "3.10.1",
     "lodash": "4.17.21",
     "morgan": "1.10.0",
