@@ -64,20 +64,29 @@ function parseRemoteCSS(remoteCSS: string, type: string): IResource[] {
         return;
       }
 
-      const matched = type === "svg" ? src.match("http:\\/\\/[^\\)]+") : src.match("http:\\/\\/[^\\)]+\\." + type);
+      let matched = src.match("http:\\/\\/[^\\)]+")
 
       if (_.isNil(matched) || matched.length === 0) {
-        console.warn(`parseRemoteCSS: no matched url in parsed css for ${type}: ${remoteCSS}`);
-        return;
+
+        // might be https in the future
+        matched = src.match("https:\\/\\/[^\\)]+");
+
+        if (_.isNil(matched) || matched.length === 0) {
+          console.warn(`parseRemoteCSS: no matched url in parsed css for ${type}: ${remoteCSS}`);
+          return;
+        }
       }
+
+      const url = matched[0];
+
+      // console.log(url);
 
       const resource: IResource = {
         src: getCSSRuleDeclarationPropertyValue(rule, "src"),
         fontFamily: getCSSRuleDeclarationPropertyValue(rule, "font-family"),
         fontStyle: getCSSRuleDeclarationPropertyValue(rule, "font-style"),
         fontWeight: getCSSRuleDeclarationPropertyValue(rule, "font-weight"),
-        // extract the url
-        url: matched[0],
+        url
       };
 
       // push the current rule (= resource) to the resources array
