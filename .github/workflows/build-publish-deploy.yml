@@ -9,6 +9,7 @@ on:
       - "dev"
 
 env:
+  DOCKER_ENV_FILE: ".github/workflows/docker.env"
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
