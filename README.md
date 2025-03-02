@@ -223,6 +223,15 @@ Download a zipped archive with all `.eot`, `.woff`, `.woff2`, `.svg`, `.ttf` fil
 
 ## History
 
+> 2025:
+
+* Switch to `node:22` for the final image.
+* Adds support for linux/arm64 architecture (patches [imagemin/optipng-bin](https://github.com/imagemin/optipng-bin/pull/128))
+
+> 2024:
+
+* Switch to `node:20` for the final image.
+
 > 2023:
 
 * Project upgraded to be compatible with Node.js v18+.

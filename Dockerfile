@@ -2,7 +2,7 @@
 # --- Stage: development
 # --- Purpose: Local dev environment (no application deps)
 ### -----------------------
-FROM node:20.13.1-bookworm AS development
+FROM node:22.14.0-bookworm AS development
 
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
@@ -17,8 +17,10 @@ RUN apt-get update && apt-get install -y -q --no-install-recommends \
     ca-certificates \
     curl \
     git \
+    jpegoptim \
     libssl-dev \
     lsof \
+    optipng \
     tini \
     wget \
     && rm -rf /var/lib/apt/lists/*
@@ -61,7 +63,7 @@ RUN yarn install --production --ignore-scripts --prefer-offline
 # --- Stage: production
 # --- Purpose: Final step from a new slim image. this should be a minimal image only housing dist (production service)
 ### -----------------------
-FROM node:20.13.1-bookworm AS production
+FROM node:22.14.0-bookworm AS production
 
 # https://github.com/nodejs/docker-node/blob/7de353256a35856c788b37c1826331dbba5f0785/docs/BestPractices.md
 # Node.js was not designed to run as PID 1 which leads to unexpected behaviour when running inside of Docker. 

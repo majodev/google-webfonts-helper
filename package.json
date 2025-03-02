@@ -61,7 +61,7 @@
     "grunt-contrib-copy": "~0.5.0",
     "grunt-contrib-cssmin": "~0.9.0",
     "grunt-contrib-htmlmin": "~0.2.0",
-    "grunt-contrib-imagemin": "1.0.1",
+    "grunt-contrib-imagemin": "4.0.0",
     "grunt-contrib-less": "^0.11.0",
     "grunt-contrib-uglify": "~0.4.0",
     "grunt-contrib-watch": "~0.6.1",
@@ -97,5 +97,9 @@
     "dev": "grunt serve",
     "tsc": "tsc --noEmit --skipLibCheck"
   },
-  "private": true
+  "private": true,
+  "resolutions": {
+    "imagemin-optipng": "git+https://github.com/PruvoNet/imagemin-optipng.git#68dc79939c380fb12a83f7ec7cc5943f9aa41149",
+    "optipng-bin": "git+https://github.com/PruvoNet/optipng-bin.git#ffb7e8f17710428596def1bb832d8e8e3fe382af"
+  }
 }
