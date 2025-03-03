@@ -14,7 +14,7 @@ angular.module('googleWebfontsHelperApp')
         return function(scope, elem, attrs) {
           scope.$watch(interpolateFn, function(value) {
             $timeout(function() {
-              var highlighter = elem.attr('data-hljs'); // use data-hljs to define the highligher to use
+              var highlighter = elem.attr('data-hljs'); // use data-hljs to define the highlighter to use
 
               if (typeof highlighter !== 'undefined') {
                 elem.html(hljs.highlight(highlighter, value).value);
