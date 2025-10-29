@@ -9,7 +9,7 @@ function apiError($scope, status, headers, config) {
   $scope.errorConfig = JSON.stringify(config, null, 2);
 }
 
-var previousFontItem = false; // holds reference to previous font item, for partial refreshs, will be nulled if fontID changes
+var previousFontItem = false; // holds reference to previous font item, for partial refreshes, will be nulled if fontID changes
 
 var subsetsChkbTimeoutP = null; // timeout - promise for cgBusy 3000ms until request for customization is made
 var subsetsChkbReload = null; // interval - promise for cgBusy loading text rewrite (waiting till customization) 1000ms
@@ -70,7 +70,7 @@ angular.module('googleWebfontsHelperApp')
   $scope.$parent.selectedItemID = $scope.fontID;
 
   if (previousFontItem && previousFontItem.id === $stateParams.id) {
-    // former item is a candiate for instant population until load is complete.
+    // former item is a candidate for instant population until load is complete.
     $scope.fontItem = previousFontItem;
     $scope.loadingMessage = 'Customizing ' + $stateParams.id + '...';
 
