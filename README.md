@@ -3,6 +3,8 @@
 
 ✅ **[https://gwfh.mranftl.com](https://gwfh.mranftl.com)**
 
+[![Deploy to Railyard](https://app.railyard.run/deploy/badge)](https://app.railyard.run/deploy?repo=https://github.com/majodev/google-webfonts-helper)
+
 ## Current Sponsors
 
 > *Help me keep this service alive by [sponsoring me](https://github.com/sponsors/majodev). Thank you. ❤️*
